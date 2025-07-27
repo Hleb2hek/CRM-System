@@ -1,0 +1,28 @@
+body {
+	// импортируем миксин и задаём глобально размеры текста
+	font-weight: 400;
+	line-height: 1;
+	color: var(--color-accent);
+	background-color: var(--color-background-s);
+}
+
+a,
+button,
+input,
+select,
+textarea,
+svg * {
+	transition-duration: var(--transition-duration);
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-weight: 500;
+}
