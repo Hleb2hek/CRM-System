@@ -4,3 +4,17 @@ export async function fetchAllTasks() {
 
 	return jsonData
 }
+
+export async function postUserTasks(task) {
+	const response = await fetch("https://easydev.club/api/v1/todos", {
+		method: "POST",
+		body: JSON.stringify({ data: task }),
+		headers: {
+			'Content-Type': 'application/json'
+		},
+	})
+
+	const resData = await response.json();
+	return resData
+
+}
