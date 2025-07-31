@@ -1,3 +1,6 @@
-@use './base/index.scss';
+@use './base/index';
 
-@use './components/Header.scss'
+@use './components/btn';
+@use './components/input';
+
+@use './components/Header';

@@ -1,6 +1,30 @@
-@use '../base/index.scss' as *;
+@use '../base/index' as *;
 
 .header {
 	padding-top: 12rem;
+	text-align: center;
 
+	&__body {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		padding: 10px 20px;
+		border-radius: var(--border-radius);
+
+		border: var(--border);
+	}
+
+	&__input {
+		width: 18.75rem;
+	}
+
+	&__btn {
+		width: 9.375rem;
+	}
+
+	&__error {
+		margin-top: 1.25rem;
+		margin-bottom: 1.25rem;
+	}
 }

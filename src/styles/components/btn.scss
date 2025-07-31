@@ -1,0 +1,17 @@
+@use '../base/index' as *;
+
+.btn {
+
+	height: var(--inter-height);
+
+	padding: 0;
+	border: none;
+	border-radius: var(--border-radius);
+
+	background-color: var(--color-input);
+	color: var(--color-accent);
+
+	&:hover {
+		background-color: var(--color-input-dark);
+	}
+}

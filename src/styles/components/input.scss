@@ -1,0 +1,14 @@
+@use '../base/index' as *;
+
+.input {
+	height: var(--inter-height);
+
+	padding-inline: 0.5rem;
+
+	color: var(--color-text);
+
+	outline: none;
+	border: var(--border);
+	border-radius: var(--border-radius);
+
+}

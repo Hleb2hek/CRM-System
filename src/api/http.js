@@ -8,7 +8,7 @@ export async function fetchAllTasks() {
 export async function postUserTasks(task) {
 	const response = await fetch("https://easydev.club/api/v1/todos", {
 		method: "POST",
-		body: JSON.stringify({ data: task }),
+		body: JSON.stringify({ title: task }),
 		headers: {
 			'Content-Type': 'application/json'
 		},

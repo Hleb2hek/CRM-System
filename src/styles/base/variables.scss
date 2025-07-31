@@ -1,33 +1,17 @@
 :root {
-	--color-background-s: #F7F7F7;
-	--color-accent: #252525;
+	--color-background-s: #FFF2F2;
+	--color-accent: #A9B5DF;
+	--color-text: #5c6578;
 
-	--color-input-background: #6C63FF;
-	--color-input-placeholder: #C3C1E5;
-	--color-input-focus: #6C63FF;
-	--color-input-dark: #666666;
-
-	--color-purple-light: #aba6ff;
-	--color-purple: #6C63FF;
-	--color-purple-dark: #5850DD;
-	--color-dark: #252525;
-
-	--color-red-light: #ff9b9b;
-	--color-red: #E50000;
-
-	--color-option: #CDCDCD;
+	--color-input: #7886C7;
+	--color-input-dark: #2D336B;
 
 	// границы
-	--border: 1px solid var(--color-input-background);
-	--outline: 2px solid var(--color-purple);
+	--border: 1.6px solid var(--color-accent);
+	--outline: 2px solid;
 
 	// закруглённость границ объектов
 	--border-radius: 5px;
-	--border-radius-small: 2px;
-	--border-radius-large: 16px;
-
-	// основной шрифт макета
-	--font-famaly-base: 'Kanit', sans-serif;
 
 	// параметры контейнера
 	--container-width: 500px;
@@ -39,8 +23,8 @@
 	--block-padding-x: 16px;
 
 	// высота input и btn
-	--inter-height: 38px;
+	--inter-height: 30px;
 
 	// скорость анимации тегов
-	--transition-duration: .1s;
+	--transition-duration: .2s;
 }

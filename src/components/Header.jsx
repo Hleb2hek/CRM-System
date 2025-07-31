@@ -1,26 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { postUserTasks } from '../api/http';
 
 function Header() {
 
-	const [data, setData] = useState('string');
+	const [tasks, setTasks] = useState([]);
+	const [newTask, setNewTask] = useState("");
 
 	async function getTasks() {
-		setData((data) => {
-			postUserTasks(data)
-		})
+		const createdTask = await postUserTasks(newTask);
+		setTasks(t => [createdTask, ...t]);
 	}
 
-
 	return (
-		<header className="header">
-			<div className="header__body container">
+		<header className="header container">
+			<div className="header__body">
 				<form className="header__form form">
-					<input className="form__input" type="text" />
+					<input onChange={event => setNewTask(event.target.value)} className="header__input input" type="text" />
 				</form>
-				<button onClick={() => getTasks(data)} className="header__btn btn" type="button">
-					Add
+				<button onClick={() => getTasks()} className="header__btn btn" type="button">
+					Добавить
 				</button>
 			</div>
 		</header>
