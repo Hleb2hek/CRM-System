@@ -3,26 +3,37 @@ import { useState, useEffect } from 'react';
 import { fetchAllTasks } from "../api/http";
 
 function Tasks() {
+	const [task, setTask] = useState([]);
+	const [loading, setLoading] = useState(true);
 
-	const [sss, setSss] = useState([])
 
 	useEffect(() => {
-		async function arrss() {
-			const arr = await fetchAllTasks()
-			setSss(arr)
+		try {
+			async function getTasks() {
+				const fetchTask = await fetchAllTasks()
+				setTask(fetchTask.data)
+				setLoading(false)
+			}
+			let timeTask = setInterval(() => {
+				getTasks()
+			},1000)
+
+			return () => {
+				clearInterval(timeTask)
+			}
+		} catch {
+
 		}
-		arrss()
 	}, []);
-	console.log(sss);
 
 	return (
 		<section className="tasks container">
 			<ul className="tasks__wrapper">
 				{
-					// sss.data.map(arr =>
-					// 	<li className="tasks__list">
-					// 		{arr}
-					// 	</li>)
+					loading ? (<p>Загрузка данных</p>) : (task.map(({id,title,isDone}) =>
+						<li key={id} className="tasks__list">
+							<p>{title}</p>
+						</li>))
 				}
 			</ul>
 		</section>
