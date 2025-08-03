@@ -1,16 +1,4 @@
-import { useState } from 'react'
-
-import { postUserTasks } from '../api/http';
-
-function Header() {
-
-	const [tasks, setTasks] = useState([]);
-	const [newTask, setNewTask] = useState("");
-
-	async function getTasks() {
-		const createdTask = await postUserTasks(newTask);
-		setTasks(t => [createdTask, ...t]);
-	}
+function Header({ setNewTask, createTasks }) {
 
 	return (
 		<header className="header container">
@@ -18,7 +6,7 @@ function Header() {
 				<form className="header__form form">
 					<input onChange={event => setNewTask(event.target.value)} className="header__input input" type="text" />
 				</form>
-				<button onClick={() => getTasks()} className="header__btn btn" type="button">
+				<button onClick={() => createTasks()} className="header__btn btn" type="button">
 					Добавить
 				</button>
 			</div>

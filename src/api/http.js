@@ -1,20 +1,38 @@
 export async function fetchAllTasks() {
-	const response = await fetch("https://easydev.club/api/v1/todos");
-	const jsonData = await response.json();
+	try {
+		const response = await fetch("https://easydev.club/api/v1/todos");
+		const jsonData = await response.json();
 
-	return jsonData
+		if (!response.ok) {
+			throw new Error(`Ошибка ${response.status}`)
+		}
+
+		return jsonData
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 export async function postUserTasks(task) {
-	const response = await fetch("https://easydev.club/api/v1/todos", {
-		method: "POST",
-		body: JSON.stringify({ title: task }),
-		headers: {
-			'Content-Type': 'application/json'
-		},
-	})
+	try {
+		const response = await fetch("https://easydev.club/api/v1/todos", {
+			method: "POST",
+			body: JSON.stringify({ title: task }),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
 
-	const resData = await response.json();
-	return resData
+		if (!response.ok) {
+			throw new Error(`Ошибка ${response.status}`)
+		}
+
+		const resData = await response.json();
+		return resData
+
+	} catch (error) {
+		console.error(error);
+	}
+
 
 }
