@@ -10,7 +10,7 @@ function App() {
 	const [tasks, setTasks] = useState([]);
 	const [newTask, setNewTask] = useState("");
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState();
+	const [error, setError] = useState(null);
 
 	async function createTasks() {
 		try {
@@ -18,7 +18,7 @@ function App() {
 			setTasks(t => [...t, createdTask]);
 			setNewTask("")
 		} catch (error) {
-			setError({message: error.message || 'Ошибка отправки'})
+			setError({ message: error.message || 'Ошибка отправки' })
 		}
 	}
 
@@ -29,7 +29,8 @@ function App() {
 				setTasks(data)
 			}
 			catch (error) {
-				console.log(error);
+				setError({ message: error.message || 'Ошибка получения данных' })
+
 			}
 			finally {
 				setLoading(false)
