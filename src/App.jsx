@@ -15,16 +15,17 @@ function App() {
 	async function createTasks() {
 		try {
 			const createdTask = await postUserTasks(newTask);
-			setTasks(t => [...t, createdTask,]);
+			setTasks(t => [...t, createdTask]);
+			setNewTask("")
 		} catch (error) {
-			console.log(error);
+			setError({message: error.message || 'Ошибка отправки'})
 		}
 	}
 
 	useEffect(() => {
 		async function getTasks() {
 			try {
-				const { data, info } = await fetchAllTasks()
+				const { data } = await fetchAllTasks()
 				setTasks(data)
 			}
 			catch (error) {
@@ -40,7 +41,7 @@ function App() {
 	return (
 		<>
 			<Header setNewTask={setNewTask} createTasks={createTasks} />
-			<Tasks tasks={tasks} loading={loading} />
+			<Tasks error={error} tasks={tasks} loading={loading} />
 		</>
 	)
 

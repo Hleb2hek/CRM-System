@@ -1,4 +1,4 @@
-function Header({ setNewTask, createTasks }) {
+function Header({setNewTask, createTasks }) {
 
 	return (
 		<header className="header container">

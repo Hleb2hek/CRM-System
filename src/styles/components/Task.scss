@@ -16,11 +16,24 @@
 	&__list {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 
-		height: 3rem;
+		height: auto;
+		padding: 10px 20px;
 
 		border: var(--border);
 		border-radius: var(--border-radius);
 	}
+
+	&__description {
+		word-break: break-all;
+	}
+
+	&__btns {
+		display: flex;
+		gap: 10px;
+	}
+
+	
 
 }
