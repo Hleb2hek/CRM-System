@@ -1,5 +1,5 @@
 export async function fetchAllTasks() {
-	const response = await fetch("https://easydev.club/api/v1/todosы");
+	const response = await fetch("https://easydev.club/api/v1/todoss");
 	const jsonData = await response.json();
 
 	if (!response.ok) {

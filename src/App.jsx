@@ -13,12 +13,15 @@ function App() {
 	const [error, setError] = useState(null);
 
 	async function createTasks() {
+
+		if(error) return;
+
 		try {
 			const createdTask = await postUserTasks(newTask);
 			setTasks(t => [...t, createdTask]);
 			setNewTask("")
 		} catch (error) {
-			setError({ message: error.message || 'Ошибка отправки' })
+			setError(error.message)
 		}
 	}
 
@@ -29,8 +32,8 @@ function App() {
 				setTasks(data)
 			}
 			catch (error) {
-				setError({ message: error.message || 'Ошибка получения данных' })
-
+				setError(error)
+				setNewTask(false)
 			}
 			finally {
 				setLoading(false)
@@ -41,7 +44,7 @@ function App() {
 
 	return (
 		<>
-			<Header setNewTask={setNewTask} createTasks={createTasks} />
+			<Header error={error} setNewTask={setNewTask} createTasks={createTasks} />
 			<Tasks error={error} tasks={tasks} loading={loading} />
 		</>
 	)
