@@ -1,14 +1,20 @@
+// Запрос на все таски
 export async function fetchAllTasks() {
-	const response = await fetch("https://easydev.club/api/v1/todoss");
-	const jsonData = await response.json();
+	try {
+		const response = await fetch("https://easydev.club/api/v1/todos");
 
-	if (!response.ok) {
-		throw new Error(`Неудаёться связаться с сервером`)
+		if (!response.ok) {
+			throw new Error(`Не удаётся связаться с сервером`)
+		}
+
+		const jsonData = await response.json();
+
+		return await jsonData
+	} catch (error) {
+		throw error
 	}
-
-	return jsonData
 }
-
+// Запрос на отправку таски
 export async function postUserTasks(task) {
 	const response = await fetch("https://easydev.club/api/v1/todos", {
 		method: "POST",
@@ -24,4 +30,19 @@ export async function postUserTasks(task) {
 
 	const resData = await response.json();
 	return resData
+}
+// Запрос на удаление
+export async function deleteTaskFetch(id) {
+	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
+		method: "DELETE",
+		headers: {
+			'accept': 'application/json'
+		},
+	})
+
+	if (!response.ok) {
+		throw new Error(`Ошибка удаления`)
+	}
+
+	return true
 }

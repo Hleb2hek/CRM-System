@@ -8,11 +8,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-
-		padding: 10px 20px;
-		border-radius: var(--border-radius);
-
-		border: var(--border);
 	}
 
 	&__input {
@@ -23,8 +18,9 @@
 		width: 9.375rem;
 	}
 
-	&__error {
-		margin-top: 1.25rem;
-		margin-bottom: 1.25rem;
+	&__warning {
+		padding-top: 0.625rem;
+
+		font-size: 14px;
 	}
 }

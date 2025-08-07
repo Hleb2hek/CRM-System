@@ -12,28 +12,28 @@
 		gap: 1rem;
 
 	}
-	
+
 	&__list {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 
+		background-color: var(--color-background-card);
+
 		height: auto;
-		padding: 10px 20px;
+		padding: 0.625rem 1.25rem;
 
 		border: var(--border);
 		border-radius: var(--border-radius);
 	}
 
 	&__description {
+		width: 15.625rem;
 		word-break: break-all;
 	}
 
 	&__btns {
 		display: flex;
-		gap: 10px;
+		gap: 0.625rem;
 	}
-
-	
-
 }

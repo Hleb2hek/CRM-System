@@ -11,4 +11,12 @@
 	border: var(--border);
 	border-radius: var(--border-radius);
 
+	&--warning {
+		border-color: var(--color-input-warning);
+
+		outline: var(--outline);
+		outline-color: color-mix(in srgb, var(--color-input-warning) 20%, transparent);
+
+	}
+
 }

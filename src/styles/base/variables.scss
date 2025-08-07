@@ -1,14 +1,21 @@
 :root {
-	--color-background-s: #FFF2F2;
-	--color-accent: #A9B5DF;
-	--color-text: #5c6578;
+	--color-background-s: #f1f1f1;
+	--color-background-card: #FFFFFF;
+	--color-text: #333333;
 
-	--color-input: #7886C7;
-	--color-input-dark: #2D336B;
+	--color-accent: #A9B5DF;
+
+	--color-input: #3F51B5;
+	--color-input-dark: #303F9F;
+	--color-input-text: #FFFFFF;
+
+	--color-input-disabled: #9E9E9E;
+	--color-input-warning: #F44336;
+	--color-input-warning-hover: #D32F2F;
 
 	// границы
-	--border: 1.6px solid var(--color-accent);
-	--outline: 2px solid;
+	--border: 1.6px solid;
+	--outline: 3.6px solid;
 
 	// закруглённость границ объектов
 	--border-radius: 5px;
@@ -26,5 +33,5 @@
 	--inter-height: 30px;
 
 	// скорость анимации тегов
-	--transition-duration: .2s;
+	--transition-duration: .1s;
 }

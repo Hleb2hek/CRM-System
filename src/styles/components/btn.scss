@@ -9,9 +9,29 @@
 	border-radius: var(--border-radius);
 
 	background-color: var(--color-input);
-	color: var(--color-accent);
+	color: var(--color-input-text);
 
 	&:hover {
 		background-color: var(--color-input-dark);
+	}
+
+	&:disabled {
+		color: var(--color-text);
+		background-color: var(--color-input-disabled);
+	}
+
+	&--delete {
+		padding-inline: 10px;
+
+		color: var(--color-input-text);
+		background-color: var(--color-input-warning);
+
+		&:hover {
+			background-color: var(--color-input-warning-hover);
+		}
+	}
+
+	&--draw {
+		padding-inline: 10px;
 	}
 }

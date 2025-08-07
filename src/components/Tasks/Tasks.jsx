@@ -1,4 +1,7 @@
-function Tasks({ error, tasks, loading }) {
+import TasksBtnDelete from "./TasksBtnDelete"
+import TasksBtnEdit from "./TasksBtnEdit"
+
+function Tasks({ error, tasks, loading, setTasks }) {
 	return (
 		<section className="tasks container">
 
@@ -15,8 +18,8 @@ function Tasks({ error, tasks, loading }) {
 							</form>
 							<p className="tasks__description">{title}</p>
 							<div className="tasks__btns">
-								<button className="tasks__btn btn btn--draw" type="button">Редачить</button>
-								<button className="tasks__btn btn btn--delete" type="button">Удалить</button>
+								<TasksBtnEdit tasksId={id} />
+								<TasksBtnDelete tasksId={id} setTasks={setTasks} />
 							</div>
 						</li>
 					)

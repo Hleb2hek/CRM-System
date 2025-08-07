@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-import Header from "./components/Header";
-import Tasks from "./components/Tasks";
+import Header from "./components/Header/Header";
+import Tasks from "./components/Tasks/Tasks";
 
 import { postUserTasks, fetchAllTasks } from "./api/http";
 
@@ -14,7 +14,8 @@ function App() {
 
 	async function createTasks() {
 
-		if(error) return;
+		// Если ощибка висит, завершаем работу функции
+		if (error) return;
 
 		try {
 			const createdTask = await postUserTasks(newTask);
@@ -33,7 +34,7 @@ function App() {
 			}
 			catch (error) {
 				setError(error)
-				setNewTask(false)
+				setNewTask("")
 			}
 			finally {
 				setLoading(false)
@@ -44,8 +45,8 @@ function App() {
 
 	return (
 		<>
-			<Header error={error} setNewTask={setNewTask} createTasks={createTasks} />
-			<Tasks error={error} tasks={tasks} loading={loading} />
+			<Header value={newTask} newTask={newTask} setNewTask={setNewTask} createTasks={createTasks} />
+			<Tasks error={error} tasks={tasks} setTasks={setTasks} loading={loading} />
 		</>
 	)
 
