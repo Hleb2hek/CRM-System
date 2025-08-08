@@ -12,20 +12,6 @@ function App() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	async function createTasks() {
-
-		// Если ощибка висит, завершаем работу функции
-		if (error) return;
-
-		try {
-			const createdTask = await postUserTasks(newTask);
-			setTasks(t => [...t, createdTask]);
-			setNewTask("")
-		} catch (error) {
-			setError(error.message)
-		}
-	}
-
 	useEffect(() => {
 		async function getTasks() {
 			try {
@@ -45,8 +31,8 @@ function App() {
 
 	return (
 		<>
-			<Header value={newTask} newTask={newTask} setNewTask={setNewTask} createTasks={createTasks} />
-			<Tasks error={error} tasks={tasks} setTasks={setTasks} loading={loading} />
+			<Header error={error} setError={setError} setTasks={setTasks} setNewTask={setNewTask} newTask={newTask} />
+			<Tasks error={error} setError={setError} tasks={tasks} setTasks={setTasks} loading={loading} />
 		</>
 	)
 

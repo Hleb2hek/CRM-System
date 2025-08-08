@@ -1,7 +1,8 @@
 import TasksBtnDelete from "./TasksBtnDelete"
 import TasksBtnEdit from "./TasksBtnEdit"
+import TasksCheckbox from "./TasksCheckbox"
 
-function Tasks({ error, tasks, loading, setTasks }) {
+function Tasks({ error, setError, tasks, setTasks, loading }) {
 	return (
 		<section className="tasks container">
 
@@ -13,13 +14,11 @@ function Tasks({ error, tasks, loading, setTasks }) {
 				{
 					tasks.map(({ id, title }) =>
 						<li key={id} className="tasks__list">
-							<form>
-								<input className="tasks__checkbox" type="checkbox" id="" />
-							</form>
+							<TasksCheckbox />
 							<p className="tasks__description">{title}</p>
 							<div className="tasks__btns">
-								<TasksBtnEdit tasksId={id} />
-								<TasksBtnDelete tasksId={id} setTasks={setTasks} />
+								<TasksBtnEdit tasksId={id} setTasks={setTasks} error={error} setError={setError} />
+								<TasksBtnDelete tasksId={id} setTasks={setTasks} error={error} setError={setError} />
 							</div>
 						</li>
 					)
