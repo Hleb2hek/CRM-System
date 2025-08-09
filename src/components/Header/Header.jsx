@@ -14,6 +14,7 @@ function Header({ error, setError, setTasks, newTask, setNewTask }) {
 		if (error) return;
 		try {
 			const createdTask = await postUserTasks(newTask);
+			console.log(createdTask);
 			setTasks(t => [...t, createdTask]);
 			setNewTask("")
 			setError(null);

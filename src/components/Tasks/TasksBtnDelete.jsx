@@ -4,7 +4,7 @@ function TasksBtnDelete({ tasksId, error, setTasks, setError }) {
 
 	async function deleteTask() {
 		try {
-			await deleteTaskFetch(tasksId);
+			const deleted = await deleteTaskFetch(tasksId);
 			const { data } = await fetchAllTasks()
 
 			setTasks(data)
