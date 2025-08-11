@@ -1,11 +1,9 @@
 @use '../base/index' as *;
 
 .tasks {
-
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-
 	&__wrapper {
+		padding-top: 1rem;
+		padding-bottom: 1rem;
 
 		display: flex;
 		flex-direction: column;
@@ -30,10 +28,25 @@
 	&__description {
 		width: 15.625rem;
 		word-break: break-all;
+
+		&--checked {
+			color: var(--color-input-disabled);
+			text-decoration: line-through;
+		}
 	}
 
 	&__btns {
 		display: flex;
 		gap: 0.625rem;
+	}
+
+	&__nothing {
+		text-align: center;
+		padding-top: 1rem;
+	}
+
+	&__loading {
+		text-align: center;
+		padding-top: 1rem;
 	}
 }

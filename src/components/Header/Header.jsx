@@ -2,7 +2,7 @@ import { submitHandler } from './header-functions';
 
 import { postUserTasks } from '../../api/http';
 
-function Header({ error, setError, setTasks, newTask, setNewTask }) {
+function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask }) {
 
 	const getBtnTrue = newTask.length <= 2 || newTask.length >= 64;
 
@@ -10,16 +10,14 @@ function Header({ error, setError, setTasks, newTask, setNewTask }) {
 	let descriptionWarning = <p className="header__warning">Введите название, допустимая длина от 2 до 64 символов</p>
 
 	async function createTasks() {
-		// Если ошибка висит, завершаем работу функции
-		if (error) return;
 		try {
 			const createdTask = await postUserTasks(newTask);
-			console.log(createdTask);
 			setTasks(t => [...t, createdTask]);
+			await refreshTasks(filter)
 			setNewTask("")
 			setError(null);
 		} catch (error) {
-			setError(error.message)
+			setError(error)
 		}
 	}
 
@@ -37,10 +35,24 @@ function Header({ error, setError, setTasks, newTask, setNewTask }) {
 	return (
 		<header className="header container">
 			<div className="header__body">
-				<form onSubmit={submitHandler} className="header__form form">
-					<input value={newTask} onChange={getNewTask} className={inputStyles} type="text" placeholder='Введите название' />
+				<form
+					onSubmit={submitHandler}
+					className="header__form form"
+				>
+					<input
+						value={newTask}
+						onChange={getNewTask}
+						className={inputStyles}
+						type="text"
+						placeholder='Введите название'
+					/>
 				</form>
-				<button onClick={() => createTasks()} className="header__btn btn" type="button" disabled={getBtnTrue}>
+				<button
+					onClick={() => createTasks()}
+					className="header__btn btn"
+					type="button"
+					disabled={getBtnTrue}
+				>
 					Добавить
 				</button>
 			</div>

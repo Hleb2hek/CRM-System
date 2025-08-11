@@ -1,13 +1,12 @@
 import { deleteTaskFetch, fetchAllTasks } from "../../api/http"
 
-function TasksBtnDelete({ tasksId, error, setTasks, setError }) {
+function TasksBtnDelete({ refreshTasks, filter, tasksId, setError }) {
 
 	async function deleteTask() {
 		try {
-			const deleted = await deleteTaskFetch(tasksId);
-			const { data } = await fetchAllTasks()
+			await deleteTaskFetch(tasksId);
+			await refreshTasks(filter)
 
-			setTasks(data)
 			setError(null);
 		} catch (error) {
 			setError(error);

@@ -11,6 +11,8 @@
 	background-color: var(--color-input);
 	color: var(--color-input-text);
 
+	padding-inline: 10px;
+
 	&:hover {
 		background-color: var(--color-input-dark);
 	}
@@ -21,7 +23,6 @@
 	}
 
 	&--delete {
-		padding-inline: 10px;
 
 		color: var(--color-input-text);
 		background-color: var(--color-input-warning);
@@ -31,7 +32,37 @@
 		}
 	}
 
-	&--draw {
-		padding-inline: 10px;
+	&--save {
+		background-color: var(--color-input-save);
+
+		&:hover {
+			background-color: var(--color-input-save-hover);
+		}
+
+		&:disabled {
+			color: var(--color-text);
+			background-color: var(--color-input-disabled);
+		}
+
 	}
+
+	&--cancel {
+		color: var(--color-input-text);
+		background-color: var(--color-input-warning);
+
+		&:hover {
+			background-color: var(--color-input-warning-hover);
+		}
+	}
+
+	&--link {
+		color: var(--color-text);
+		background-color: var(--color-background-card);
+		border: var(--border);
+
+		&:hover {
+			background-color: var(--color-background-s);
+		}
+	}
+
 }

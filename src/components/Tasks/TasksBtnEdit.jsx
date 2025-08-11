@@ -1,23 +1,25 @@
-import { editTaskFetch, fetchAllTasks } from "../../api/http";
+import { useState } from "react";
 
-function TasksBtnEdit({ tasksId, error, setTasks, setError }) {
+import TasksModal from "./TasksModal";
 
-	async function editTasks() {
-		// Если ошибка висит, завершаем работу функции
-		if (error) return;
-		try {
-			const createdTask = await editTaskFetch(tasksId);
-			const { data } = await fetchAllTasks()
+function TasksBtnEdit({ tasksId, tasksTitle, setTasks, setError }) {
 
-			setTasks(data)
-			setError(null);
-		} catch (error) {
-			setError(error)
-		}
-	}
+	const [state, setState] = useState(false);
+
 	return (
 		<>
-			<button onClick={editTasks} className="tasks__btn btn btn--draw" type="button">Редачить</button>
+			<button onClick={() => setState(!state)} className="tasks__btn btn btn--draw" type="button">Редачить</button>
+			{state &&
+				<TasksModal
+					tasksId={tasksId}
+					tasksTitle={tasksTitle}
+
+					setTasks={setTasks}
+					setError={setError}
+
+					state={state}
+					setState={setState}
+				/>}
 		</>
 	)
 }
