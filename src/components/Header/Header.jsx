@@ -4,14 +4,15 @@ import { postUserTasks } from '../../api/http';
 
 function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask }) {
 
-	const getBtnTrue = newTask.length <= 2 || newTask.length >= 64;
+	// Проверка на длину значения и на пробелы вначале
+	const getBtnTrue = newTask.length <= 2 || newTask.length >= 64 || !newTask.trim().length;
 
 	let inputStyles = "header__input input"
 	let descriptionWarning = <p className="header__warning">Введите название, допустимая длина от 2 до 64 символов</p>
 
 	async function createTasks() {
 		try {
-			const createdTask = await postUserTasks(newTask);
+			const createdTask = await postUserTasks(newTask.trim());
 			setTasks(t => [...t, createdTask]);
 			await refreshTasks(filter)
 			setNewTask("")

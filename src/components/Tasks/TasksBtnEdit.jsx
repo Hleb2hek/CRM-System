@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import TasksModal from "./TasksModal";
+import TasksBtnEditModal from "./TasksBtnEditModal";
 
 function TasksBtnEdit({ tasksId, tasksTitle, setTasks, setError }) {
 
@@ -10,7 +10,7 @@ function TasksBtnEdit({ tasksId, tasksTitle, setTasks, setError }) {
 		<>
 			<button onClick={() => setState(!state)} className="tasks__btn btn btn--draw" type="button">Редачить</button>
 			{state &&
-				<TasksModal
+				<TasksBtnEditModal
 					tasksId={tasksId}
 					tasksTitle={tasksTitle}
 
