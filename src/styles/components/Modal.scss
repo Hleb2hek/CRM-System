@@ -1,0 +1,48 @@
+@use '../base/index' as *;
+
+.modal {
+	position: fixed;
+
+	top: 0%;
+	left: 0%;
+
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: rgba(129, 129, 129, 0.445);
+
+	&__wrapper {
+		width: 20rem;
+		height: 10rem;
+
+		padding-inline: 1.25rem;
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 16px;
+
+		background-color: var(--color-background-card);
+
+		border: var(--border);
+		border-radius: var(--border-radius);
+	}
+
+	&__warning {
+		font-size: 14px;
+	}
+
+	&__btns {
+		display: flex;
+		justify-content: center;
+		gap: 1.25rem
+	}
+
+	&__btn {
+		width: 8.125rem;
+	}
+}

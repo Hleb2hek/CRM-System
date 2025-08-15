@@ -1,0 +1,16 @@
+@use '../base/index' as *;
+
+.tabs {
+
+	&__wrapper {
+		padding-top: 1rem;
+
+		display: flex;
+		justify-content: space-between;
+	}
+
+	&__btn--activated {
+		color: var(--color-tabs-activated);
+		background-color: transparent;
+	}
+}
