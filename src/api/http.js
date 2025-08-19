@@ -1,19 +1,3 @@
-// Запрос на все таски
-export async function fetchAllTasks() {
-	try {
-		const response = await fetch("https://easydev.club/api/v1/todos");
-
-		if (!response.ok) {
-			throw new Error(`Не удаётся связаться с сервером`)
-		}
-
-		const jsonData = await response.json();
-
-		return await jsonData
-	} catch (error) {
-		throw error
-	}
-}
 // Запрос на отправку таски
 export async function postUserTasks(task) {
 	const response = await fetch("https://easydev.club/api/v1/todos", {
@@ -47,10 +31,15 @@ export async function deleteTaskFetch(id) {
 	return true
 }
 // Запрос на редактирование
-export async function editTaskFetch(id, task) {
+export async function editTaskFetch(id, task = null, done = null) {
+
+	const body = {}
+	if (task !== null) body.title = task
+	if (done !== null) body.isDone = done
+
 	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
 		method: "PUT",
-		body: JSON.stringify({ title: task }),
+		body: JSON.stringify(body),
 		headers: {
 			'Content-Type': 'application/json'
 		},
@@ -63,23 +52,7 @@ export async function editTaskFetch(id, task) {
 	const resData = await response.json();
 	return resData
 }
-// Запрос на отметку
-export async function checkboxTaskFetch(id, done) {
-	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-		method: "PUT",
-		body: JSON.stringify({ isDone: done }),
-		headers: {
-			'Content-Type': 'application/json'
-		},
-	})
 
-	if (!response.ok) {
-		throw new Error(`Ошибка отметки`)
-	}
-
-	const resData = await response.json();
-	return resData
-}
 // Запрос на список
 export async function fetchFilter(filter = 'all') {
 	try {

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import Header from "./components/Header/Header";
-import Tabs from './components/Tabs/Tabs';
-import Tasks from "./components/Tasks/Tasks";
+import AddTasks from "../components/Header/AddTasks";
+import Tabs from '../components/Tabs/Tabs';
+import Tasks from "../components/Tasks/Tasks";
 
-import { fetchAllTasks, fetchFilter } from "./api/http";
+import { fetchFilter } from "../api/http";
 
-function App() {
+function TodoListPage() {
 
 	const [tasks, setTasks] = useState([]);
 	const [tabs, setTabs] = useState({
@@ -14,34 +14,15 @@ function App() {
 		completed: 0,
 		inWork: 0
 	})
-	const [newTask, setNewTask] = useState("");
 
 	const [filter, setFilter] = useState("all")
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	useEffect(() => {
-		async function getTasks() {
-			try {
-				const { data, info } = await fetchAllTasks()
-				setTasks(data)
-				setTabs(info)
-				setError(null)
-			}
-			catch (error) {
-				setError(error)
-				setNewTask("")
-			}
-			finally {
-				setLoading(false)
-			}
-		}
-		getTasks()
-	}, []);
-
-	async function refreshTasks(currentFilter) {
+	async function refreshTasks() {
+		setLoading(false)
 		try {
-			const { data, info } = await fetchFilter(currentFilter);
+			const { data, info } = await fetchFilter(filter);
 			setTasks(data);
 			setTabs(info);
 			setError(null);
@@ -50,19 +31,19 @@ function App() {
 		}
 	}
 
+	useEffect(() => {
+		refreshTasks()
+	}, [filter]);
 
 	return (
 		<>
-			<Header
+			<AddTasks
 				error={error}
-				newTask={newTask}
 				filter={filter}
 
 				refreshTasks={refreshTasks}
 
 				setError={setError}
-				setTasks={setTasks}
-				setNewTask={setNewTask}
 			/>
 			<Tabs
 				filter={filter}
@@ -90,4 +71,4 @@ function App() {
 
 }
 
-export default App
+export default TodoListPage

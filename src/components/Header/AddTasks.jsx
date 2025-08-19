@@ -1,19 +1,31 @@
-import { submitHandler } from './header-functions';
+import { useState } from 'react';
 
 import { postUserTasks } from '../../api/http';
 
-function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask }) {
+function AddTasks({ refreshTasks, filter, setError }) {
 
-	// Проверка на длину значения и на пробелы вначале
-	const getBtnTrue = newTask.length <= 2 || newTask.length >= 64 || !newTask.trim().length;
+	const [newTask, setNewTask] = useState("");
+	const [errorValidation, setErrorValidation] = useState("")
 
 	let inputStyles = "header__input input"
 	let descriptionWarning = <p className="header__warning">Введите название, допустимая длина от 2 до 64 символов</p>
 
-	async function createTasks() {
+	// Проверка на длину значения и на пробелы вначале
+	const getBtnTrue = newTask.length <= 2 || newTask.length >= 64 || !newTask.trim().length;
+
+	if (newTask.length === 0) {
+		inputStyles += ""
+		descriptionWarning = null
+	} else if (getBtnTrue) {
+		inputStyles += " input--warning"
+	}
+
+	async function createTasks(e) {
+
+		e.preventDefault()
+
 		try {
 			const createdTask = await postUserTasks(newTask.trim());
-			setTasks(t => [...t, createdTask]);
 			await refreshTasks(filter)
 			setNewTask("")
 			setError(null);
@@ -22,12 +34,6 @@ function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask 
 		}
 	}
 
-	if (newTask.length === 0) {
-		inputStyles += ""
-		descriptionWarning = null
-	} else if (getBtnTrue) {
-		inputStyles += " input--warning"
-	}
 
 	function getNewTask(event) {
 		return setNewTask(event.target.value)
@@ -37,7 +43,6 @@ function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask 
 		<header className="header container">
 			<div className="header__body">
 				<form
-					onSubmit={submitHandler}
 					className="header__form form"
 				>
 					<input
@@ -49,7 +54,7 @@ function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask 
 					/>
 				</form>
 				<button
-					onClick={() => createTasks()}
+					onClick={createTasks}
 					className="header__btn btn"
 					type="button"
 					disabled={getBtnTrue}
@@ -62,4 +67,4 @@ function Header({ refreshTasks, filter, setError, setTasks, newTask, setNewTask 
 	)
 }
 
-export default Header;
+export default AddTasks;

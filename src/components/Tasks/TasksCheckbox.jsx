@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { checkboxTaskFetch, fetchAllTasks } from "../../api/http"
+import { editTaskFetch } from "../../api/http"
 
 function TasksCheckbox({ refreshTasks, filter, tasksId, isDone, setError }) {
 	const [check, setCheck] = useState(isDone);
@@ -10,7 +10,7 @@ function TasksCheckbox({ refreshTasks, filter, tasksId, isDone, setError }) {
 		setCheck(newCheck);
 
 		try {
-			await checkboxTaskFetch(tasksId, newCheck);
+			await editTaskFetch(tasksId, null, newCheck);
 			await refreshTasks(filter)
 
 			setError(null);

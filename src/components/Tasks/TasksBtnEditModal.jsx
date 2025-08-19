@@ -9,7 +9,7 @@ export default function TasksModal({ tasksId, tasksTitle, setTasks, setError, st
 	async function editTasks() {
 		// Если ошибка висит, завершаем работу функции
 		try {
-			const editTask = await editTaskFetch(tasksId, edit);
+			await editTaskFetch(tasksId, edit);
 			const { data } = await fetchAllTasks()
 
 			setTasks(data)
