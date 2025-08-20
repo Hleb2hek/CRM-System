@@ -55,14 +55,4 @@
 		}
 	}
 
-	&--link {
-		color: var(--color-text);
-		background-color: var(--color-background-card);
-		border: var(--border);
-
-		&:hover {
-			background-color: var(--color-background-s);
-		}
-	}
-
 }

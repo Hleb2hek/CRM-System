@@ -1,18 +1,15 @@
 import { useState } from "react";
 
-import { editTaskFetch, fetchAllTasks } from "../../api/http"
+import { editTaskFetch } from "../../api/http"
 
-export default function TasksModal({ tasksId, tasksTitle, setTasks, setError, state, setState }) {
+export default function TasksModal({ refreshTasks, tasksId, tasksTitle, setTasks, setError, state, setState }) {
 
 	const [edit, setEdit] = useState(tasksTitle);
 
 	async function editTasks() {
-		// Если ошибка висит, завершаем работу функции
 		try {
 			await editTaskFetch(tasksId, edit);
-			const { data } = await fetchAllTasks()
-
-			setTasks(data)
+			await refreshTasks()
 			setError(null);
 			setState(false)
 		} catch (error) {

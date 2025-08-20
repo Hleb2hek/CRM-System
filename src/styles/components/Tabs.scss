@@ -9,8 +9,23 @@
 		justify-content: space-between;
 	}
 
-	&__btn--activated {
-		color: var(--color-tabs-activated);
-		background-color: transparent;
+	&__btn {
+		background: none;
+		color: var(--color-text);
+
+		&:hover {
+			background: none;
+
+			color: var(--color-input);
+
+			text-decoration: underline;
+		}
+
+		&--activated {
+			color: var(--color-input-dark);
+
+			text-decoration: underline;
+		}
 	}
+
 }

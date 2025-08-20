@@ -39,6 +39,8 @@ function Tasks({ refreshTasks, filter, error, setError, tasks, setTasks, loading
 										tasksId={id}
 										tasksTitle={title}
 
+										refreshTasks={refreshTasks}
+
 										setTasks={setTasks}
 										setError={setError}
 									/>

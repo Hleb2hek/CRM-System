@@ -5,18 +5,15 @@ import { postUserTasks } from '../../api/http';
 function AddTasks({ refreshTasks, filter, setError }) {
 
 	const [newTask, setNewTask] = useState("");
-	const [errorValidation, setErrorValidation] = useState("")
+	const [errorValidation, setErrorValidation] = useState(false)
 
 	let inputStyles = "header__input input"
 	let descriptionWarning = <p className="header__warning">Введите название, допустимая длина от 2 до 64 символов</p>
 
-	// Проверка на длину значения и на пробелы вначале
-	const getBtnTrue = newTask.length <= 2 || newTask.length >= 64 || !newTask.trim().length;
-
 	if (newTask.length === 0) {
 		inputStyles += ""
 		descriptionWarning = null
-	} else if (getBtnTrue) {
+	} else if (errorValidation) {
 		inputStyles += " input--warning"
 	}
 
@@ -25,9 +22,12 @@ function AddTasks({ refreshTasks, filter, setError }) {
 		e.preventDefault()
 
 		try {
-			const createdTask = await postUserTasks(newTask.trim());
-			await refreshTasks(filter)
-			setNewTask("")
+			setErrorValidation(newTask.length <= 2 || newTask.length >= 64 || !newTask.trim().length);
+
+			await postUserTasks(newTask.trim());
+			await refreshTasks(filter);
+
+			setNewTask("");
 			setError(null);
 		} catch (error) {
 			setError(error)
@@ -57,12 +57,12 @@ function AddTasks({ refreshTasks, filter, setError }) {
 					onClick={createTasks}
 					className="header__btn btn"
 					type="button"
-					disabled={getBtnTrue}
+					disabled={errorValidation}
 				>
 					Добавить
 				</button>
 			</div>
-			{getBtnTrue && descriptionWarning}
+			{errorValidation && descriptionWarning}
 		</header>
 	)
 }

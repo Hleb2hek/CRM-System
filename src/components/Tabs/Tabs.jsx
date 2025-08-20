@@ -19,17 +19,17 @@ export default function Tabs({ setTasks, setFilter, setTabs, setError, tabs, fil
 		<section className="tabs container">
 			<ul className="tabs__wrapper">
 				<li className="tabs__list">
-					<button className={`tabs__btn btn btn--link ${filter === "all" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("all")}>
+					<button className={`tabs__btn btn ${filter === "all" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("all")}>
 						Всего задач: {tabs.all}
 					</button>
 				</li>
 				<li className="tabs__list">
-					<button className={`tabs__btn btn btn--link ${filter === "completed" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("completed")}>
+					<button className={`tabs__btn btn ${filter === "completed" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("completed")}>
 						Выполнено: {tabs.completed}
 					</button>
 				</li>
 				<li className="tabs__list">
-					<button className={`tabs__btn btn btn--link ${filter === "inWork" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("inWork")}>
+					<button className={`tabs__btn btn ${filter === "inWork" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("inWork")}>
 						В работе: {tabs.inWork}
 					</button>
 				</li>
