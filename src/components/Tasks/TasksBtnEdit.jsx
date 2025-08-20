@@ -11,7 +11,7 @@ function TasksBtnEdit({ refreshTasks, tasksId, tasksTitle, setTasks, setError })
 	return (
 		<>
 			<button onClick={() => setState(!state)} className="tasks__btn btn btn--draw" type="button">
-				<img src={edit} width={20} height={20} alt="" />
+				<img src={edit} width={16} height={16} alt="" />
 			</button>
 			{state &&
 				<TasksBtnEditModal

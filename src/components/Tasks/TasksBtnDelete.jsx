@@ -17,7 +17,7 @@ function TasksBtnDelete({ refreshTasks, filter, tasksId, setError }) {
 
 	return (
 		<button onClick={deleteTask} className="tasks__btn btn btn--delete" type="button">
-			<img src={trash} width={20} height={20} />
+			<img src={trash} width={16} height={16} />
 		</button>
 	)
 }
