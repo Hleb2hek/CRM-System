@@ -1,0 +1,30 @@
+.header {
+	text-align: center;
+}
+
+.header__form {
+	padding-top: 12rem;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+}
+
+.header__input {
+	width: 18.75rem;
+}
+
+.header__btn {
+	width: 9.375rem;
+}
+
+.header__warning {
+	padding-top: 0.625rem;
+
+	font-size: 0.875rem;
+}
+
+.header__error {
+	margin-top: 1.25rem;
+}

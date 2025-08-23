@@ -1,68 +1,84 @@
+import input from "../../styles/components/input.module.css"
+import btn from "../../styles/components/btn.module.css"
+import tasksStyles from "./Tasks.module.css"
+import styles from "./TasksBtnEditModal.module.css"
+
 import { useState } from "react";
 
 import { editTaskFetch } from "../../api/http"
 
-export default function TasksModal({ refreshTasks, tasksId, tasksTitle, setTasks, setError, state, setState }) {
+export default function TasksModal({ refreshTasks, id, tasksTitle, setError, handleModal }) {
 
 	const [edit, setEdit] = useState(tasksTitle);
+	const [errorEditValidation, setErrorEditValidation] = useState(false);
 
-	async function editTasks() {
-		try {
-			await editTaskFetch(tasksId, edit);
-			await refreshTasks()
-			setError(null);
-			setState(false)
-		} catch (error) {
-			setError(error)
+	function isValidTasks(tasks) {
+		const value = tasks.trim();
+		return value.length >= 2 && value.length <= 64;
+	}
+	function getNewTask(event) {
+		const value = event.target.value;
+		setEdit(value);
+
+		if (isValidTasks(value)) {
+			setErrorEditValidation(false);
+		} else {
+			setErrorEditValidation(true);
 		}
 	}
 
-	const getBtnTrue = edit.length <= 2 || edit.length >= 64;
+	async function editTasks(e) {
 
-	let inputStyles = "modal__input input"
-	let descriptionWarning = <p className="modal__warning">Введите название, допустимая длина от 2 до 64 символов</p>
+		e.preventDefault();
 
-	if (edit.length === 0) {
-		inputStyles += ""
-		descriptionWarning = null
-	} else if (getBtnTrue) {
-		inputStyles += " input--warning"
-	}
+		if (!isValidTasks(edit)) {
+			setErrorEditValidation(true);
+			return
+		}
 
-	function getNewTask(event) {
-		return setEdit(event.target.value)
+		try {
+
+			await editTaskFetch(id, edit);
+			await refreshTasks();
+
+			handleModal();
+			setErrorEditValidation(false)
+			setError(null);
+		} catch (error) {
+			setError(error);
+		}
 	}
 
 	return (
-		<div className="tasks__modal modal">
-			<div className="modal__wrapper">
-
+		<div className={`${tasksStyles.tasks__modal} ${styles.modal}`}>
+			<form
+				className={styles.modal__form}
+				onSubmit={editTasks}
+			>
 				<input
 					value={edit}
 					onChange={getNewTask}
-					className={inputStyles}
+					className={`${styles.modal__input} ${input.input} ${errorEditValidation ? input['input--warning'] : ''}`}
 					type="text"
 				/>
-
-				{getBtnTrue && descriptionWarning}
-
-				<div className="modal__btns">
+				{errorEditValidation && <p className={styles.modal__warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
+				<div className={styles.modal__btns}>
 					<button
-						onClick={() => editTasks()}
-						className="modal__btn btn btn--save"
-						type="button"
-						disabled={getBtnTrue}
+						className={`${styles.modal__btn} ${btn.btn} ${btn[`btn--save`]}`}
+						type="submit"
+						disabled={errorEditValidation}
 					>
 						Сохранить
 					</button>
 					<button
-						onClick={() => setState(!state)}
-						className="modal__btn btn btn--cancel"
+						onClick={handleModal}
+						className={`${styles.modal__btn} ${btn.btn} ${btn[`btn--cancel`]}`}
 						type="button">
 						Отменить
 					</button>
 				</div>
-			</div>
+
+			</form>
 		</div>
 	)
 }

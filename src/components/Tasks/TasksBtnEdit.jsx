@@ -1,33 +1,39 @@
-import edit from '../../assets/edit.svg'
+import edit from '../../assets/edit.svg';
+
+import styles from "./Tasks.module.css"
+import btn from "../../styles/components/btn.module.css"
 
 import { useState } from "react";
 
 import TasksBtnEditModal from "./TasksBtnEditModal";
 
-function TasksBtnEdit({ refreshTasks, tasksId, tasksTitle, setTasks, setError }) {
+export default function TasksBtnEdit({ refreshTasks, id, tasksTitle, setError }) {
 
-	const [state, setState] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+
+	function handleModal() {
+		setShowModal(modal => !modal)
+	}
 
 	return (
 		<>
-			<button onClick={() => setState(!state)} className="tasks__btn btn btn--draw" type="button">
+			<button onClick={handleModal} className={`${styles.tasks__btn} ${btn.btn} ${btn['btn--draw']}`} type="button">
 				<img src={edit} width={16} height={16} alt="" />
 			</button>
-			{state &&
+			{showModal &&
+
 				<TasksBtnEditModal
-					tasksId={tasksId}
+
+					id={id}
 					tasksTitle={tasksTitle}
 
 					refreshTasks={refreshTasks}
 
-					setTasks={setTasks}
 					setError={setError}
-
-					state={state}
-					setState={setState}
-				/>}
+					showModal={showModal}
+					handleModal={handleModal}
+				/>
+			}
 		</>
 	)
 }
-
-export default TasksBtnEdit

@@ -1,70 +1,79 @@
+import { container } from "../../styles/components/containers.module.css"
+import input from "../../styles/components/input.module.css"
+import { btn } from "../../styles/components/btn.module.css"
+import styles from "./AddTasks.module.css"
+
 import { useState } from 'react';
 
 import { postUserTasks } from '../../api/http';
 
-function AddTasks({ refreshTasks, filter, setError }) {
+export default function AddTasks({ refreshTasks }) {
 
 	const [newTask, setNewTask] = useState("");
-	const [errorValidation, setErrorValidation] = useState(false)
+	const [errorValidation, setErrorValidation] = useState(false);
+	const [errorTasks, setErrorTasks] = useState(null);
 
-	let inputStyles = "header__input input"
-	let descriptionWarning = <p className="header__warning">Введите название, допустимая длина от 2 до 64 символов</p>
+	function isValidTasks(tasks) {
+		const value = tasks.trim();
+		return value.length >= 2 && value.length <= 64;
+	}
 
-	if (newTask.length === 0) {
-		inputStyles += ""
-		descriptionWarning = null
-	} else if (errorValidation) {
-		inputStyles += " input--warning"
+	function getNewTask(event) {
+		const value = event.target.value;
+		setNewTask(value);
+
+		if (isValidTasks(value)) {
+			setErrorValidation(false);
+		} else {
+			setErrorValidation(true);
+		}
 	}
 
 	async function createTasks(e) {
 
-		e.preventDefault()
+		e.preventDefault();
+
+		if (!isValidTasks(newTask)) {
+			setErrorValidation(true);
+			return;
+		}
 
 		try {
-			setErrorValidation(newTask.length <= 2 || newTask.length >= 64 || !newTask.trim().length);
 
 			await postUserTasks(newTask.trim());
-			await refreshTasks(filter);
+			await refreshTasks();
 
 			setNewTask("");
-			setError(null);
+			setErrorValidation(false);
+			setErrorTasks(null);
 		} catch (error) {
-			setError(error)
+			setErrorTasks(error)
 		}
 	}
 
-
-	function getNewTask(event) {
-		return setNewTask(event.target.value)
-	}
-
 	return (
-		<header className="header container">
-			<div className="header__body">
-				<form
-					className="header__form form"
-				>
-					<input
-						value={newTask}
-						onChange={getNewTask}
-						className={inputStyles}
-						type="text"
-						placeholder='Введите название'
-					/>
-				</form>
+		<header className={`${styles.header} ${container}`}>
+			<form
+				className={styles.header__form}
+				onSubmit={createTasks}
+			>
+				<input
+					value={newTask}
+					onChange={getNewTask}
+					className={`${styles.header__input} ${input.input} ${errorValidation ? input['input--warning'] : ''}`}
+					type="text"
+					placeholder='Введите название'
+				/>
 				<button
-					onClick={createTasks}
-					className="header__btn btn"
-					type="button"
+					className={`${styles.header__btn} ${btn}`}
+					type="submit"
 					disabled={errorValidation}
 				>
 					Добавить
 				</button>
-			</div>
-			{errorValidation && descriptionWarning}
+			</form>
+			{errorValidation && <p className={styles.header__warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
+			{errorTasks && <p className={styles.header__error}>{errorTasks.message}</p>}
 		</header>
 	)
 }
-
-export default AddTasks;

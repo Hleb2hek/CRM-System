@@ -1,12 +1,10 @@
-import { fetchFilter } from "../../api/http"
+import { container } from "../../styles/components/containers.module.css"
+import styles from "./Tabs.module.css"
 
-export default function Tabs({ setTasks, setFilter, setTabs, setError, tabs, filter }) {
+export default function Tabs({ setFilter, setError, tabs, filter }) {
 
 	async function getTabs(newFilter) {
 		try {
-			const { data, info } = await fetchFilter(newFilter)
-			setTasks(data)
-			setTabs(info)
 			setError(null)
 			setFilter(newFilter)
 		}
@@ -16,20 +14,20 @@ export default function Tabs({ setTasks, setFilter, setTabs, setError, tabs, fil
 	}
 
 	return (
-		<section className="tabs container">
-			<ul className="tabs__wrapper">
-				<li className="tabs__list">
-					<button className={`tabs__btn btn ${filter === "all" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("all")}>
+		<section className={`${styles.tabs} ${container}`}>
+			<ul className={styles.tabs__wrapper}>
+				<li className={styles.tabs__list}>
+					<button className={`${styles.tabs__btn} ${filter === "all" ? styles["tabs__btn--activated"] : ""}`} onClick={() => getTabs("all")}>
 						Всего задач: {tabs.all}
 					</button>
 				</li>
 				<li className="tabs__list">
-					<button className={`tabs__btn btn ${filter === "completed" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("completed")}>
+					<button className={`${styles.tabs__btn} ${filter === "completed" ? styles["tabs__btn--activated"] : ""}`} onClick={() => getTabs("completed")}>
 						Выполнено: {tabs.completed}
 					</button>
 				</li>
 				<li className="tabs__list">
-					<button className={`tabs__btn btn ${filter === "inWork" ? "tabs__btn--activated" : ""}`} onClick={() => getTabs("inWork")}>
+					<button className={`${styles.tabs__btn} ${filter === "inWork" ? styles["tabs__btn--activated"] : ""}`} onClick={() => getTabs("inWork")}>
 						В работе: {tabs.inWork}
 					</button>
 				</li>
