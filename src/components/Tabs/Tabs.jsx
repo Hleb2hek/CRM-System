@@ -39,8 +39,7 @@ export default function Tabs({ setFilter, setError, tabs, filter }) {
 								${styles.tabs__btn}
 								${filter === "completed" ?
 								styles["tabs__btn--activated"] :
-								""
-							}
+								""}
 							`}
 						onClick={() => getTabs("completed")}
 					>
