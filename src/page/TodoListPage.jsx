@@ -46,7 +46,6 @@ export default function TodoListPage() {
 			/>
 			<Tabs
 				setFilter={setFilter}
-				setError={setError}
 
 				tabs={tabs}
 				filter={filter}

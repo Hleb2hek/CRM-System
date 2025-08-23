@@ -1,15 +1,9 @@
 import styles from "./Tabs.module.css"
 
-export default function Tabs({ setFilter, setError, tabs, filter }) {
+export default function Tabs({ setFilter, tabs, filter }) {
 
-	async function getTabs(newFilter) {
-		try {
-			setError(null)
-			setFilter(newFilter)
-		}
-		catch (error) {
-			setError(error)
-		}
+	function getTabs(newFilter) {
+		setFilter(newFilter)
 	}
 
 	return (
