@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import styles from './error.module.css'
 
-import AddTasks from "../components/Header/AddTasks";
+import AddTasks from "../components/AddTasks/AddTasks";
 import Tabs from '../components/Tabs/Tabs';
 import Tasks from "../components/Tasks/Tasks";
 
