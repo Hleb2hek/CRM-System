@@ -1,11 +1,6 @@
 import styles from "./Tabs.module.css"
 
 export default function Tabs({ setFilter, tabs, filter }) {
-
-	function getTabs(newFilter) {
-		setFilter(newFilter)
-	}
-
 	return (
 		<section className={`
 			${styles.tabs}
@@ -22,7 +17,7 @@ export default function Tabs({ setFilter, tabs, filter }) {
 								: ""
 							}
 						`}
-						onClick={() => getTabs("all")}
+						onClick={() => setFilter("all")}
 					>
 						Всего задач: {tabs.all}
 					</button>
@@ -35,7 +30,7 @@ export default function Tabs({ setFilter, tabs, filter }) {
 								styles["tabs__btn--activated"] :
 								""}
 							`}
-						onClick={() => getTabs("completed")}
+						onClick={() => setFilter("completed")}
 					>
 						Выполнено: {tabs.completed}
 					</button>
@@ -49,7 +44,7 @@ export default function Tabs({ setFilter, tabs, filter }) {
 								""
 							}
 						`}
-						onClick={() => getTabs("inWork")}
+						onClick={() => setFilter("inWork")}
 					>
 						В работе: {tabs.inWork}
 					</button>
