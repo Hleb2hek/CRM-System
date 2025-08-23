@@ -1,4 +1,6 @@
 body {
+	margin-top: 6rem;
+
 	color: var(--color-text);
 	background-color: var(--color-background-s);
 

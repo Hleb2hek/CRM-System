@@ -1,4 +1,3 @@
-import { container } from "../../styles/components/containers.module.css"
 import styles from "./Tabs.module.css"
 
 export default function Tabs({ setFilter, setError, tabs, filter }) {
@@ -14,24 +13,55 @@ export default function Tabs({ setFilter, setError, tabs, filter }) {
 	}
 
 	return (
-		<section className={`${styles.tabs} ${container}`}>
+		<section className={`
+			${styles.tabs}
+			${styles.container}
+		`}
+		>
 			<ul className={styles.tabs__wrapper}>
-				<li className={styles.tabs__list}>
-					<button className={`${styles.tabs__btn} ${filter === "all" ? styles["tabs__btn--activated"] : ""}`} onClick={() => getTabs("all")}>
+				<li>
+					<button
+						className={`
+							${styles.tabs__btn}
+							${filter === "all" ?
+								styles["tabs__btn--activated"]
+								: ""
+							}
+						`}
+						onClick={() => getTabs("all")}
+					>
 						Всего задач: {tabs.all}
 					</button>
 				</li>
-				<li className="tabs__list">
-					<button className={`${styles.tabs__btn} ${filter === "completed" ? styles["tabs__btn--activated"] : ""}`} onClick={() => getTabs("completed")}>
+				<li>
+					<button
+						className={`
+								${styles.tabs__btn}
+								${filter === "completed" ?
+								styles["tabs__btn--activated"] :
+								""
+							}
+							`}
+						onClick={() => getTabs("completed")}
+					>
 						Выполнено: {tabs.completed}
 					</button>
 				</li>
-				<li className="tabs__list">
-					<button className={`${styles.tabs__btn} ${filter === "inWork" ? styles["tabs__btn--activated"] : ""}`} onClick={() => getTabs("inWork")}>
+				<li>
+					<button
+						className={`
+							${styles.tabs__btn}
+							${filter === "inWork" ?
+								styles["tabs__btn--activated"] :
+								""
+							}
+						`}
+						onClick={() => getTabs("inWork")}
+					>
 						В работе: {tabs.inWork}
 					</button>
 				</li>
 			</ul>
-		</section >
+		</section>
 	)
 }

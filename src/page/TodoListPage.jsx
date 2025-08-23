@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-import container from '../styles/components/containers.module.css'
 import styles from './error.module.css'
 
 import AddTasks from "../components/Header/AddTasks";
@@ -53,7 +52,7 @@ export default function TodoListPage() {
 				filter={filter}
 			/>
 
-			<section className={`${styles.error} ${container}`}>
+			<section className={`${styles.error} ${styles.container}`}>
 				{error && <p>{error.message}</p>}
 				{loading && <p>Загрузка...</p>}
 				{!loading && tasks.length === 0 && !error && <p>Задач пока нет</p>}

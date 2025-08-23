@@ -1,6 +1,3 @@
-import { container } from "../../styles/components/containers.module.css"
-import input from "../../styles/components/input.module.css"
-import { btn } from "../../styles/components/btn.module.css"
 import styles from "./AddTasks.module.css"
 
 import { useState } from 'react';
@@ -52,7 +49,7 @@ export default function AddTasks({ refreshTasks }) {
 	}
 
 	return (
-		<header className={`${styles.header} ${container}`}>
+		<header className={`${styles.header} ${styles.container}`}>
 			<form
 				className={styles.header__form}
 				onSubmit={createTasks}
@@ -60,12 +57,17 @@ export default function AddTasks({ refreshTasks }) {
 				<input
 					value={newTask}
 					onChange={getNewTask}
-					className={`${styles.header__input} ${input.input} ${errorValidation ? input['input--warning'] : ''}`}
+					className={`
+						${styles.header__input}
+						${errorValidation ?
+							styles['header__input--warning'] :
+							styles['header__input--focus']}
+						`}
 					type="text"
 					placeholder='Введите название'
 				/>
 				<button
-					className={`${styles.header__btn} ${btn}`}
+					className={`${styles.header__btn}`}
 					type="submit"
 					disabled={errorValidation}
 				>

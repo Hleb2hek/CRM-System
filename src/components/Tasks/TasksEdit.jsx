@@ -1,15 +1,12 @@
-import input from "../../styles/components/input.module.css"
-import btn from "../../styles/components/btn.module.css"
-import tasksStyles from "./Tasks.module.css"
-import styles from "./TasksBtnEditModal.module.css"
+import styles from "./TasksEdit.module.css"
 
 import { useState } from "react";
 
 import { editTaskFetch } from "../../api/http"
 
-export default function TasksModal({ refreshTasks, id, tasksTitle, setError, handleModal }) {
+export default function TasksEdit({ refreshTasks, id, title, setError, handleEdit }) {
 
-	const [edit, setEdit] = useState(tasksTitle);
+	const [edit, setEdit] = useState(title);
 	const [errorEditValidation, setErrorEditValidation] = useState(false);
 
 	function isValidTasks(tasks) {
@@ -41,7 +38,7 @@ export default function TasksModal({ refreshTasks, id, tasksTitle, setError, han
 			await editTaskFetch(id, edit);
 			await refreshTasks();
 
-			handleModal();
+			handleEdit();
 			setErrorEditValidation(false)
 			setError(null);
 		} catch (error) {
@@ -50,35 +47,34 @@ export default function TasksModal({ refreshTasks, id, tasksTitle, setError, han
 	}
 
 	return (
-		<div className={`${tasksStyles.tasks__modal} ${styles.modal}`}>
+		<li className={styles.edit__list}>
 			<form
-				className={styles.modal__form}
+				className={styles.edit__form}
 				onSubmit={editTasks}
 			>
 				<input
 					value={edit}
 					onChange={getNewTask}
-					className={`${styles.modal__input} ${input.input} ${errorEditValidation ? input['input--warning'] : ''}`}
+					className={`${styles.edit__input} ${errorEditValidation ? styles['edit__input--warning'] : styles['edit__input--focus']}`}
 					type="text"
 				/>
-				{errorEditValidation && <p className={styles.modal__warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
-				<div className={styles.modal__btns}>
+				<div className={styles.edit__btns}>
 					<button
-						className={`${styles.modal__btn} ${btn.btn} ${btn[`btn--save`]}`}
+						className={`${styles.edit__btn} ${styles[`edit__btn--save`]}`}
 						type="submit"
 						disabled={errorEditValidation}
 					>
 						Сохранить
 					</button>
 					<button
-						onClick={handleModal}
-						className={`${styles.modal__btn} ${btn.btn} ${btn[`btn--cancel`]}`}
+						onClick={handleEdit}
+						className={`${styles.edit__btn} ${styles[`edit__btn--cancel`]}`}
 						type="button">
 						Отменить
 					</button>
 				</div>
-
 			</form>
-		</div>
+			{errorEditValidation && <p className={styles.edit__warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
+		</li>
 	)
 }
