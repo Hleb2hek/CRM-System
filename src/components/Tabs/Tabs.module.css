@@ -1,0 +1,32 @@
+.container {
+	max-width: calc(var(--container-width) + var(--container-padding-x) * 2);
+	margin-inline: auto;
+	padding-inline: var(--container-padding-x);
+}
+
+.tabs__wrapper {
+	padding-top: 1rem;
+
+	display: flex;
+	justify-content: space-between;
+}
+
+.tabs__btn {
+	background: none;
+	border: none;
+	color: var(--color-text);
+}
+
+.tabs__btn:hover {
+	background: none;
+
+	color: var(--color-input);
+
+	text-decoration: underline;
+}
+
+.tabs__btn--activated {
+	color: var(--color-input-dark);
+
+	text-decoration: underline;
+}

@@ -1,0 +1,96 @@
+.edit__list {
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	background-color: var(--color-background-card);
+
+	border: var(--border);
+	border-radius: var(--border-radius);
+}
+
+.edit__form {
+	display: flex;
+	gap: 20px;
+
+	padding: 0.625rem 1.25rem;
+}
+
+.edit__input {
+	width: 15.625rem;
+	height: var(--inter-height);
+
+	padding-inline: 0.5rem;
+
+	color: var(--color-text);
+
+	outline: none;
+	border: var(--border);
+	border-radius: var(--border-radius);
+}
+
+.edit__input--focus:focus {
+	border-color: var(--color-input);
+	outline: none;
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.edit__input--warning {
+	border-color: var(--color-input-warning);
+
+	outline: var(--outline);
+	outline-color: color-mix(in srgb, var(--color-input-warning) 20%, transparent);
+}
+
+.edit__btns {
+	display: flex;
+	gap: 0.625rem;
+}
+
+.edit__btn {
+
+	height: var(--inter-height);
+
+	padding: 0;
+	padding-inline: 10px;
+
+	border: none;
+	border-radius: var(--border-radius);
+
+	color: var(--color-input-text);
+
+}
+
+.edit__btn:disabled {
+	color: var(--color-text);
+	background-color: var(--color-input-disabled);
+}
+
+.edit__btn--save {
+	background-color: var(--color-input-save);
+}
+
+.edit__btn--save:hover {
+	background-color: var(--color-input-save-hover);
+}
+
+.edit__btn--save:disabled {
+	color: var(--color-text);
+	background-color: var(--color-input-disabled);
+}
+
+
+.edit__btn--cancel {
+	color: var(--color-input-text);
+	background-color: var(--color-input-warning);
+}
+
+.edit__btn--cancel:hover {
+	background-color: var(--color-input-warning-hover);
+}
+
+.edit__warning {
+	font-size: 14px;
+}
