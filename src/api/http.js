@@ -31,10 +31,10 @@ export async function deleteTaskFetch(id) {
 	return true
 }
 // Запрос на редактирование
-export async function editTaskFetch(id, task = null, done = null) {
+export async function editTaskFetch(id, todoRequest) {
 	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
 		method: "PUT",
-		body: JSON.stringify({ title: task, isDone: done }),
+		body: JSON.stringify(todoRequest),
 		headers: {
 			'Content-Type': 'application/json'
 		},

@@ -35,7 +35,7 @@ export default function TasksEdit({ refreshTasks, id, title, setError, handleEdi
 
 		try {
 
-			await editTaskFetch(id, edit);
+			await editTaskFetch(id, { title: edit });
 			await refreshTasks();
 
 			handleEdit();

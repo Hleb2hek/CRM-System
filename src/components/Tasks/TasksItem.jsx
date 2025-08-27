@@ -21,7 +21,7 @@ export default function TasksItem({ id, title, isDone, refreshTasks, filter, set
 		setCheck(newCheck);
 
 		try {
-			await editTaskFetch(id, null, newCheck);
+			await editTaskFetch(id, { isDone: newCheck });
 			await refreshTasks(filter);
 
 			setError(null);
