@@ -1,0 +1,31 @@
+body {
+	margin-top: 6rem;
+
+	color: var(--color-text);
+	background-color: var(--color-background-s);
+
+	font-family: 'Trebuchet MS', sans-serif;
+	font-weight: 400;
+}
+
+p,
+a,
+button,
+input,
+select,
+textarea,
+svg * {
+	transition-duration: var(--transition-duration);
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-weight: 500;
+}

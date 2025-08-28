@@ -1,0 +1,36 @@
+:root {
+	--color-background-s: #f1f1f1;
+	--color-background-card: #FFFFFF;
+	--color-text: #333333;
+
+	--color-accent: #A9B5DF;
+
+	--color-input: #3F51B5;
+	--color-input-dark: #303F9F;
+	--color-input-text: #FFFFFF;
+
+	--color-input-disabled: #9E9E9E;
+	--color-input-warning: #F44336;
+	--color-input-warning-hover: #D32F2F;
+
+	--color-input-save: #238830;
+	--color-input-save-hover: #1a6e25;
+
+	--color-tabs-activated: #979797;
+
+	--border: 1.6px solid;
+	--outline: 3.6px solid;
+
+	--border-radius: 5px;
+
+	--container-width: 500px;
+	--container-padding-x: 16px;
+
+	--section-padding-y: 30px;
+	--block-padding-y: 18px;
+	--block-padding-x: 16px;
+
+	--inter-height: 30px;
+
+	--transition-duration: .1s;
+}
