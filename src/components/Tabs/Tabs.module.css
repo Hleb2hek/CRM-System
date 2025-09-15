@@ -4,20 +4,20 @@
 	padding-inline: var(--container-padding-x);
 }
 
-.tabs__wrapper {
+.wrapper {
 	padding-top: 1rem;
 
 	display: flex;
 	justify-content: space-between;
 }
 
-.tabs__btn {
+.btn {
 	background: none;
 	border: none;
 	color: var(--color-text);
 }
 
-.tabs__btn:hover {
+.btn:hover {
 	background: none;
 
 	color: var(--color-input);
@@ -25,7 +25,7 @@
 	text-decoration: underline;
 }
 
-.tabs__btn--activated {
+.btn--activated {
 	color: var(--color-input-dark);
 
 	text-decoration: underline;

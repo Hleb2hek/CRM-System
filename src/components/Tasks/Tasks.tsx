@@ -1,8 +1,15 @@
+import React from "react"
 import styles from "./Tasks.module.css"
 
-import TasksItem from "./TasksItem"
+import { TasksItem } from "./TasksItem"
+import { Filter, Todo } from "../../models/todo";
 
-export default function Tasks({ refreshTasks, filter, setError, tasks }) {
+export const Tasks: React.FC<{
+	filter: Filter;
+	tasks: Todo[];
+	refreshTasks: () => void;
+	setError: (arg: Error | null) => void;
+}> = ({ tasks, refreshTasks, setError }) => {
 	return (
 		<section className={`${styles.tasks} ${styles.container}`}>
 			<ul className={styles.tasks__wrapper}>
@@ -14,8 +21,8 @@ export default function Tasks({ refreshTasks, filter, setError, tasks }) {
 								id={id}
 								title={title}
 								isDone={isDone}
+
 								refreshTasks={refreshTasks}
-								filter={filter}
 								setError={setError}
 							/>
 						)

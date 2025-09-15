@@ -1,21 +1,21 @@
 import styles from "./AddTasks.module.css"
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { postUserTasks } from '../../api/http';
 
-export default function AddTasks({ refreshTasks }) {
+export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
 
-	const [newTask, setNewTask] = useState("");
-	const [errorValidation, setErrorValidation] = useState(false);
-	const [errorTasks, setErrorTasks] = useState(null);
+	const [newTask, setNewTask] = useState<string>("");
+	const [errorValidation, setErrorValidation] = useState<boolean>(false);
+	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
 
-	function isValidTasks(tasks) {
+	function isValidTasks(tasks: string): boolean {
 		const value = tasks.trim();
 		return value.length >= 2 && value.length <= 64;
 	}
 
-	function getNewTask(event) {
+	function getNewTask(event: React.ChangeEvent<HTMLInputElement>) {
 		const value = event.target.value;
 		setNewTask(value);
 
@@ -26,7 +26,7 @@ export default function AddTasks({ refreshTasks }) {
 		}
 	}
 
-	async function createTasks(e) {
+	async function createTasks(e: React.FormEvent) {
 
 		e.preventDefault();
 
@@ -38,44 +38,44 @@ export default function AddTasks({ refreshTasks }) {
 		try {
 
 			await postUserTasks(newTask.trim());
-			await refreshTasks();
+			refreshTasks();
 
 			setNewTask("");
 			setErrorValidation(false);
 			setErrorTasks(null);
-		} catch (error) {
-			setErrorTasks(error)
+		} catch (error: unknown) {
+			if (error instanceof Error) setErrorTasks(error);
 		}
 	}
 
 	return (
 		<header className={`${styles.header} ${styles.container}`}>
 			<form
-				className={styles.header__form}
+				className={styles.form}
 				onSubmit={createTasks}
 			>
 				<input
 					value={newTask}
 					onChange={getNewTask}
 					className={`
-						${styles.header__input}
+						${styles.input}
 						${errorValidation ?
-							styles['header__input--warning'] :
-							styles['header__input--focus']}
+							styles['input--warning'] :
+							styles['input--focus']}
 						`}
 					type="text"
 					placeholder='Введите название'
 				/>
 				<button
-					className={`${styles.header__btn}`}
+					className={styles.btn}
 					type="submit"
 					disabled={errorValidation}
 				>
 					Добавить
 				</button>
 			</form>
-			{errorValidation && <p className={styles.header__warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
-			{errorTasks && <p className={styles.header__error}>{errorTasks.message}</p>}
+			{errorValidation && <p className={styles.warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
+			{errorTasks && <p className={styles.error}>{errorTasks.message}</p>}
 		</header>
 	)
 }
