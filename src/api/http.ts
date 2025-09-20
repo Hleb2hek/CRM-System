@@ -1,4 +1,4 @@
-import { MetaResponse, Todo, TodoInfo, TodoRequest } from "../models/todo";
+import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from "../models/todo";
 
 // Запрос на отправку таски
 export async function postUserTasks(task: string): Promise<Todo> {
@@ -51,7 +51,7 @@ export async function editTaskFetch(id: number, todoRequest: TodoRequest): Promi
 }
 
 // Запрос на список
-export async function fetchFilter(filter: string = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
+export async function fetchFilter(filter: Filter = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
 	const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
 
 	if (!response.ok) {
