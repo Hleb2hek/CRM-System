@@ -19,20 +19,22 @@ export default function TodoListPage() {
 	})
 
 	const [filter, setFilter] = useState<Filter>("all");
-	const [loading, setLoading] = useState<boolean>(true);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<Error | null>(null);
 
 	async function refreshTasks() {
-		setLoading(true)
+		setIsLoading(true)
 		try {
 			const { data, info } = await fetchFilter(filter);
 			setTasks(data);
-			if (info) setTabs(info);
+			if (info) {
+				setTabs(info);
+			}
 			setError(null);
 		} catch (error: unknown) {
 			if (error instanceof Error) setError(error);
 		} finally {
-			setLoading(false);
+			setIsLoading(false);
 		}
 	}
 
@@ -54,8 +56,8 @@ export default function TodoListPage() {
 
 			<section className={`${styles.error} ${styles.container}`}>
 				{error && <p>{error.message}</p>}
-				{loading && <p>Загрузка...</p>}
-				{!loading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
+				{isLoading && <p>Загрузка...</p>}
+				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
 			</section>
 
 			<Tasks

@@ -20,28 +20,38 @@ export const TasksItem: React.FC<{
 	refreshTasks,
 	setError }) => {
 
-		const [check, setCheck] = useState<boolean>(isDone);
-		const [showEdit, setshowEdit] = useState<boolean>(false);
+		const [isCompleted, setIsCompleted] = useState<boolean>(isDone);
+		const [showEdit, setShowEdit] = useState<boolean>(false);
 
-		const [edit, setEdit] = useState<string>(title);
-		const [errorEditValidation, setErrorEditValidation] = useState<boolean>(false);
+		const [inputTitle, setInputTitle] = useState<string>(title);
+		const [errorBtn, setErrorBtn] = useState<boolean>(false);
+		const [validationError, setValidationError] = useState<string | null>(null);
 
-		function handleEdit() {
-			setshowEdit(edit => !edit)
+		function openEditMode() {
+			setShowEdit(true);
+			setInputTitle(title);
+			setErrorBtn(false);
+			setValidationError(null);
+		}
+
+		function closeEditMode() {
+			setShowEdit(false);
+			setInputTitle(title);
+			setValidationError(null)
+			setErrorBtn(false);
 		}
 
 		async function checkboxTasks() {
-			const newCheck = !check;
-			setCheck(newCheck);
+			setIsCompleted(!isCompleted);
 
 			try {
-				await editTaskFetch(id, { isDone: newCheck });
+				await editTaskFetch(id, { isDone: isCompleted });
 				refreshTasks();
 
 				setError(null);
 			} catch (error) {
 				if (error instanceof Error) setError(error);
-				setCheck(prev => !prev)
+				setIsCompleted(prev => !prev)
 			}
 		}
 
@@ -56,38 +66,40 @@ export const TasksItem: React.FC<{
 			}
 		}
 
-		function isValidTasks(tasks: string): boolean {
+		function getValidError(tasks: string): string | null {
 			const value = tasks.trim();
-			return value.length >= 2 && value.length <= 64;
+			const valueLength = value.length;
+
+			if (valueLength === 0) {
+				return "Название пустое, введите название";
+			}
+			if (valueLength < 2) {
+				return `Название слишком короткое. Добавьте ${2 - valueLength} символ(ов)`;
+			}
+			if (valueLength > 64) {
+				return `Название слишком длинное. Удалите ${valueLength - 64} символ(ов)`;
+			}
+
+			return null;
 		}
 
 		function getNewTask(event: React.ChangeEvent<HTMLInputElement>) {
 			const value = event.target.value;
-			setEdit(value);
+			setInputTitle(value);
 
-			if (isValidTasks(value)) {
-				setErrorEditValidation(false);
-			} else {
-				setErrorEditValidation(true);
-			}
+			const errorMessage = getValidError(value);
+			setValidationError(errorMessage);
+			setErrorBtn(errorMessage !== null)
 		}
 
 		async function editTasks(e: React.FormEvent) {
 
 			e.preventDefault();
 
-			if (!isValidTasks(edit)) {
-				setErrorEditValidation(true);
-				return
-			}
-
 			try {
-
-				await editTaskFetch(id, { title: edit });
+				await editTaskFetch(id, { title: inputTitle });
 				refreshTasks();
-
-				handleEdit();
-				setErrorEditValidation(false)
+				closeEditMode();
 				setError(null);
 			} catch (error) {
 				if (error instanceof Error) setError(error);
@@ -99,7 +111,7 @@ export const TasksItem: React.FC<{
 				<li className={styles.tasks__list}>
 					<input
 						onChange={checkboxTasks}
-						checked={check}
+						checked={isCompleted}
 						className={`
 							${styles.tasks__checkbox}
 							${styles.tasks__input}
@@ -116,7 +128,7 @@ export const TasksItem: React.FC<{
 					</p>
 					<div className={styles.tasks__btns}>
 						<button
-							onClick={handleEdit}
+							onClick={openEditMode}
 							className={styles.tasks__btn}
 							type="button"
 						>
@@ -137,28 +149,30 @@ export const TasksItem: React.FC<{
 						onSubmit={editTasks}
 					>
 						<input
-							value={edit}
+							value={inputTitle}
 							onChange={getNewTask}
-							className={`${styles.edit__input} ${errorEditValidation ? styles['edit__input--warning'] : styles['edit__input--focus']}`}
+							className={`${styles.edit__input} ${validationError ? styles['edit__input--warning'] : styles['edit__input--focus']}`}
 							type="text"
 						/>
 						<div className={styles.edit__btns}>
 							<button
 								className={`${styles.edit__btn} ${styles[`edit__btn--save`]}`}
 								type="submit"
-								disabled={errorEditValidation}
+								disabled={errorBtn}
 							>
 								Сохранить
 							</button>
 							<button
-								onClick={handleEdit}
+								onClick={closeEditMode}
 								className={`${styles.edit__btn} ${styles[`edit__btn--cancel`]}`}
 								type="button">
 								Отменить
 							</button>
 						</div>
 					</form>
-					{errorEditValidation && <p className={styles.edit__warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
+					{validationError &&
+						<p className={styles.edit__warning}>{validationError}</p>
+					}
 				</li>
 		)
 	}
