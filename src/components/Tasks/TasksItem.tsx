@@ -24,13 +24,11 @@ export const TasksItem: React.FC<{
 		const [showEdit, setShowEdit] = useState<boolean>(false);
 
 		const [inputTitle, setInputTitle] = useState<string>(title);
-		const [errorBtn, setErrorBtn] = useState<boolean>(false);
 		const [validationError, setValidationError] = useState<string | null>(null);
 
 		function openEditMode() {
 			setShowEdit(true);
 			setInputTitle(title);
-			setErrorBtn(false);
 			setValidationError(null);
 		}
 
@@ -38,7 +36,6 @@ export const TasksItem: React.FC<{
 			setShowEdit(false);
 			setInputTitle(title);
 			setValidationError(null)
-			setErrorBtn(false);
 		}
 
 		async function checkboxTasks() {
@@ -59,7 +56,6 @@ export const TasksItem: React.FC<{
 			try {
 				await deleteTaskFetch(id);
 				refreshTasks();
-
 				setError(null);
 			} catch (error) {
 				if (error instanceof Error) setError(error);
@@ -89,12 +85,18 @@ export const TasksItem: React.FC<{
 
 			const errorMessage = getValidError(value);
 			setValidationError(errorMessage);
-			setErrorBtn(errorMessage !== null)
 		}
 
 		async function editTasks(e: React.FormEvent) {
 
 			e.preventDefault();
+
+			const validationError = getValidError(inputTitle);
+			if (validationError) {
+				// Если есть ошибка валидации, показываем её
+				setValidationError(validationError);
+				return;
+			}
 
 			try {
 				await editTaskFetch(id, { title: inputTitle });
@@ -105,6 +107,8 @@ export const TasksItem: React.FC<{
 				if (error instanceof Error) setError(error);
 			}
 		}
+
+		const isFormValid = !validationError && inputTitle.trim().length > 0;
 
 		return (
 			!showEdit ?
@@ -158,7 +162,7 @@ export const TasksItem: React.FC<{
 							<button
 								className={`${styles.edit__btn} ${styles[`edit__btn--save`]}`}
 								type="submit"
-								disabled={errorBtn}
+								disabled={!isFormValid}
 							>
 								Сохранить
 							</button>

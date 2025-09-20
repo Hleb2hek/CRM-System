@@ -7,31 +7,41 @@ import { postUserTasks } from '../../api/http';
 export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
 
 	const [newTask, setNewTask] = useState<string>("");
-	const [errorValidation, setErrorValidation] = useState<boolean>(false);
+	const [errorValidation, setErrorValidation] = useState<string | null>(null);
 	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
 
-	function isValidTasks(tasks: string): boolean {
+	function getValidError(tasks: string): string | null {
 		const value = tasks.trim();
-		return value.length >= 2 && value.length <= 64;
+		const valueLength = value.length;
+
+		if (valueLength === 0) {
+			return "Название пустое, введите название";
+		}
+		if (valueLength < 2) {
+			return `Название слишком короткое. Добавьте ${2 - valueLength} символ(ов)`;
+		}
+		if (valueLength > 64) {
+			return `Название слишком длинное. Удалите ${valueLength - 64} символ(ов)`;
+		}
+
+		return null;
 	}
 
 	function getNewTask(event: React.ChangeEvent<HTMLInputElement>) {
 		const value = event.target.value;
 		setNewTask(value);
 
-		if (isValidTasks(value)) {
-			setErrorValidation(false);
-		} else {
-			setErrorValidation(true);
-		}
+		const errorMessage = getValidError(value);
+		setErrorValidation(errorMessage);
 	}
 
 	async function createTasks(e: React.FormEvent) {
 
 		e.preventDefault();
 
-		if (!isValidTasks(newTask)) {
-			setErrorValidation(true);
+		const validationError = getValidError(newTask);
+		if (validationError) {
+			setErrorValidation(validationError);
 			return;
 		}
 
@@ -41,12 +51,14 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 			refreshTasks();
 
 			setNewTask("");
-			setErrorValidation(false);
+			setErrorValidation(null);
 			setErrorTasks(null);
 		} catch (error: unknown) {
 			if (error instanceof Error) setErrorTasks(error);
 		}
 	}
+
+	const isFormValid = !errorValidation && newTask.trim().length > 0;
 
 	return (
 		<header className={`${styles.header} ${styles.container}`}>
@@ -69,12 +81,14 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 				<button
 					className={styles.btn}
 					type="submit"
-					disabled={errorValidation}
+					disabled={!isFormValid}
 				>
 					Добавить
 				</button>
 			</form>
-			{errorValidation && <p className={styles.warning}>Введите название, допустимая длина от 2 до 64 символов</p>}
+			{errorValidation &&
+				<p className={styles.edit__warning}>{errorValidation}</p>
+			}
 			{errorTasks && <p className={styles.error}>{errorTasks.message}</p>}
 		</header>
 	)
