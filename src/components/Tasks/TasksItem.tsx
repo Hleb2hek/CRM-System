@@ -19,36 +19,32 @@ export const TasksItem: React.FC<{
 	isDone,
 	refreshTasks,
 	setError }) => {
-
-		const [isCompleted, setIsCompleted] = useState<boolean>(isDone);
-		const [showEdit, setShowEdit] = useState<boolean>(false);
+		const [isEdit, setIsEdit] = useState<boolean>(false);
 
 		const [inputTitle, setInputTitle] = useState<string>(title);
 		const [validationError, setValidationError] = useState<string | null>(null);
 
 		function openEditMode() {
-			setShowEdit(true);
+			setIsEdit(true);
 			setInputTitle(title);
 			setValidationError(null);
 		}
 
 		function closeEditMode() {
-			setShowEdit(false);
+			setIsEdit(false);
 			setInputTitle(title);
 			setValidationError(null)
 		}
 
 		async function checkboxTasks() {
-			setIsCompleted(!isCompleted);
 
 			try {
-				await editTaskFetch(id, { isDone: isCompleted });
+				await editTaskFetch(id, { isDone: !isDone });
 				refreshTasks();
 
 				setError(null);
 			} catch (error) {
 				if (error instanceof Error) setError(error);
-				setIsCompleted(prev => !prev)
 			}
 		}
 
@@ -111,11 +107,11 @@ export const TasksItem: React.FC<{
 		const isFormValid = !validationError && inputTitle.trim().length > 0;
 
 		return (
-			!showEdit ?
+			!isEdit ?
 				<li className={styles.tasks__list}>
 					<input
 						onChange={checkboxTasks}
-						checked={isCompleted}
+						checked={isDone}
 						className={`
 							${styles.tasks__checkbox}
 							${styles.tasks__input}
