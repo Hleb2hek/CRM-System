@@ -41,7 +41,6 @@ export const TasksItem: React.FC<{
 			try {
 				await editTaskFetch(id, { isDone: !isDone });
 				refreshTasks();
-
 				setError(null);
 			} catch (error) {
 				if (error instanceof Error) setError(error);
