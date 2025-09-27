@@ -1,19 +1,27 @@
-import styles from "./Tabs.module.css"
+import React from "react"
 
-export default function Tabs({ setFilter, tabs, filter }) {
+import styles from "./Tabs.module.css"
+import { Filter, TodoInfo } from "../../models/todo";
+
+
+export const Tabs: React.FC<{
+	setFilter: (filter: Filter) => void;
+	tabs: TodoInfo;
+	filter: Filter
+}> = ({ setFilter, tabs, filter }) => {
 	return (
 		<section className={`
 			${styles.tabs}
 			${styles.container}
 		`}
 		>
-			<ul className={styles.tabs__wrapper}>
+			<ul className={styles.wrapper}>
 				<li>
 					<button
 						className={`
-							${styles.tabs__btn}
+							${styles.btn}
 							${filter === "all" ?
-								styles["tabs__btn--activated"]
+								styles["btn--activated"]
 								: ""
 							}
 						`}
@@ -25,9 +33,9 @@ export default function Tabs({ setFilter, tabs, filter }) {
 				<li>
 					<button
 						className={`
-								${styles.tabs__btn}
+								${styles.btn}
 								${filter === "completed" ?
-								styles["tabs__btn--activated"] :
+								styles["btn--activated"] :
 								""}
 							`}
 						onClick={() => setFilter("completed")}
@@ -38,9 +46,9 @@ export default function Tabs({ setFilter, tabs, filter }) {
 				<li>
 					<button
 						className={`
-							${styles.tabs__btn}
+							${styles.btn}
 							${filter === "inWork" ?
-								styles["tabs__btn--activated"] :
+								styles["btn--activated"] :
 								""
 							}
 						`}

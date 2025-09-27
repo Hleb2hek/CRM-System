@@ -2,36 +2,39 @@ import { useState, useEffect } from 'react';
 
 import styles from './error.module.css'
 
-import AddTasks from "../components/AddTasks/AddTasks";
-import Tabs from '../components/Tabs/Tabs';
-import Tasks from "../components/Tasks/Tasks";
+import { AddTasks } from "../components/AddTasks/AddTasks";
+import { Tabs } from '../components/Tabs/Tabs';
+import { Tasks } from "../components/Tasks/Tasks";
 
 import { fetchFilter } from "../api/http";
+import { Filter, Todo, TodoInfo } from '../models/todo';
 
 export default function TodoListPage() {
 
-	const [tasks, setTasks] = useState([]);
-	const [tabs, setTabs] = useState({
+	const [tasks, setTasks] = useState<Todo[]>([]);
+	const [tabs, setTabs] = useState<TodoInfo>({
 		all: 0,
 		completed: 0,
 		inWork: 0
 	})
 
-	const [filter, setFilter] = useState("all");
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
+	const [filter, setFilter] = useState<Filter>("all");
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [error, setError] = useState<Error | null>(null);
 
 	async function refreshTasks() {
-		setLoading(true)
+		setIsLoading(true)
 		try {
 			const { data, info } = await fetchFilter(filter);
 			setTasks(data);
-			setTabs(info);
+			if (info) {
+				setTabs(info);
+			}
 			setError(null);
-		} catch (error) {
-			setError(error);
+		} catch (error: unknown) {
+			if (error instanceof Error) setError(error);
 		} finally {
-			setLoading(false);
+			setIsLoading(false);
 		}
 	}
 
@@ -53,8 +56,8 @@ export default function TodoListPage() {
 
 			<section className={`${styles.error} ${styles.container}`}>
 				{error && <p>{error.message}</p>}
-				{loading && <p>Загрузка...</p>}
-				{!loading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
+				{isLoading && <p>Загрузка...</p>}
+				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
 			</section>
 
 			<Tasks

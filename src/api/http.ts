@@ -1,5 +1,7 @@
+import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from "../models/todo";
+
 // Запрос на отправку таски
-export async function postUserTasks(task) {
+export async function postUserTasks(task: string): Promise<Todo> {
 	const response = await fetch("https://easydev.club/api/v1/todos", {
 		method: "POST",
 		body: JSON.stringify({ title: task }),
@@ -12,11 +14,11 @@ export async function postUserTasks(task) {
 		throw new Error(`Ошибка отправки данных`)
 	}
 
-	const resData = await response.json();
+	const resData: Todo = await response.json();
 	return resData
 }
 // Запрос на удаление
-export async function deleteTaskFetch(id) {
+export async function deleteTaskFetch(id: number): Promise<boolean> {
 	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
 		method: "DELETE",
 		headers: {
@@ -31,7 +33,7 @@ export async function deleteTaskFetch(id) {
 	return true
 }
 // Запрос на редактирование
-export async function editTaskFetch(id, todoRequest) {
+export async function editTaskFetch(id: number, todoRequest: TodoRequest): Promise<Todo> {
 	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
 		method: "PUT",
 		body: JSON.stringify(todoRequest),
@@ -44,23 +46,20 @@ export async function editTaskFetch(id, todoRequest) {
 		throw new Error(`Ошибка редактирования`)
 	}
 
-	const resData = await response.json();
+	const resData: Todo = await response.json();
 	return resData
 }
 
 // Запрос на список
-export async function fetchFilter(filter = 'all') {
-	try {
-		const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
+export async function fetchFilter(filter: Filter = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
+	const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
 
-		if (!response.ok) {
-			throw new Error(`Не удаётся связаться с сервером`)
-		}
-
-		const jsonData = await response.json();
-
-		return await jsonData
-	} catch (error) {
-		throw error
+	if (!response.ok) {
+		throw new Error(`Не удаётся связаться с сервером`)
 	}
+
+	const jsonData: MetaResponse<Todo, TodoInfo> = await response.json();
+
+	return jsonData
+
 }
