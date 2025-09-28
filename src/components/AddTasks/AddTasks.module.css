@@ -1,23 +1,4 @@
-.container {
-	max-width: calc(var(--container-width) + var(--container-padding-x) * 2);
-	margin-inline: auto;
-	padding-inline: var(--container-padding-x);
-}
-
-.header {
-	text-align: center;
-}
-
-.form {
-
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-
-}
-
 .input {
-	width: 18.75rem;
 	height: var(--inter-height);
 
 	padding-inline: 0.5rem;
