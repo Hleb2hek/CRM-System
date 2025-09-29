@@ -1,21 +1,21 @@
 import React from "react"
 
-import styles from "./Tabs.module.css"
+import styles from "./Tabs.module.css";
+
 import { Filter, TodoInfo } from "../../models/todo";
 
 
-export const Tabs: React.FC<{
+export const TabsList: React.FC<{
 	setFilter: (filter: Filter) => void;
 	tabs: TodoInfo;
 	filter: Filter
 }> = ({ setFilter, tabs, filter }) => {
+
+	console.log(filter);
 	return (
-		<section className={`
-			${styles.tabs}
-			${styles.container}
-		`}
-		>
-			<ul className={styles.wrapper}>
+
+		<div>
+			<ul>
 				<li>
 					<button
 						className={`
@@ -58,6 +58,6 @@ export const Tabs: React.FC<{
 					</button>
 				</li>
 			</ul>
-		</section>
+		</div>
 	)
 }

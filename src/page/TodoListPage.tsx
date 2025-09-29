@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import styles from './error.module.css'
 
 import { AddTasks } from "../components/AddTasks/AddTasks";
-import { Tabs } from '../components/Tabs/Tabs';
+import { TabsList } from '../components/TabsList/TabsList';
 import { Tasks } from "../components/Tasks/Tasks";
 
 import { fetchFilter } from "../api/http";
@@ -47,7 +47,7 @@ export default function TodoListPage() {
 			<AddTasks
 				refreshTasks={refreshTasks}
 			/>
-			<Tabs
+			<TabsList
 				setFilter={setFilter}
 
 				tabs={tabs}

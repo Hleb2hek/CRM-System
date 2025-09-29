@@ -1,8 +1,6 @@
-import styles from "./AddTasks.module.css"
+import React, { useState } from 'react';
 
 import { Flex, Form, Input, Button } from 'antd';
-
-import React, { useState } from 'react';
 
 import { postUserTasks } from '../../api/http';
 
@@ -63,42 +61,34 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 	const isFormValid = !errorValidation && newTask.trim().length > 0;
 
 	return (
-		<Flex justify="center" wrap>
-			<Form
-				onSubmit={createTasks}
-			>
-				<Flex gap='middle'>
-					<Form.Item>
+		<Flex justify="center" align="center" vertical >
+			<Form onClick={createTasks}>
+				<Flex gap="small" justify="center">
+					<Form.Item
+						validateStatus={errorValidation ? 'error' : ''} 
+						help={errorValidation}>
 						<Input
-							style={{ width: '18.75rem' }}
+							style={{width: '19rem'}}
 							value={newTask}
 							onChange={getNewTask}
-							className={`
-						${styles.input}
-						${errorValidation ?
-									styles['input--warning'] :
-									styles['input--focus']}
-						`}
 							type="text"
 							placeholder='Введите название'
 						/>
 					</Form.Item>
 					<Form.Item>
 						<Button
-							className={styles.btn}
+							style={{width: '10rem'}}
 							htmlType="submit"
 							disabled={!isFormValid}
-						>
+							>
 							Добавить
 						</Button>
 					</Form.Item>
 				</Flex>
 
 			</Form >
-			{errorValidation &&
-				<p className={styles.edit__warning}>{errorValidation}</p>
-			}
-			{errorTasks && <p className={styles.error}>{errorTasks.message}</p>}
+			{/* {errorValidation &&<p>{errorValidation}</p>} */}
+			{errorTasks && <p>{errorTasks.message}</p>}
 		</Flex >
 	)
 }
