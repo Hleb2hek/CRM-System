@@ -7,6 +7,8 @@ import React, { useState } from 'react';
 
 import { editTaskFetch, deleteTaskFetch } from "../../api/http";
 
+import { Card } from 'antd';
+
 export const TasksItem: React.FC<{
 	id: number,
 	title: string,
@@ -107,7 +109,7 @@ export const TasksItem: React.FC<{
 
 		return (
 			!isEdit ?
-				<li className={styles.tasks__list}>
+				<Card >
 					<input
 						onChange={checkboxTasks}
 						checked={isDone}
@@ -141,7 +143,7 @@ export const TasksItem: React.FC<{
 							<img src={trash} width={16} height={16} />
 						</button>
 					</div>
-				</li> :
+				</Card> :
 				<li className={styles.edit__list}>
 					<form
 						className={styles.edit__form}

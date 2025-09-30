@@ -1,63 +1,27 @@
 import React from "react"
 
-import styles from "./Tabs.module.css";
+import { Tabs } from "antd";
 
 import { Filter, TodoInfo } from "../../models/todo";
-
 
 export const TabsList: React.FC<{
 	setFilter: (filter: Filter) => void;
 	tabs: TodoInfo;
 	filter: Filter
-}> = ({ setFilter, tabs, filter }) => {
-
-	console.log(filter);
+}> = ({ setFilter, tabs: {all,completed,inWork}, filter }) => {
+	const tabItems = [
+			{key: 'all', label: `Всего задач: ${all}`},
+			{key: 'completed', label: `Выполнено: ${completed}`},
+			{key: 'inWork', label: `В работе: ${inWork}`}
+	];
+	
 	return (
 
-		<div>
-			<ul>
-				<li>
-					<button
-						className={`
-							${styles.btn}
-							${filter === "all" ?
-								styles["btn--activated"]
-								: ""
-							}
-						`}
-						onClick={() => setFilter("all")}
-					>
-						Всего задач: {tabs.all}
-					</button>
-				</li>
-				<li>
-					<button
-						className={`
-								${styles.btn}
-								${filter === "completed" ?
-								styles["btn--activated"] :
-								""}
-							`}
-						onClick={() => setFilter("completed")}
-					>
-						Выполнено: {tabs.completed}
-					</button>
-				</li>
-				<li>
-					<button
-						className={`
-							${styles.btn}
-							${filter === "inWork" ?
-								styles["btn--activated"] :
-								""
-							}
-						`}
-						onClick={() => setFilter("inWork")}
-					>
-						В работе: {tabs.inWork}
-					</button>
-				</li>
-			</ul>
-		</div>
+		<Tabs
+			activeKey={filter}
+			onChange={(key) => setFilter(key as Filter)}
+			items={tabItems}
+			centered
+		/>
 	)
 }

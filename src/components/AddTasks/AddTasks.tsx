@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import { Flex, Form, Input, Button } from 'antd';
-
 import { postUserTasks } from '../../api/http';
+
+import { Flex, Form, Input, Button } from 'antd';
 
 export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
 
@@ -68,7 +68,6 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 						validateStatus={errorValidation ? 'error' : ''} 
 						help={errorValidation}>
 						<Input
-							style={{width: '19rem'}}
 							value={newTask}
 							onChange={getNewTask}
 							type="text"
@@ -77,7 +76,6 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 					</Form.Item>
 					<Form.Item>
 						<Button
-							style={{width: '10rem'}}
 							htmlType="submit"
 							disabled={!isFormValid}
 							>

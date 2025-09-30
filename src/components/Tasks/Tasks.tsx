@@ -1,8 +1,9 @@
 import React from "react"
-import styles from "./Tasks.module.css"
 
 import { TasksItem } from "./TasksItem"
 import { Filter, Todo } from "../../models/todo";
+
+import { Flex, List } from "antd";
 
 export const Tasks: React.FC<{
 	filter: Filter;
@@ -11,25 +12,23 @@ export const Tasks: React.FC<{
 	setError: (arg: Error | null) => void;
 }> = ({ tasks, refreshTasks, setError }) => {
 	return (
-		<section className={`${styles.tasks} ${styles.container}`}>
-			<ul className={styles.tasks__wrapper}>
-				{
-					tasks.map(({ id, title, isDone }) => {
-						return (
-							<TasksItem
-								key={id}
-								id={id}
-								title={title}
-								isDone={isDone}
+		<Flex justify="center">
+			<List
+				dataSource={tasks}
+				renderItem={({ id, title, isDone }) => (
+					<List.Item>
+						<TasksItem
+							key={id}
+							id={id}
+							title={title}
+							isDone={isDone}
 
-								refreshTasks={refreshTasks}
-								setError={setError}
-							/>
-						)
-					}
-					)
-				}
-			</ul>
-		</section>
+							refreshTasks={refreshTasks}
+							setError={setError}>
+						</TasksItem>
+					</List.Item>
+				)}>
+			</List>
+		</Flex>
 	)
 }
