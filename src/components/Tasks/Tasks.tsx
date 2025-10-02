@@ -1,9 +1,9 @@
-import React from "react"
+import React from 'react';
 
-import { TasksItem } from "./TasksItem"
-import { Filter, Todo } from "../../models/todo";
+import { TasksItem } from './TasksItem';
+import { Filter, Todo } from '../../models/todo';
 
-import { Flex, List } from "antd";
+import { Flex, List } from 'antd';
 
 export const Tasks: React.FC<{
 	filter: Filter;
@@ -14,6 +14,7 @@ export const Tasks: React.FC<{
 	return (
 		<Flex justify="center">
 			<List
+				bordered={false}
 				dataSource={tasks}
 				renderItem={({ id, title, isDone }) => (
 					<List.Item>
@@ -22,13 +23,10 @@ export const Tasks: React.FC<{
 							id={id}
 							title={title}
 							isDone={isDone}
-
 							refreshTasks={refreshTasks}
-							setError={setError}>
-						</TasksItem>
+							setError={setError}></TasksItem>
 					</List.Item>
-				)}>
-			</List>
+				)}></List>
 		</Flex>
-	)
-}
+	);
+};

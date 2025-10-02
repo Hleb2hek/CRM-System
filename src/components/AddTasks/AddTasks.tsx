@@ -5,8 +5,7 @@ import { postUserTasks } from '../../api/http';
 import { Flex, Form, Input, Button } from 'antd';
 
 export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
-
-	const [newTask, setNewTask] = useState<string>("");
+	const [newTask, setNewTask] = useState<string>('');
 	const [errorValidation, setErrorValidation] = useState<string | null>(null);
 	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
 
@@ -15,7 +14,7 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 		const valueLength = value.length;
 
 		if (valueLength === 0) {
-			return "Название пустое, введите название";
+			return 'Название пустое, введите название';
 		}
 		if (valueLength < 2) {
 			return `Название слишком короткое. Добавьте ${2 - valueLength} символ(ов)`;
@@ -36,9 +35,6 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 	}
 
 	async function createTasks(e: React.FormEvent) {
-
-		e.preventDefault();
-
 		const validationError = getValidError(newTask);
 		if (validationError) {
 			setErrorValidation(validationError);
@@ -46,11 +42,10 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 		}
 
 		try {
-
 			await postUserTasks(newTask.trim());
 			refreshTasks();
 
-			setNewTask("");
+			setNewTask('');
 			setErrorValidation(null);
 			setErrorTasks(null);
 		} catch (error: unknown) {
@@ -61,32 +56,25 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 	const isFormValid = !errorValidation && newTask.trim().length > 0;
 
 	return (
-		<Flex justify="center" align="center" vertical >
-			<Form onClick={createTasks}>
+		<Flex justify="center" align="center" vertical style={{ marginTop: '6rem' }}>
+			<Form onFinish={createTasks}>
 				<Flex gap="small" justify="center">
-					<Form.Item
-						validateStatus={errorValidation ? 'error' : ''} 
-						help={errorValidation}>
+					<Form.Item validateStatus={errorValidation ? 'error' : ''} help={errorValidation}>
 						<Input
 							value={newTask}
 							onChange={getNewTask}
 							type="text"
-							placeholder='Введите название'
+							placeholder="Введите название"
 						/>
 					</Form.Item>
 					<Form.Item>
-						<Button
-							htmlType="submit"
-							disabled={!isFormValid}
-							>
+						<Button htmlType="submit" disabled={!isFormValid}>
 							Добавить
 						</Button>
 					</Form.Item>
 				</Flex>
-
-			</Form >
-			{/* {errorValidation &&<p>{errorValidation}</p>} */}
+			</Form>
 			{errorTasks && <p>{errorTasks.message}</p>}
-		</Flex >
-	)
-}
+		</Flex>
+	);
+};
