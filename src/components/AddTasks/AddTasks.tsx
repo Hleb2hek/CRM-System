@@ -59,7 +59,9 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 		<Flex justify="center" align="center" vertical style={{ marginTop: '6rem' }}>
 			<Form onFinish={createTasks}>
 				<Flex gap="small" justify="center">
-					<Form.Item validateStatus={errorValidation ? 'error' : ''} help={errorValidation}>
+					<Form.Item
+						validateStatus={errorValidation ? 'error' : ''}
+						help={errorValidation}>
 						<Input
 							value={newTask}
 							onChange={getNewTask}

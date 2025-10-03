@@ -96,12 +96,12 @@ export const TasksItem: React.FC<{
 	const isFormValid = !validationError && inputTitle.trim().length > 0;
 
 	return (
-		<Flex justify="center" align="center" style={{ width: '40rem' }}>
+		<Flex justify="center" align="center" style={{ width: '30rem' }}>
 			<Card style={{ width: '100%' }}>
 				{!isEdit ? (
 					<Flex gap="1.25rem" align="center" justify="space-between">
 						<Checkbox onChange={checkboxTasks} checked={isDone} type="checkbox" />
-						<p style={{ margin: 0 }}>{title}</p>
+						<p style={{ margin: 0, overflowWrap: 'anywhere' }}>{title}</p>
 						<Flex gap="0.625rem">
 							<Button onClick={openEditMode}>
 								<img src={editSvg} width={16} height={16} />
@@ -113,8 +113,14 @@ export const TasksItem: React.FC<{
 					</Flex>
 				) : (
 					<Form onFinish={editTasks}>
-						<Form.Item validateStatus={validationError ? 'error' : ''} help={validationError}>
-							<Input value={inputTitle} onChange={getNewTask} placeholder="Введите название" />
+						<Form.Item
+							validateStatus={validationError ? 'error' : ''}
+							help={validationError}>
+							<Input
+								value={inputTitle}
+								onChange={getNewTask}
+								placeholder="Введите название"
+							/>
 						</Form.Item>
 						<Flex gap="0.625rem" justify="center">
 							<Button type="primary" htmlType="submit" disabled={!isFormValid}>
