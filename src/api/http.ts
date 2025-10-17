@@ -7,7 +7,7 @@ const instance = axios.create({ baseURL: 'https://easydev.club/api/v1/todos' });
 // Запрос на отправку таски
 export async function postUserTasks(task: string): Promise<Todo> {
 	try {
-		const response = await instance.post<Todo>('/', {
+		const response = await instance.post<Todo>('', {
 			title: task,
 		});
 		return response.data;

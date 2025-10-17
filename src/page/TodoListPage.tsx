@@ -39,7 +39,7 @@ export default function TodoListPage() {
 
 	useEffect(() => {
 		refreshTasks();
-	}, [filter]);
+	}, [5000]);
 
 	return (
 		<>
