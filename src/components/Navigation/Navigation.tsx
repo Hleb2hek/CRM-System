@@ -1,21 +1,14 @@
-import { ReactNode } from 'react';
-
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
-
+import { MenuItem } from '../../models/todo';
 const { Sider } = Layout;
 
-interface MenuItem {
-	key: string;
-	icon: ReactNode;
-	label: string;
-	path: string;
-}
-
 export default function Navigation() {
+	// Программный Link
 	const navigation = useNavigate();
+
 	const locations = useLocation();
 
 	const itemsArr: MenuItem[] = [
@@ -33,16 +26,15 @@ export default function Navigation() {
 		},
 	];
 
-	const defaultKey: string =
-		itemsArr.find((item) => item.path === locations.pathname)?.key || '1';
+	const defaultKey = itemsArr.find((item) => item.path === locations.pathname)?.key || '1';
 
 	return (
-		<Sider>
+		<Sider theme="light">
 			<Menu
 				mode="inline"
 				theme="light"
 				selectedKeys={[defaultKey]}
-				style={{ height: '100%', borderRight: 0 }}
+				style={{ height: '100%', borderRight: 0, position: 'relative' }}
 				onClick={({ key }) => {
 					const path = itemsArr.find((arr) => arr.key === key)?.path;
 					if (path) {

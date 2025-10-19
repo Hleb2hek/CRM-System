@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export interface TodoRequest {
 	title?: string;
 	isDone?: boolean;
@@ -11,17 +13,24 @@ export interface Todo {
 }
 
 export interface TodoInfo {
-	all: number
-	completed: number
-	inWork: number
+	all: number;
+	completed: number;
+	inWork: number;
 }
 
 export interface MetaResponse<T, N> {
-	data: T[]
-	info?: N
+	data: T[];
+	info?: N;
 	meta: {
-		totalAmount: number
-	}
+		totalAmount: number;
+	};
 }
 
-export type Filter = "all" | "completed" | "inWork";
+export type Filter = 'all' | 'completed' | 'inWork';
+
+export interface MenuItem {
+	key: string;
+	icon: ReactNode;
+	label: string;
+	path: string;
+}
