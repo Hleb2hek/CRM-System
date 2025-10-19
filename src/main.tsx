@@ -12,7 +12,7 @@ const root = createBrowserRouter([
 		element: <Root />,
 		children: [
 			{ index: true, element: <TodoListPage /> },
-			{ path: '/profile', element: <Profile /> },
+			{ path: 'profile', element: <Profile /> },
 		],
 	},
 ]);

@@ -1,39 +1,60 @@
+import { ReactNode } from 'react';
+
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { Layout, Menu } from 'antd';
-import { TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
 
 const { Sider } = Layout;
 
-const Navigation = () => {
-	let navigate = useNavigate();
+interface MenuItem {
+	key: string;
+	icon: ReactNode;
+	label: string;
+	path: string;
+}
+
+export default function Navigation() {
+	const navigation = useNavigate();
+	const locations = useLocation();
+
+	const itemsArr: MenuItem[] = [
+		{
+			key: '1',
+			icon: <UnorderedListOutlined />,
+			label: 'Список задач',
+			path: '/',
+		},
+		{
+			key: '2',
+			icon: <UserOutlined />,
+			label: 'Профиль',
+			path: '/profile',
+		},
+	];
+
+	const defaultKey: string =
+		itemsArr.find((item) => item.path === locations.pathname)?.key || '1';
+
 	return (
-		<Sider trigger={null} collapsible>
+		<Sider>
 			<Menu
 				mode="inline"
 				theme="light"
-				defaultSelectedKeys={['1']}
+				selectedKeys={[defaultKey]}
 				style={{ height: '100%', borderRight: 0 }}
-				items={[
-					{
-						key: '1',
-						icon: <UserOutlined />,
-						label: 'Список задач',
-						onClick: () => {
-							navigate('/');
-						},
-					},
-					{
-						key: '2',
-						icon: <TeamOutlined />,
-						label: 'Профиль',
-						onClick: () => {
-							navigate('/profile');
-						},
-					},
-				]}
+				onClick={({ key }) => {
+					const path = itemsArr.find((arr) => arr.key === key)?.path;
+					if (path) {
+						return navigation(path);
+					}
+				}}
+				items={itemsArr.map(({ key, icon, label }) => ({
+					key,
+					icon,
+					label,
+				}))}
 			/>
 		</Sider>
 	);
-};
-
-export default Navigation;
+}

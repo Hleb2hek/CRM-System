@@ -14,7 +14,6 @@ export const Tasks: React.FC<{
 	return (
 		<Flex justify="center">
 			<List
-				bordered={false}
 				dataSource={tasks}
 				renderItem={({ id, title, isDone }) => (
 					<List.Item>
