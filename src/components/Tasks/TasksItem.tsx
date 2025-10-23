@@ -17,18 +17,15 @@ export const TasksItem: React.FC<{
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 
 	const [inputTitle, setInputTitle] = useState<string>(title);
-	const [validationError, setValidationError] = useState<string | null>(null);
 
 	function openEditMode() {
 		setIsEdit(true);
 		setInputTitle(title);
-		setValidationError(null);
 	}
 
 	function closeEditMode() {
 		setIsEdit(false);
 		setInputTitle(title);
-		setValidationError(null);
 	}
 
 	async function checkboxTasks() {
@@ -51,40 +48,9 @@ export const TasksItem: React.FC<{
 		}
 	}
 
-	function getValidError(tasks: string): string | null {
-		const value = tasks.trim();
-		const valueLength = value.length;
-
-		if (valueLength === 0) {
-			return 'Название пустое, введите название';
-		}
-		if (valueLength < 2) {
-			return `Название слишком короткое. Добавьте ${2 - valueLength} символ(ов)`;
-		}
-		if (valueLength > 64) {
-			return `Название слишком длинное. Удалите ${valueLength - 64} символ(ов)`;
-		}
-
-		return null;
-	}
-
-	function getNewTask(event: React.ChangeEvent<HTMLInputElement>) {
-		const value = event.target.value;
-		setInputTitle(value);
-
-		const errorMessage = getValidError(value);
-		setValidationError(errorMessage);
-	}
-
-	async function editTasks() {
-		const validationError = getValidError(inputTitle);
-		if (validationError) {
-			setValidationError(validationError);
-			return;
-		}
-
+	async function editTasks(value: { task: string }) {
 		try {
-			await editTaskFetch(id, { title: inputTitle });
+			await editTaskFetch(id, { title: value.task?.trim() });
 			refreshTasks();
 			closeEditMode();
 			setError(null);
@@ -92,8 +58,6 @@ export const TasksItem: React.FC<{
 			if (error instanceof Error) setError(error);
 		}
 	}
-
-	const isFormValid = !validationError && inputTitle.trim().length > 0;
 
 	return (
 		<Flex justify="center" align="center" style={{ width: '30rem' }}>
@@ -114,16 +78,26 @@ export const TasksItem: React.FC<{
 				) : (
 					<Form onFinish={editTasks}>
 						<Form.Item
-							validateStatus={validationError ? 'error' : ''}
-							help={validationError}>
-							<Input
-								value={inputTitle}
-								onChange={getNewTask}
-								placeholder="Введите название"
-							/>
+							name="task"
+							validateTrigger={['onChange', 'onSubmit']}
+							rules={[
+								{ required: true, message: 'Поле пустое, введите значение' },
+								{ whitespace: true, message: 'Уберите пробелы' },
+								{
+									max: 64,
+									message:
+										'Название слишком динное. Допустимая максимальная длина 64 символа',
+								},
+								{
+									min: 2,
+									message:
+										'Название слишком короткое. Допустимая минимальная длина 2 символа',
+								},
+							]}>
+							<Input placeholder="Введите название" />
 						</Form.Item>
 						<Flex gap="0.625rem" justify="center">
-							<Button type="primary" htmlType="submit" disabled={!isFormValid}>
+							<Button type="primary" htmlType="submit">
 								Сохранить
 							</Button>
 							<Button type="primary" htmlType="button" onClick={closeEditMode}>
