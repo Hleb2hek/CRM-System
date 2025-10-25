@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import { postUserTasks } from '../../api/http';
 
 import { Flex, Form, Input, Button } from 'antd';
 
-export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
+const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
 	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
 
 	async function createTasks(value: { task: string }) {
@@ -29,13 +29,11 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 							{ whitespace: true, message: 'Уберите пробелы' },
 							{
 								max: 64,
-								message:
-									'Название слишком динное. Допустимая максимальная длина 64 символа',
+								message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
 							},
 							{
 								min: 2,
-								message:
-									'Название слишком короткое. Допустимая минимальная длина 2 символа',
+								message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
 							},
 						]}>
 						<Input placeholder="Введите название" />
@@ -49,3 +47,5 @@ export const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks 
 		</Flex>
 	);
 };
+
+export default AddTasks;

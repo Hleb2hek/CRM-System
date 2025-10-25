@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { Tabs } from 'antd';
 
 import { Filter, TodoInfo } from '../../models/todo';
 
-export const TabsList: React.FC<{
+const TabsList: React.FC<{
 	setFilter: (filter: Filter) => void;
 	tabs: TodoInfo;
 	filter: Filter;
@@ -24,3 +24,5 @@ export const TabsList: React.FC<{
 		/>
 	);
 };
+
+export default TabsList;

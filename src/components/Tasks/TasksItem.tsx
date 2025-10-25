@@ -16,16 +16,12 @@ export const TasksItem: React.FC<{
 }> = ({ id, title, isDone, refreshTasks, setError }) => {
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 
-	const [inputTitle, setInputTitle] = useState<string>(title);
-
 	function openEditMode() {
 		setIsEdit(true);
-		setInputTitle(title);
 	}
 
 	function closeEditMode() {
 		setIsEdit(false);
-		setInputTitle(title);
 	}
 
 	async function checkboxTasks() {
@@ -85,13 +81,11 @@ export const TasksItem: React.FC<{
 								{ whitespace: true, message: 'Уберите пробелы' },
 								{
 									max: 64,
-									message:
-										'Название слишком динное. Допустимая максимальная длина 64 символа',
+									message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
 								},
 								{
 									min: 2,
-									message:
-										'Название слишком короткое. Допустимая минимальная длина 2 символа',
+									message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
 								},
 							]}>
 							<Input placeholder="Введите название" />

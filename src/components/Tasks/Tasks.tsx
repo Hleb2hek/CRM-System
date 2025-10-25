@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { TasksItem } from './TasksItem';
 import { Filter, Todo } from '../../models/todo';
 
 import { Flex, List } from 'antd';
 
-export const Tasks: React.FC<{
+const Tasks: React.FC<{
 	filter: Filter;
 	tasks: Todo[];
 	refreshTasks: () => void;
@@ -29,3 +29,4 @@ export const Tasks: React.FC<{
 		</Flex>
 	);
 };
+export default Tasks;

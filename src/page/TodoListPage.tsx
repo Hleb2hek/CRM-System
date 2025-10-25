@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { AddTasks } from '../components/AddTasks/AddTasks';
-import { TabsList } from '../components/TabsList/TabsList';
-import { Tasks } from '../components/Tasks/Tasks';
+import AddTasks from '../components/AddTasks/AddTasks';
+import TabsList from '../components/TabsList/TabsList';
+import Tasks from '../components/Tasks/Tasks';
 
 import { fetchFilter } from '../api/http';
 import { Filter, Todo, TodoInfo } from '../models/todo';
@@ -21,7 +21,7 @@ export default function TodoListPage() {
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<Error | null>(null);
 
-	async function refreshTasks() {
+	const refreshTasks = async () => {
 		setIsLoading(true);
 		try {
 			const { data, info } = await fetchFilter(filter);
@@ -35,7 +35,7 @@ export default function TodoListPage() {
 		} finally {
 			setIsLoading(false);
 		}
-	}
+	};
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
