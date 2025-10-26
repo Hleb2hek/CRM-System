@@ -38,10 +38,7 @@ export default function TodoListPage() {
 	};
 
 	useEffect(() => {
-		const intervalId = setInterval(() => {
-			refreshTasks();
-		}, 5000);
-		return () => clearInterval(intervalId);
+		refreshTasks();
 	}, [filter]);
 
 	return (
