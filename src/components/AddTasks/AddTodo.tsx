@@ -4,7 +4,7 @@ import { postUserTasks } from '../../api/http';
 
 import { Flex, Form, Input, Button } from 'antd';
 
-const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
+const AddTodo: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
 	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
 
 	async function createTasks(value: { task: string }) {
@@ -48,4 +48,4 @@ const AddTasks: React.FC<{ refreshTasks: () => void }> = ({ refreshTasks }) => {
 	);
 };
 
-export default AddTasks;
+export default AddTodo;

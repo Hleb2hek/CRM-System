@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import AddTasks from '../components/AddTasks/AddTasks';
+import AddTodo from '../components/AddTasks/AddTodo';
 import TabsList from '../components/TabsList/TabsList';
-import Tasks from '../components/Tasks/Tasks';
+import TodoList from '../components/Tasks/TodoList';
 
 import { fetchFilter } from '../api/http';
 import { Filter, Todo, TodoInfo } from '../models/todo';
@@ -43,7 +43,7 @@ export default function TodoListPage() {
 
 	return (
 		<>
-			<AddTasks refreshTasks={refreshTasks} />
+			<AddTodo refreshTasks={refreshTasks} />
 			<TabsList setFilter={setFilter} tabs={tabs} filter={filter} />
 
 			<Flex justify="center">
@@ -52,7 +52,7 @@ export default function TodoListPage() {
 				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
 			</Flex>
 
-			<Tasks filter={filter} tasks={tasks} refreshTasks={refreshTasks} setError={setError} />
+			<TodoList filter={filter} tasks={tasks} refreshTasks={refreshTasks} setError={setError} />
 		</>
 	);
 }

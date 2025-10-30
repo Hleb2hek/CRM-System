@@ -5,7 +5,7 @@ import { Filter, Todo } from '../../models/todo';
 
 import { Flex, List } from 'antd';
 
-const Tasks: React.FC<{
+const TodoList: React.FC<{
 	filter: Filter;
 	tasks: Todo[];
 	refreshTasks: () => void;
@@ -29,4 +29,4 @@ const Tasks: React.FC<{
 		</Flex>
 	);
 };
-export default Tasks;
+export default TodoList;
