@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
-import AddTodo from '../components/AddTasks/AddTodo';
+import AddTodo from '../components/AddTodo/AddTodo';
 import TabsList from '../components/TabsList/TabsList';
 import TodoList from '../components/Tasks/TodoList';
 
-import { fetchFilter } from '../api/http';
+import { getTodosByFilter } from '../api/http';
 import { Filter, Todo, TodoInfo } from '../models/todo';
 
 import { Flex } from 'antd';
@@ -24,14 +24,16 @@ export default function TodoListPage() {
 	const refreshTasks = async () => {
 		setIsLoading(true);
 		try {
-			const { data, info } = await fetchFilter(filter);
+			const { data, info } = await getTodosByFilter(filter);
 			setTasks(data);
 			if (info) {
 				setTabs(info);
 			}
 			setError(null);
 		} catch (error: unknown) {
-			if (error instanceof Error) setError(error);
+			if (error instanceof Error) {
+				setError(error);
+			}
 		} finally {
 			setIsLoading(false);
 		}

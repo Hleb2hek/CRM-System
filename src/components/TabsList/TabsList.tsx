@@ -1,28 +1,33 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import { Tabs } from 'antd';
 
 import { Filter, TodoInfo } from '../../models/todo';
 
-const TabsList: React.FC<{
+interface Props {
 	setFilter: (filter: Filter) => void;
 	tabs: TodoInfo;
 	filter: Filter;
-}> = ({ setFilter, tabs: { all, completed, inWork }, filter }) => {
+}
+
+const TabsList: React.FC<Props> = ({ setFilter, tabs: { all, completed, inWork }, filter }) => {
 	const tabItems = [
 		{ key: 'all', label: `Всего задач: ${all}` },
 		{ key: 'completed', label: `Выполнено: ${completed}` },
 		{ key: 'inWork', label: `В работе: ${inWork}` },
 	];
 
-	return (
-		<Tabs
-			activeKey={filter}
-			onChange={(key) => setFilter(key as Filter)}
-			items={tabItems}
-			centered
-		/>
-	);
+	const ifFilter = (key: string): key is Filter => {
+		return ['all', 'completed', 'inWork'].includes(key);
+	};
+
+	const handlFilterChange = (key: string) => {
+		if (ifFilter(key)) {
+			setFilter(key);
+		}
+	};
+
+	return <Tabs activeKey={filter} onChange={handlFilterChange} items={tabItems} centered />;
 };
 
 export default TabsList;

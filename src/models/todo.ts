@@ -1,16 +1,13 @@
 import { ReactNode } from 'react';
 
-export interface TodoRequest {
-	title?: string;
-	isDone?: boolean;
-}
-
 export interface Todo {
 	id: number;
 	title: string;
 	created: string;
 	isDone: boolean;
 }
+
+export type PartialTodoRequest = Partial<Pick<Todo, 'title' | 'isDone'>>;
 
 export interface TodoInfo {
 	all: number;

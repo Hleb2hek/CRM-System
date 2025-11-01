@@ -1,11 +1,11 @@
-import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from '../models/todo';
+import { Filter, MetaResponse, Todo, TodoInfo, PartialTodoRequest } from '../models/todo';
 
 import axios from 'axios';
 
 const instance = axios.create({ baseURL: 'https://easydev.club/api/v1/todos' });
 
 // Запрос на отправку таски
-export async function postUserTasks(task: string): Promise<Todo> {
+export async function addUserTodo(task: string): Promise<Todo> {
 	try {
 		const response = await instance.post<Todo>('', {
 			title: task,
@@ -16,16 +16,15 @@ export async function postUserTasks(task: string): Promise<Todo> {
 	}
 }
 // Запрос на удаление
-export async function deleteTaskFetch(id: number): Promise<boolean> {
+export async function deleteUserTodo(id: number): Promise<void> {
 	try {
 		await instance.delete(`/${id}`);
-		return true;
 	} catch (error) {
 		throw new Error(`Ошибка удаления`);
 	}
 }
 // Запрос на редактирование
-export async function editTaskFetch(id: number, todoRequest: TodoRequest): Promise<Todo> {
+export async function editUserTodo(id: number, todoRequest: PartialTodoRequest): Promise<Todo> {
 	try {
 		const response = await instance.put<Todo>(`/${id}`, todoRequest);
 		return response.data;
@@ -35,7 +34,9 @@ export async function editTaskFetch(id: number, todoRequest: TodoRequest): Promi
 }
 
 // Запрос на список
-export async function fetchFilter(filter: Filter = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
+export async function getTodosByFilter(
+	filter: Filter = 'all',
+): Promise<MetaResponse<Todo, TodoInfo>> {
 	try {
 		const response = await instance.get<MetaResponse<Todo, TodoInfo>>('', {
 			params: { filter },

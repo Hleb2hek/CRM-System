@@ -1,16 +1,18 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import { TasksItem } from './TasksItem';
 import { Filter, Todo } from '../../models/todo';
 
 import { Flex, List } from 'antd';
 
-const TodoList: React.FC<{
+interface Props {
 	filter: Filter;
 	tasks: Todo[];
 	refreshTasks: () => void;
 	setError: (arg: Error | null) => void;
-}> = ({ tasks, refreshTasks, setError }) => {
+}
+
+const TodoList: React.FC<Props> = ({ tasks, refreshTasks, setError }) => {
 	return (
 		<Flex justify="center">
 			<List
@@ -23,7 +25,8 @@ const TodoList: React.FC<{
 							title={title}
 							isDone={isDone}
 							refreshTasks={refreshTasks}
-							setError={setError}></TasksItem>
+							setError={setError}
+						/>
 					</List.Item>
 				)}></List>
 		</Flex>

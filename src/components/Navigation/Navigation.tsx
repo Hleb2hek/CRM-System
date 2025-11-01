@@ -28,6 +28,13 @@ export default function Navigation() {
 
 	const defaultKey = itemsArr.find((item) => item.path === locations.pathname)?.key || '1';
 
+	const handleClick = (key: string) => {
+		const path = itemsArr.find((arr) => arr.key === key)?.path;
+		if (path) {
+			return navigation(path);
+		}
+	};
+
 	return (
 		<Sider theme="light">
 			<Menu
@@ -35,12 +42,7 @@ export default function Navigation() {
 				theme="light"
 				selectedKeys={[defaultKey]}
 				style={{ height: '100%', borderRight: 0, position: 'relative' }}
-				onClick={({ key }) => {
-					const path = itemsArr.find((arr) => arr.key === key)?.path;
-					if (path) {
-						return navigation(path);
-					}
-				}}
+				onClick={(e) => handleClick(e.key)}
 				items={itemsArr.map(({ key, icon, label }) => ({
 					key,
 					icon,

@@ -1,90 +1,97 @@
-import editSvg from '../../assets/edit.svg';
-import trash from '../../assets/trash.svg';
-
 import React, { useState } from 'react';
 
-import { editTaskFetch, deleteTaskFetch } from '../../api/http';
+import { editUserTodo, deleteUserTodo } from '../../api/http';
 
 import { Card, Checkbox, Button, Flex, Form, Input } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-export const TasksItem: React.FC<{
+interface Props {
 	id: number;
 	title: string;
 	isDone: boolean;
 	setError: (arg: Error | null) => void;
 	refreshTasks: () => void;
-}> = ({ id, title, isDone, refreshTasks, setError }) => {
+}
+
+export const TasksItem: React.FC<Props> = ({ id, title, isDone, refreshTasks, setError }) => {
 	const [isEdit, setIsEdit] = useState<boolean>(false);
 
-	function openEditMode() {
+	const MAX_TITLE_LENGTH = 64;
+	const MIN_TITLE_LENGTH = 2;
+
+	const openEditMode = () => {
 		setIsEdit(true);
-	}
+	};
 
-	function closeEditMode() {
+	const closeEditMode = () => {
 		setIsEdit(false);
-	}
+	};
 
-	async function checkboxTasks() {
+	const handleChangeTodoStatus = async () => {
 		try {
-			await editTaskFetch(id, { isDone: !isDone });
+			await editUserTodo(id, { isDone: !isDone });
 			refreshTasks();
 			setError(null);
 		} catch (error) {
-			if (error instanceof Error) setError(error);
+			if (error instanceof Error) {
+				setError(error);
+			}
 		}
-	}
+	};
 
-	async function deleteTask() {
+	const handleDeleteTask = async () => {
 		try {
-			await deleteTaskFetch(id);
+			await deleteUserTodo(id);
 			refreshTasks();
 			setError(null);
 		} catch (error) {
-			if (error instanceof Error) setError(error);
+			if (error instanceof Error) {
+				setError(error);
+			}
 		}
-	}
+	};
 
-	async function editTasks(value: { task: string }) {
+	const handleEditTask = async (value: { task: string }) => {
 		try {
-			await editTaskFetch(id, { title: value.task?.trim() });
+			await editUserTodo(id, { title: value.task?.trim() });
 			refreshTasks();
 			closeEditMode();
 			setError(null);
 		} catch (error) {
-			if (error instanceof Error) setError(error);
+			if (error instanceof Error) {
+				setError(error);
+			}
 		}
-	}
+	};
 
 	return (
 		<Flex justify="center" align="center" style={{ width: '30rem' }}>
 			<Card style={{ width: '100%' }}>
 				{!isEdit ? (
 					<Flex gap="1.25rem" align="center" justify="space-between">
-						<Checkbox onChange={checkboxTasks} checked={isDone} type="checkbox" />
+						<Checkbox onChange={handleChangeTodoStatus} checked={isDone} type="checkbox" />
 						<p style={{ margin: 0, overflowWrap: 'anywhere' }}>{title}</p>
 						<Flex gap="0.625rem">
 							<Button onClick={openEditMode}>
-								<img src={editSvg} width={16} height={16} />
+								<EditOutlined />
 							</Button>
-							<Button onClick={deleteTask}>
-								<img src={trash} width={16} height={16} />
+							<Button onClick={handleDeleteTask}>
+								<DeleteOutlined />
 							</Button>
 						</Flex>
 					</Flex>
 				) : (
-					<Form onFinish={editTasks}>
+					<Form onFinish={handleEditTask}>
 						<Form.Item
 							name="task"
-							validateTrigger={['onChange', 'onSubmit']}
+							validateTrigger="onSubmit"
 							rules={[
-								{ required: true, message: 'Поле пустое, введите значение' },
-								{ whitespace: true, message: 'Уберите пробелы' },
 								{
-									max: 64,
+									max: MAX_TITLE_LENGTH,
 									message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
 								},
 								{
-									min: 2,
+									min: MIN_TITLE_LENGTH,
 									message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
 								},
 							]}>
