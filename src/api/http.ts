@@ -1,65 +1,48 @@
-import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from "../models/todo";
+import { Filter, MetaResponse, Todo, TodoInfo, PartialTodoRequest } from '../models/todo';
+
+import axios from 'axios';
+
+const instance = axios.create({ baseURL: 'https://easydev.club/api/v1/todos' });
 
 // Запрос на отправку таски
-export async function postUserTasks(task: string): Promise<Todo> {
-	const response = await fetch("https://easydev.club/api/v1/todos", {
-		method: "POST",
-		body: JSON.stringify({ title: task }),
-		headers: {
-			'Content-Type': 'application/json'
-		},
-	})
-
-	if (!response.ok) {
-		throw new Error(`Ошибка отправки данных`)
+export async function addUserTodo(task: string): Promise<Todo> {
+	try {
+		const response = await instance.post<Todo>('', {
+			title: task,
+		});
+		return response.data;
+	} catch (error) {
+		throw new Error(`Ошибка отправки данных`);
 	}
-
-	const resData: Todo = await response.json();
-	return resData
 }
 // Запрос на удаление
-export async function deleteTaskFetch(id: number): Promise<boolean> {
-	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-		method: "DELETE",
-		headers: {
-			'accept': 'application/json'
-		},
-	})
-
-	if (!response.ok) {
-		throw new Error(`Ошибка удаления`)
+export async function deleteUserTodo(id: number): Promise<void> {
+	try {
+		await instance.delete(`/${id}`);
+	} catch (error) {
+		throw new Error(`Ошибка удаления`);
 	}
-
-	return true
 }
 // Запрос на редактирование
-export async function editTaskFetch(id: number, todoRequest: TodoRequest): Promise<Todo> {
-	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-		method: "PUT",
-		body: JSON.stringify(todoRequest),
-		headers: {
-			'Content-Type': 'application/json'
-		},
-	})
-
-	if (!response.ok) {
-		throw new Error(`Ошибка редактирования`)
+export async function editUserTodo(id: number, todoRequest: PartialTodoRequest): Promise<Todo> {
+	try {
+		const response = await instance.put<Todo>(`/${id}`, todoRequest);
+		return response.data;
+	} catch (error) {
+		throw new Error(`Ошибка редактирования`);
 	}
-
-	const resData: Todo = await response.json();
-	return resData
 }
 
 // Запрос на список
-export async function fetchFilter(filter: Filter = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
-	const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
-
-	if (!response.ok) {
-		throw new Error(`Не удаётся связаться с сервером`)
+export async function getTodosByFilter(
+	filter: Filter = 'all',
+): Promise<MetaResponse<Todo, TodoInfo>> {
+	try {
+		const response = await instance.get<MetaResponse<Todo, TodoInfo>>('', {
+			params: { filter },
+		});
+		return response.data;
+	} catch (error) {
+		throw new Error(`Не удаётся связаться с сервером`);
 	}
-
-	const jsonData: MetaResponse<Todo, TodoInfo> = await response.json();
-
-	return jsonData
-
 }
