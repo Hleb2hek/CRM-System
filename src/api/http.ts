@@ -1,4 +1,4 @@
-import { Filter, MetaResponse, Todo, TodoInfo, PartialTodoRequest } from '../models/todo';
+import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from '../models/todo';
 
 import axios from 'axios';
 
@@ -24,7 +24,7 @@ export async function deleteUserTodo(id: number): Promise<void> {
 	}
 }
 // Запрос на редактирование
-export async function editUserTodo(id: number, todoRequest: PartialTodoRequest): Promise<Todo> {
+export async function editUserTodo(id: number, todoRequest: TodoRequest): Promise<Todo> {
 	try {
 		const response = await instance.put<Todo>(`/${id}`, todoRequest);
 		return response.data;

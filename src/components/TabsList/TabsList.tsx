@@ -17,12 +17,12 @@ const TabsList: React.FC<Props> = ({ setFilter, tabs: { all, completed, inWork }
 		{ key: 'inWork', label: `В работе: ${inWork}` },
 	];
 
-	const ifFilter = (key: string): key is Filter => {
+	const isFilter = (key: string): key is Filter => {
 		return ['all', 'completed', 'inWork'].includes(key);
 	};
 
 	const handlFilterChange = (key: string) => {
-		if (ifFilter(key)) {
+		if (isFilter(key)) {
 			setFilter(key);
 		}
 	};

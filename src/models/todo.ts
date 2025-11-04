@@ -7,7 +7,7 @@ export interface Todo {
 	isDone: boolean;
 }
 
-export type PartialTodoRequest = Partial<Pick<Todo, 'title' | 'isDone'>>;
+export type TodoRequest = Partial<Pick<Todo, 'title' | 'isDone'>>;
 
 export interface TodoInfo {
 	all: number;
