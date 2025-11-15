@@ -6,7 +6,6 @@ import { MenuItem } from '../../models/todo';
 const { Sider } = Layout;
 
 export default function Navigation() {
-	// Программный Link
 	const navigation = useNavigate();
 
 	const locations = useLocation();
@@ -16,13 +15,13 @@ export default function Navigation() {
 			key: '1',
 			icon: <UnorderedListOutlined />,
 			label: 'Список задач',
-			path: '/',
+			path: '/todo',
 		},
 		{
 			key: '2',
 			icon: <UserOutlined />,
 			label: 'Профиль',
-			path: '/profile',
+			path: '/todo/profile',
 		},
 	];
 

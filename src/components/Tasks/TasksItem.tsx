@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { editUserTodo, deleteUserTodo } from '../../api/http';
+import { editUserTodo, deleteUserTodo } from '../../api/todoApi';
 
 import { Card, Checkbox, Button, Flex, Form, Input } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';

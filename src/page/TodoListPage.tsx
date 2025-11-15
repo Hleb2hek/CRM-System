@@ -4,7 +4,7 @@ import AddTodo from '../components/AddTodo/AddTodo';
 import TabsList from '../components/TabsList/TabsList';
 import TodoList from '../components/Tasks/TodoList';
 
-import { getTodosByFilter } from '../api/http';
+import { getTodosByFilter } from '../api/todoApi';
 import { Filter, Todo, TodoInfo } from '../models/todo';
 
 import { Flex } from 'antd';
