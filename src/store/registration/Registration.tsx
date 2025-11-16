@@ -8,129 +8,136 @@ import {
 	LoginOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import Modal from '../../components/Modal/Modal';
 
 export default function Registration() {
 	return (
-		<Flex>
-			<img style={{ height: '100dvh' }} src={img} alt="Registration background" />
+		<>
+			<Flex style={{ height: '100dvh' }}>
+				<img src={img} alt="Registration background" />
 
-			<Flex style={{ width: '100%' }} justify="center" align="center">
-				<Flex style={{ width: '420px' }} vertical gap={32}>
-					<Flex vertical gap={8}>
-						<Typography.Title level={2} style={{ margin: 0 }}>
-							Create an Account
-						</Typography.Title>
-						<Typography.Text type="secondary">
-							Join us and start managing your business
-						</Typography.Text>
-					</Flex>
+				<Flex style={{ width: '100%', overflowY: 'auto' }} justify="center" align="center">
+					<Flex style={{ width: '420px' }} vertical gap={32}>
+						<Flex vertical gap={8}>
+							<Typography.Title level={2} style={{ margin: 0 }}>
+								Create an Account
+							</Typography.Title>
+							<Typography.Text type="secondary">
+								Join us and start managing your business
+							</Typography.Text>
+						</Flex>
 
-					<Form layout="vertical">
-						<Form.Item
-							label="Full Name"
-							name="username"
-							rules={[
-								{ required: true, message: 'Please enter your full name!' },
-								{
-									min: 1,
-									max: 60,
-									pattern: /^[a-zA-Zа-яА-Я]+$/,
-									message: '1–60 characters, only Latin or Cyrillic letters',
-								},
-							]}>
-							<Input prefix={<UserOutlined />} placeholder="John Doe" />
-						</Form.Item>
-
-						<Form.Item
-							label="Login"
-							name="login"
-							rules={[
-								{ required: true, message: 'Please enter your login!' },
-								{
-									min: 2,
-									max: 60,
-									message: '2–60 characters, only Latin letters',
-								},
-							]}>
-							<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
-						</Form.Item>
-
-						<Form.Item
-							label="Email"
-							name="email"
-							rules={[
-								{ required: true, message: 'Please enter your email!' },
-								{ type: 'email', message: 'Invalid email address!' },
-							]}>
-							<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
-						</Form.Item>
-
-						<Form.Item
-							label="Phone"
-							name="phone"
-							rules={[
-								{
-									message: 'Please enter a valid phone number',
-								},
-							]}>
-							<Input prefix={<PhoneOutlined />} placeholder="+8 800 555 35 35" />
-						</Form.Item>
-
-						<Form.Item
-							label="Password"
-							name="password"
-							rules={[
-								{ required: true, message: 'Please enter your password!' },
-								{
-									min: 6,
-									max: 60,
-									message: 'Password must be 6–60 characters',
-								},
-							]}>
-							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
-						</Form.Item>
-
-						<Form.Item
-							name="confirm"
-							label="Confirm Password"
-							dependencies={['password']}
-							hasFeedback
-							rules={[
-								{
-									required: true,
-									message: 'Please confirm your password!',
-								},
-								({ getFieldValue }) => ({
-									validator(_, value) {
-										if (!value || getFieldValue('password') === value) {
-											return Promise.resolve();
-										}
-										return Promise.reject(
-											new Error('The new password that you entered do not match!'),
-										);
+						<Form layout="vertical">
+							<Form.Item
+								label="Full Name"
+								name="username"
+								rules={[
+									{ required: true, message: 'Please enter your full name!' },
+									{
+										min: 1,
+										max: 60,
+										pattern: /^[а-яА-ЯёЁa-zA-Z0-9]+$/,
+										message: '1–60 characters, only Latin or Cyrillic letters',
 									},
-								}),
-							]}>
-							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
-						</Form.Item>
+								]}>
+								<Input prefix={<UserOutlined />} placeholder="John Doe" />
+							</Form.Item>
 
-						<Form.Item>
-							<Button type="primary" htmlType="submit" block size="large">
-								Create Account
-							</Button>
-						</Form.Item>
-					</Form>
+							<Form.Item
+								label="Login"
+								name="login"
+								rules={[
+									{ required: true, message: 'Please enter your login!' },
+									{
+										min: 2,
+										max: 60,
+										pattern: /^[a-zA-Z0-9]+$/,
+										message: '2–60 characters, only Latin letters',
+									},
+								]}>
+								<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
+							</Form.Item>
 
-					<Flex justify="center">
-						<Typography.Text type="secondary">
-							Already have an account?
-							<Link to="/" style={{ marginLeft: '10px' }}>
-								Sign in
-							</Link>
-						</Typography.Text>
+							<Form.Item
+								label="Email"
+								name="email"
+								rules={[
+									{ required: true, message: 'Please enter your email!' },
+									{ type: 'email', message: 'Invalid email address!' },
+								]}>
+								<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
+							</Form.Item>
+
+							<Form.Item
+								label="Phone"
+								name="phone"
+								rules={[
+									{
+										message: 'Please enter a valid phone number',
+									},
+								]}>
+								<Input prefix={<PhoneOutlined />} placeholder="+8 800 555 35 35" />
+							</Form.Item>
+
+							<Form.Item
+								label="Password"
+								name="password"
+								rules={[
+									{ required: true, message: 'Please enter your password!' },
+									{
+										min: 6,
+										max: 60,
+										message: 'Password must be 6–60 characters',
+									},
+								]}>
+								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
+							</Form.Item>
+
+							<Form.Item
+								name="confirm"
+								label="Confirm Password"
+								dependencies={['password']}
+								hasFeedback
+								rules={[
+									{
+										required: true,
+										message: 'Please confirm your password!',
+									},
+									({ getFieldValue }) => ({
+										validator(_, value) {
+											if (!value || getFieldValue('password') === value) {
+												return Promise.resolve();
+											}
+											return Promise.reject(
+												new Error(
+													'The new password that you entered do not match!',
+												),
+											);
+										},
+									}),
+								]}>
+								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
+							</Form.Item>
+
+							<Form.Item>
+								<Button type="primary" htmlType="submit" block size="large">
+									Create Account
+								</Button>
+							</Form.Item>
+						</Form>
+
+						<Flex justify="center" style={{ marginBottom: '1rem' }}>
+							<Typography.Text type="secondary">
+								Already have an account?
+								<Link to="/" style={{ marginLeft: '10px' }}>
+									Sign in
+								</Link>
+							</Typography.Text>
+						</Flex>
 					</Flex>
 				</Flex>
 			</Flex>
-		</Flex>
+			{/* <Modal /> */}
+		</>
 	);
 }
