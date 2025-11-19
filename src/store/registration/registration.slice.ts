@@ -1,37 +1,60 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { UserRegistration } from '../../models/authorizationType';
+// src/pages/registration.slice.ts
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-const initialState: UserRegistration = {
-	login: '2',
-	username: '3',
-	password: '4',
-	email: '5',
-	phoneNumber: '6',
+interface AuthState {
+	loading: boolean;
+	success: boolean;
+	error: string | null;
+}
+
+const initialState: AuthState = {
+	loading: false,
+	success: false,
+	error: null,
 };
 
-export const registrationSlice = createSlice({
-	name: 'registration',
-	initialState: initialState,
+export const registerUser = createAsyncThunk(
+	'auth/register',
+	async (userData: any, { rejectWithValue }) => {
+		try {
+			const response = await axios.post('https://easydev.club/api/v1/auth/signup', userData, {
+				headers: { 'Content-Type': 'application/json' },
+			});
+			return response.data;
+		} catch (err: any) {
+			const msg = err.response?.data?.message || err.message || 'Ошибка регистрации';
+			return rejectWithValue(msg);
+		}
+	},
+);
+
+const authSlice = createSlice({
+	name: 'auth',
+	initialState,
 	reducers: {
-		login(state, action: PayloadAction<string>) {
-			state.login = action.payload;
+		clearAuthStatus: (state) => {
+			state.success = false;
+			state.error = null;
 		},
-		username(state) {
-			state.username;
-		},
-		password(state) {
-			state.password;
-		},
-		email(state) {
-			state.email;
-		},
-		phoneNumber(state) {
-			state.phoneNumber;
-		},
-		// incrementByAmount(state, action: PayloadAction<number>) {
-		// 	state.value += action.payload;
-		// },
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(registerUser.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+				state.success = false;
+			})
+			.addCase(registerUser.fulfilled, (state) => {
+				state.loading = false;
+				state.success = true;
+			})
+			.addCase(registerUser.rejected, (state, action) => {
+				state.loading = false;
+				state.error = action.payload as string;
+			});
 	},
 });
 
-export const { login, username, password, email, phoneNumber } = registrationSlice.actions;
+export const { clearAuthStatus } = authSlice.actions;
+export default authSlice.reducer;
