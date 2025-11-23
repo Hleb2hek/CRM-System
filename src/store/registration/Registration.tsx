@@ -1,6 +1,5 @@
-// src/pages/Registration.tsx
-import { useEffect } from 'react';
-import { Flex, Form, Input, Button, Typography, message } from 'antd';
+import img from '../../../public/illustration.png';
+import { Flex, Form, Input, Button, Typography, Checkbox } from 'antd';
 import {
 	LockOutlined,
 	MailOutlined,
@@ -8,132 +7,107 @@ import {
 	PhoneOutlined,
 	LoginOutlined,
 } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
-import img from '../../../public/illustration.png';
-import { useAppDispatch, useAppSelector } from '../store';
-import { clearAuthStatus, registerUser } from './registration.slice';
+import { Link } from 'react-router-dom';
 
 export default function Registration() {
-	const [form] = Form.useForm();
-	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
-	const { loading, success, error } = useAppSelector((state) => state.auth);
-
-	useEffect(() => {
-		if (success) {
-			message.success('Регистрация прошла успешно! Сейчас перенаправим...');
-			const timer = setTimeout(() => {
-				navigate('/todo');
-			}, 2000);
-			return () => clearTimeout(timer);
-		}
-
-		if (error) {
-			message.error(typeof error === 'string' ? error : 'Ошибка регистрации');
-			dispatch(clearAuthStatus());
-		}
-	}, [success, error, navigate, dispatch]);
-
-	const onFinish = (values: any) => {
-		const { confirm, ...data } = values;
-
-		const payload = {
-			login: data.login,
-			username: data.username,
-			password: data.password,
-			email: data.email,
-			phoneNumber: data.phoneNumber || '',
-		};
-		dispatch(registerUser(payload));
-	};
-
 	return (
-		<Flex style={{ height: '100dvh' }}>
-			<img
-				src={img}
-				alt="Registration background"
-				style={{ objectFit: 'cover', width: '50%', height: '100%' }}
-			/>
+		<Flex>
+			<img style={{ height: '100dvh' }} src={img} alt="Registration background" />
 
-			<Flex style={{ width: '100%', overflowY: 'auto' }} justify="center" align="center">
+			<Flex style={{ width: '100%' }} justify="center" align="center">
 				<Flex style={{ width: '420px' }} vertical gap={32}>
 					<Flex vertical gap={8}>
 						<Typography.Title level={2} style={{ margin: 0 }}>
-							Создать аккаунт
+							Create an Account
 						</Typography.Title>
 						<Typography.Text type="secondary">
-							Присоединяйтесь и начинайте управлять своим бизнесом
+							Join us and start managing your business
 						</Typography.Text>
 					</Flex>
 
-					<Form
-						form={form}
-						layout="vertical"
-						onFinish={onFinish}
-						autoComplete="off"
-						disabled={loading}>
+					<Form layout="vertical">
 						<Form.Item
-							label="Имя пользователя"
+							label="Full Name"
 							name="username"
 							rules={[
-								{ required: true, message: 'Введите имя пользователя!' },
+								{ required: true, message: 'Please enter your full name!' },
 								{
 									min: 1,
 									max: 60,
-									pattern: /^[а-яА-ЯёЁa-zA-Z0-9\s]+$/,
-									message: '1–60 символов, только буквы, цифры и пробелы',
+									pattern: /^[a-zA-Zа-яА-Я]+$/,
+									message: '1–60 characters, only Latin or Cyrillic letters',
 								},
 							]}>
-							<Input prefix={<UserOutlined />} placeholder="Иван Иванов" />
+							<Input prefix={<UserOutlined />} placeholder="John Doe" />
 						</Form.Item>
+
 						<Form.Item
-							label="Логин"
+							label="Login"
 							name="login"
 							rules={[
-								{ required: true, message: 'Введите логин!' },
+								{ required: true, message: 'Please enter your login!' },
 								{
 									min: 2,
 									max: 60,
-									pattern: /^[a-zA-Z0-9]+$/,
-									message: '2–60 символов, только латиница и цифры',
+									message: '2–60 characters, only Latin letters',
 								},
 							]}>
 							<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
 						</Form.Item>
+
 						<Form.Item
 							label="Email"
 							name="email"
 							rules={[
-								{ required: true, message: 'Введите email!' },
-								{ type: 'email', message: 'Некорректный email!' },
+								{ required: true, message: 'Please enter your email!' },
+								{ type: 'email', message: 'Invalid email address!' },
 							]}>
 							<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
 						</Form.Item>
-						<Form.Item label="Телефон (необязательно)" name="phoneNumber">
-							<Input prefix={<PhoneOutlined />} placeholder="+7 999 123 45 67" />
-						</Form.Item>
+
 						<Form.Item
-							label="Пароль"
+							label="Phone"
+							name="phone"
+							rules={[
+								{
+									message: 'Please enter a valid phone number',
+								},
+							]}>
+							<Input prefix={<PhoneOutlined />} placeholder="+8 800 555 35 35" />
+						</Form.Item>
+
+						<Form.Item
+							label="Password"
 							name="password"
 							rules={[
-								{ required: true, message: 'Введите пароль!' },
-								{ min: 6, message: 'Минимум 6 символов' },
+								{ required: true, message: 'Please enter your password!' },
+								{
+									min: 6,
+									max: 60,
+									message: 'Password must be 6–60 characters',
+								},
 							]}>
 							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 						</Form.Item>
+
 						<Form.Item
 							name="confirm"
-							label="Повторите пароль"
+							label="Confirm Password"
 							dependencies={['password']}
 							hasFeedback
 							rules={[
-								{ required: true, message: 'Подтвердите пароль!' },
+								{
+									required: true,
+									message: 'Please confirm your password!',
+								},
 								({ getFieldValue }) => ({
 									validator(_, value) {
 										if (!value || getFieldValue('password') === value) {
 											return Promise.resolve();
 										}
-										return Promise.reject(new Error('Пароли не совпадают!'));
+										return Promise.reject(
+											new Error('The new password that you entered do not match!'),
+										);
 									},
 								}),
 							]}>
@@ -141,15 +115,18 @@ export default function Registration() {
 						</Form.Item>
 
 						<Form.Item>
-							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
-								Зарегистрироваться
+							<Button type="primary" htmlType="submit" block size="large">
+								Create Account
 							</Button>
 						</Form.Item>
 					</Form>
 
 					<Flex justify="center">
 						<Typography.Text type="secondary">
-							Уже есть аккаунт? <Link to="/login">Войти</Link>
+							Already have an account?
+							<Link to="/" style={{ marginLeft: '10px' }}>
+								Sign in
+							</Link>
 						</Typography.Text>
 					</Flex>
 				</Flex>

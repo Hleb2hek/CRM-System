@@ -1,60 +1,27 @@
-// src/pages/registration.slice.ts
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { UserRegistration } from '../../models/authorizationType';
 
-interface AuthState {
-	loading: boolean;
-	success: boolean;
-	error: string | null;
-}
-
-const initialState: AuthState = {
-	loading: false,
-	success: false,
-	error: null,
+const initialState: UserRegistration = {
+	login: '',
+	username: '',
+	password: '',
+	email: '',
+	phoneNumber: '',
 };
 
-export const registerUser = createAsyncThunk(
-	'auth/register',
-	async (userData: any, { rejectWithValue }) => {
-		try {
-			const response = await axios.post('https://easydev.club/api/v1/auth/signup', userData, {
-				headers: { 'Content-Type': 'application/json' },
-			});
-			return response.data;
-		} catch (err: any) {
-			const msg = err.response?.data?.message || err.message || 'Ошибка регистрации';
-			return rejectWithValue(msg);
-		}
-	},
-);
-
-const authSlice = createSlice({
-	name: 'auth',
-	initialState,
+export const registrationSlice = createSlice({
+	name: 'registration',
+	initialState: initialState,
 	reducers: {
-		clearAuthStatus: (state) => {
-			state.success = false;
-			state.error = null;
+		updateForm(state, action: PayloadAction<{ field: keyof UserRegistration; value: string }>) {
+			const { field, value } = action.payload;
+			state[field] = value;
 		},
-	},
-	extraReducers: (builder) => {
-		builder
-			.addCase(registerUser.pending, (state) => {
-				state.loading = true;
-				state.error = null;
-				state.success = false;
-			})
-			.addCase(registerUser.fulfilled, (state) => {
-				state.loading = false;
-				state.success = true;
-			})
-			.addCase(registerUser.rejected, (state, action) => {
-				state.loading = false;
-				state.error = action.payload as string;
-			});
+		resetForm() {
+			return initialState;
+		},
 	},
 });
 
-export const { clearAuthStatus } = authSlice.actions;
-export default authSlice.reducer;
+export const { updateForm, resetForm } = registrationSlice.actions;
+export default registrationSlice.reducer;

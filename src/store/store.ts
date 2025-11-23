@@ -1,11 +1,11 @@
 // src/app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
-import authSlice from './registration/registration.slice';
+import registrationSlice from './registration/registration.slice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 export const store = configureStore({
 	reducer: {
-		auth: authSlice,
+		auth: registrationSlice,
 	},
 });
 
