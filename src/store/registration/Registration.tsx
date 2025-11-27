@@ -8,9 +8,9 @@ import {
 	LoginOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../store'; // исправленный путь
-import { updateForm, registerUser } from './registrationSlice'; // исправленный путь
-import { UserRegistration } from '../../models/authorizationType'; // исправленный путь
+import { useAppDispatch } from '../store';
+import { updateForm, registerUser } from './registrationSlice'; 
+import { UserRegistration } from '../../models/authorizationType';
 
 export default function Registration() {
 	const [form] = Form.useForm();
