@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../store';
+
 import { updateForm, registerUser } from './registrationSlice';
 import { UserRegistration } from '../../models/authorizationType';
 import { openModal } from '../modal/statusSlice';
