@@ -14,13 +14,13 @@ export const registerUser = createAsyncThunk(
 	'registration/registerUser',
 	async (data: UserRegistration, { rejectWithValue }) => {
 		try {
-			console.log('Отправляемые данные:', data);
-
 			const response = await axios.post('https://easydev.club/api/v1/auth/signup', data);
 			return response.data;
 		} catch (err: any) {
-			console.log('Полная ошибка:', err.response);
-			return rejectWithValue(err.response?.data?.message || err.message || 'Ошибка регистрации');
+			if (err.response) {
+				return rejectWithValue(err.response.data);
+			}
+			return rejectWithValue({ message: 'Ошибка отправки данных' });
 		}
 	},
 );
@@ -33,16 +33,6 @@ export const registrationSlice = createSlice({
 			const { field, value } = action.payload;
 			state[field] = value;
 		},
-	},
-
-	extraReducers: (builder) => {
-		builder
-			.addCase(registerUser.fulfilled, (state) => {
-				Object.assign(state, initialState);
-			})
-			.addCase(registerUser.rejected, (state, action) => {
-				console.error('Ошибка регистрации:', action.payload);
-			});
 	},
 });
 
