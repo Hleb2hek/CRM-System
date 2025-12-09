@@ -3,7 +3,7 @@ import { Flex, Form, Input, Button, Typography, Checkbox } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
 import { useAppDispatch } from '../store';
-import { AuthData } from '../../models/authorizationType';
+import { AuthData, ErrorStatus } from '../../models/authorizationType';
 import { authForm, authUser } from './authSlice';
 import { openModal } from '../modal/statusSlice';
 import StatusModal from '../modal/Modal';
@@ -18,12 +18,28 @@ export default function Authorization() {
 			await dispatch(authUser(values)).unwrap();
 			form.resetFields();
 			navigate('/todo');
-		} catch (err: any) {
-			const message = values.login
-				? `Ошибка регистрации: логин "${values.login}" уже существует`
-				: 'Ошибка регистрации';
-
-			dispatch(openModal({ message, type: 'error' }));
+		} catch (error: unknown) {
+			function isError(error: any): error is ErrorStatus {
+				return error;
+			}
+			if (isError(error)) {
+				const err: ErrorStatus = error;
+				if (err.status === 404) {
+					dispatch(
+						openModal({
+							message: err.message,
+							type: 'error',
+						}),
+					);
+				} else if (err.status === 401 || err.status === 403) {
+					dispatch(
+						openModal({
+							message: err.message,
+							type: 'error',
+						}),
+					);
+				}
+			}
 		}
 	};
 
@@ -83,9 +99,6 @@ export default function Authorization() {
 								<Button type="primary" htmlType="submit" block size="large">
 									Login
 								</Button>
-							</Form.Item>
-							<Form.Item>
-								<Link to="todo">Login</Link>
 							</Form.Item>
 						</Form>
 

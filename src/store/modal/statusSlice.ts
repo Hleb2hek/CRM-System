@@ -11,7 +11,7 @@ export const statusSlice = createSlice({
 	name: 'status',
 	initialState,
 	reducers: {
-		openModal(state, action: PayloadAction<{ message: string; type: 'success' | 'error' }>) {
+		openModal(state, action: PayloadAction<StatusState>) {
 			state.showModal = true;
 			state.message = action.payload.message;
 			state.type = action.payload.type;

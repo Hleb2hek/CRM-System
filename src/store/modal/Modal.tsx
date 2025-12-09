@@ -8,7 +8,9 @@ export default function StatusModal() {
 	const dispatch = useDispatch();
 	const { showModal, message, type } = useSelector((state: RootState) => state.status);
 
-	if (!showModal) return null;
+	if (!showModal) {
+		return null;
+	}
 
 	return (
 		<Flex

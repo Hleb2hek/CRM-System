@@ -8,6 +8,8 @@ import { getTodosByFilter } from '../api/todoApi';
 import { Filter, Todo, TodoInfo } from '../models/todo';
 
 import { Flex } from 'antd';
+import { useAppDispatch } from '../store/store';
+import { refreshTokenUser } from '../store/authorization/authSlice';
 
 export default function TodoListPage() {
 	const [tasks, setTasks] = useState<Todo[]>([]);
@@ -20,6 +22,8 @@ export default function TodoListPage() {
 	const [filter, setFilter] = useState<Filter>('all');
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<Error | null>(null);
+
+	const dispatch = useAppDispatch();
 
 	const refreshTasks = async () => {
 		setIsLoading(true);

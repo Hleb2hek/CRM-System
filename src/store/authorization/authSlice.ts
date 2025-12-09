@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { AuthData } from '../../models/authorizationType';
+import { AuthData, ErrorStatus, RefreshToken } from '../../models/authorizationType';
+import { instance } from './api.config';
 
 const initialState: AuthData = {
 	login: '',
@@ -8,16 +8,42 @@ const initialState: AuthData = {
 };
 
 export const authUser = createAsyncThunk(
-	'registration/registerUser',
+	'authorization/authUser',
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
-			const response = await axios.post('https://easydev.club/api/v1/auth/signin', data);
+			const response = await instance.post('/signin', data);
+			localStorage.setItem('accessToken', response.data.accessToken);
+			localStorage.setItem('refreshToken', response.data.refreshToken);
 			return response.data;
-		} catch (err: any) {
-			if (err.response) {
-				return rejectWithValue(err.response.data);
+		} catch (error: unknown) {
+			function isError(error: any): error is ErrorStatus {
+				return error;
 			}
-			return rejectWithValue({ message: 'Ошибка отправки данных' });
+			if (isError(error)) {
+				const err: ErrorStatus = error;
+				if (err.response) {
+					if (err.response.status === 404) {
+						return rejectWithValue({
+							status: 404,
+							message: 'Сервис недоступен. Попробуйте позже.',
+						});
+					}
+					if (err.response.status === 401 || err.response.status === 403) {
+						return rejectWithValue({
+							status: err.response.status,
+							message: 'Неверный логин или пароль',
+						});
+					}
+					return rejectWithValue({
+						status: err.response.status,
+						message: 'Произошла ошибка',
+					});
+				}
+				return rejectWithValue({
+					status: 500,
+					message: 'Ошибка отправки данных',
+				});
+			}
 		}
 	},
 );

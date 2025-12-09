@@ -7,11 +7,19 @@ export interface UserRegistration {
 }
 
 export interface StatusState {
-	showModal: boolean;
-	message: string;
+	showModal?: boolean;
+	message: string | string[];
 	type: 'success' | 'error' | null;
 }
 
+export interface ErrorStatus {
+	message: string;
+	status: number;
+	response: {
+		status: number;
+		data?: any;
+	};
+}
 export interface AuthData {
 	login: string;
 	password: string;

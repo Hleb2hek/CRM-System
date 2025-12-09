@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { UserRegistration } from '../../models/authorizationType';
+import { ErrorStatus, UserRegistration } from '../../models/authorizationType';
 
 const initialState: UserRegistration = {
 	login: '',
@@ -16,11 +16,35 @@ export const registerUser = createAsyncThunk(
 		try {
 			const response = await axios.post('https://easydev.club/api/v1/auth/signup', data);
 			return response.data;
-		} catch (err: any) {
-			if (err.response) {
-				return rejectWithValue(err.response.data);
+		} catch (error: unknown) {
+			function isError(error: any): error is ErrorStatus {
+				return error;
 			}
-			return rejectWithValue({ message: 'Ошибка отправки данных' });
+			if (isError(error)) {
+				const err: ErrorStatus = error;
+				if (err.response) {
+					if (err.response.status === 404) {
+						return rejectWithValue({
+							status: 404,
+							message: 'Сервис недоступен. Попробуйте позже.',
+						});
+					}
+					if (err.response.status === 409) {
+						return rejectWithValue({
+							status: err.response.status,
+							message: 'Ошибка регистрации: такой логин или email уже существует',
+						});
+					}
+					return rejectWithValue({
+						status: err.response.status,
+						message: 'Произошла ошибка',
+					});
+				}
+				return rejectWithValue({
+					status: 500,
+					message: 'Ошибка отправки данных',
+				});
+			}
 		}
 	},
 );

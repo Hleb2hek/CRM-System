@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 
 import { updateForm, registerUser } from './registrationSlice';
-import { UserRegistration } from '../../models/authorizationType';
+import { ErrorStatus, UserRegistration } from '../../models/authorizationType';
 import { openModal } from '../modal/statusSlice';
 import StatusModal from '../modal/Modal';
 
@@ -20,6 +20,7 @@ export default function Registration() {
 	const dispatch = useAppDispatch();
 
 	const onFinish = async (values: UserRegistration) => {
+		console.log(values);
 		try {
 			if (!values.phoneNumber) {
 				delete values.phoneNumber;
@@ -29,14 +30,28 @@ export default function Registration() {
 			form.resetFields();
 
 			dispatch(openModal({ message: 'Вы успешно прошли регистрацию', type: 'success' }));
-		} catch (err: any) {
-			const message = values.login
-				? `Ошибка регистрации: логин "${values.login}" уже существует`
-				: values.email
-				? `Ошибка регистрации: email "${values.email}" уже существует`
-				: 'Ошибка регистрации';
-
-			dispatch(openModal({ message, type: 'error' }));
+		} catch (error: unknown) {
+			function isError(error: any): error is ErrorStatus {
+				return error;
+			}
+			if (isError(error)) {
+				const err: ErrorStatus = error;
+				if (err.status === 404) {
+					dispatch(
+						openModal({
+							message: err.message,
+							type: 'error',
+						}),
+					);
+				} else if (err.status === 409) {
+					dispatch(
+						openModal({
+							message: err.message,
+							type: 'error',
+						}),
+					);
+				}
+			}
 		}
 	};
 
