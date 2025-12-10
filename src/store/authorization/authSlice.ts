@@ -12,8 +12,6 @@ export const authUser = createAsyncThunk(
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
 			const response = await instance.post('/signin', data);
-			localStorage.setItem('accessToken', response.data.accessToken);
-			localStorage.setItem('refreshToken', response.data.refreshToken);
 			return response.data;
 		} catch (error: unknown) {
 			function isError(error: any): error is ErrorStatus {

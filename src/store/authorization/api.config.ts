@@ -1,16 +1,15 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { Token } from '../../models/authorizationType';
 
 export const instance = axios.create({
 	baseURL: 'https://easydev.club/api/v1/auth',
 	withCredentials: true,
 });
-instance.interceptors.request.use((config) => {
+instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 	const token = localStorage.getItem('accessToken');
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
-	console.log(config);
 	return config;
 });
 instance.interceptors.response.use(
@@ -44,6 +43,8 @@ instance.interceptors.response.use(
 
 				return instance(originalRequest);
 			} catch (e) {
+				localStorage.clear();
+				window.location.href = '/';
 				return Promise.reject(e);
 			}
 		}
