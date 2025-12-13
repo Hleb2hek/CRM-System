@@ -21,22 +21,21 @@ export const registerUser = createAsyncThunk(
 				return error;
 			}
 			if (isError(error)) {
-				const err: ErrorStatus = error;
-				if (err.response) {
-					if (err.response.status === 404) {
+				if (error.response) {
+					if (error.response.status === 404) {
 						return rejectWithValue({
 							status: 404,
 							message: 'Сервис недоступен. Попробуйте позже.',
 						});
 					}
-					if (err.response.status === 409) {
+					if (error.response.status === 409) {
 						return rejectWithValue({
-							status: err.response.status,
+							status: error.response.status,
 							message: 'Ошибка регистрации: такой логин или email уже существует',
 						});
 					}
 					return rejectWithValue({
-						status: err.response.status,
+						status: error.response.status,
 						message: 'Произошла ошибка',
 					});
 				}

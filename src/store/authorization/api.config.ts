@@ -1,53 +1,42 @@
-import axios, { AxiosResponse } from 'axios';
-import { Token } from '../../models/authorizationType';
+import axios from 'axios';
 
 export const instance = axios.create({
 	baseURL: 'https://easydev.club/api/v1/auth',
 	withCredentials: true,
 });
+
 instance.interceptors.request.use((config) => {
-	const token = localStorage.getItem('accessToken');
+	const token = localStorage.getItem('token');
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
-	console.log(config);
 	return config;
 });
+
 instance.interceptors.response.use(
 	(response) => response,
 	async (error) => {
 		const originalRequest = error.config;
 
-		if (error.response?.status === 401 && !originalRequest._retry) {
-			originalRequest._retry = true;
+		if (error.response?.status === 401 && !originalRequest._isRetry) {
+			originalRequest._isRetry = true;
 
 			try {
-				const savedRefreshToken = localStorage.getItem('refreshToken');
+				const response = await instance.get('/refresh');
+				const newToken = response.data.accessToken;
 
-				if (!savedRefreshToken) {
-					return Promise.reject(error);
-				}
+				localStorage.setItem('token', newToken);
 
-				const refreshResp: AxiosResponse<Token> = await instance.post('/refresh', {
-					refreshToken: savedRefreshToken,
-				});
-
-				const newToken: Token = {
-					accessToken: refreshResp.data.accessToken,
-					refreshToken: refreshResp.data.refreshToken,
-				};
-
-				localStorage.setItem('accessToken', newToken.accessToken);
-				localStorage.setItem('refreshToken', newToken.refreshToken);
-
-				originalRequest.headers.Authorization = `Bearer ${newToken.accessToken}`;
+				originalRequest.headers.Authorization = `Bearer ${newToken}`;
 
 				return instance(originalRequest);
-			} catch (e) {
-				return Promise.reject(e);
+			} catch (refreshError) {
+				localStorage.removeItem('token');
+				console.log('AUTH ERROR: сессия истекла');
+				window.location.href = '/';
+				return Promise.reject(refreshError);
 			}
 		}
-
 		return Promise.reject(error);
 	},
 );

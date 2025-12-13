@@ -1,9 +1,9 @@
-import { createBrowserRouter } from 'react-router';
-import TodoListPage from './TodoListPage';
-import Profile from './Profile';
-import Root from './Root';
+import { createBrowserRouter, redirect } from 'react-router-dom';
 import Authorization from '../store/authorization/Authorization';
 import Registration from '../store/registration/Registration';
+import Root from './Root';
+import TodoListPage from './TodoListPage';
+import Profile from './Profile';
 
 export const root = createBrowserRouter([
 	{
@@ -15,11 +15,17 @@ export const root = createBrowserRouter([
 		element: <Registration />,
 	},
 	{
-		path: 'todo',
+		path: '/todo',
 		element: <Root />,
 		children: [
-			{ index: true, element: <TodoListPage /> },
-			{ path: 'profile', element: <Profile /> },
+			{
+				index: true,
+				element: <TodoListPage />,
+			},
+			{
+				path: 'profile',
+				element: <Profile />,
+			},
 		],
 	},
 ]);

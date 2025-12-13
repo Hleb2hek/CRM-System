@@ -35,18 +35,17 @@ export default function Registration() {
 				return error;
 			}
 			if (isError(error)) {
-				const err: ErrorStatus = error;
-				if (err.status === 404) {
+				if (error.status === 404) {
 					dispatch(
 						openModal({
-							message: err.message,
+							message: error.message,
 							type: 'error',
 						}),
 					);
-				} else if (err.status === 409) {
+				} else if (error.status === 409) {
 					dispatch(
 						openModal({
-							message: err.message,
+							message: error.message,
 							type: 'error',
 						}),
 					);

@@ -23,18 +23,17 @@ export default function Authorization() {
 				return error;
 			}
 			if (isError(error)) {
-				const err: ErrorStatus = error;
-				if (err.status === 404) {
+				if (error.status === 404) {
 					dispatch(
 						openModal({
-							message: err.message,
+							message: error.message,
 							type: 'error',
 						}),
 					);
-				} else if (err.status === 401 || err.status === 403) {
+				} else if (error.status === 401 || error.status === 403) {
 					dispatch(
 						openModal({
-							message: err.message,
+							message: error.message,
 							type: 'error',
 						}),
 					);
