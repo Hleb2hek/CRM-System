@@ -12,7 +12,10 @@ export const authUser = createAsyncThunk<Token, AuthData>(
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
 			const response = await instance.post('/signin', data);
+<<<<<<< HEAD
 			localStorage.setItem('token', response.data.accessToken);
+=======
+>>>>>>> a0bb0e862f048b757bf6278e004126576c9d0b34
 			return response.data;
 		} catch (error: unknown) {
 			function isError(error: any): error is ErrorStatus {
