@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthData, ErrorStatus, Token } from '../../models/authorizationType';
-import instance from './api.config';
+import { instance } from './api.config';
 
 const initialState: AuthData = {
 	login: '',
@@ -11,9 +11,7 @@ export const authUser = createAsyncThunk(
 	'authorization/authUser',
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
-			const response = await instance.post('/signin', data);
-			const accessToken = response.data?.accessToken;
-			localStorage.setItem('accessToken', accessToken);
+			const response = await instance.post<Token>('/signin', data);
 			return response.data;
 		} catch (error: unknown) {
 			function isError(error: any): error is ErrorStatus {
@@ -28,39 +26,6 @@ export const authUser = createAsyncThunk(
 						});
 					}
 					if (error.response.status === 401 || error.response.status === 403) {
-						return rejectWithValue({
-							status: error.response.status,
-							message: 'Неверный логин или пароль',
-						});
-					}
-					return rejectWithValue({
-						status: error.response.status,
-						message: 'Произошла ошибка',
-					});
-				}
-				return rejectWithValue({
-					status: 500,
-					message: 'Ошибка отправки данных',
-				});
-			}
-		}
-	},
-);
-
-export const refreshToken = createAsyncThunk(
-	'authorization/refreshToken',
-	async (_, { rejectWithValue }) => {
-		try {
-			const response = await instance.get('/refresh');
-			localStorage.setItem('token', response.data.accessToken);
-			return response.data;
-		} catch (error: unknown) {
-			function isError(error: any): error is ErrorStatus {
-				return error;
-			}
-			if (isError(error)) {
-				if (error.response) {
-					if (error.response.status === 401) {
 						return rejectWithValue({
 							status: error.response.status,
 							message: 'Неверный логин или пароль',

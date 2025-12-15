@@ -1,35 +1,46 @@
 import axios from 'axios';
-const instance = axios.create({
+
+export const instance = axios.create({
 	baseURL: 'https://easydev.club/api/v1/auth',
 	withCredentials: true,
 });
+// Проверка состояния путей
+axios
+	.get('http://localhost:5173')
+	.then((response) => {
+		console.log('User data:', response);
+	})
+	.catch((error) => {
+		console.error('Error fetching users:', error);
+	});
 
-instance.interceptors.request.use(
-	(config) => {
-		const token = localStorage.getItem('accessToken');
+// Перехватчик запроса
+instance.interceptors.request.use((config) => {
+	// localStorage сохраняем accessToken
+	console.log(config.headers.Authorization);
+	const token = localStorage.getItem('accessToken');
+	// Если есть токен, то сохраняем в конфиге токен с припиской Breare
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	}
 
-		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
-		}
-
-		return config;
-	},
-	function (error) {
-		return Promise.reject(error);
-	},
-);
-
+	return config;
+});
+export default instance;
 instance.interceptors.response.use(
 	(response) => {
-		console.log(response.data);
 		return response;
 	},
-	(error) => {
-		if (error.response && error.response.status === 401) {
-			localStorage.removeItem('accessToken');
+	async (error) => {
+		if (error.response.status === 401) {
+			try {
+				return axios(error.config);
+			} catch (refreshError) {
+				console.error('Token refresh failed:', refreshError);
+				return Promise.reject(refreshError);
+			}
 		}
+
 		return Promise.reject(error);
 	},
 );
-
-export default instance;
