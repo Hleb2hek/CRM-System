@@ -1,46 +1,58 @@
 import axios from 'axios';
+import { Token } from '../../models/authorizationType';
 
-export const instance = axios.create({
+export const api = axios.create({
 	baseURL: 'https://easydev.club/api/v1/auth',
 	withCredentials: true,
 });
-// Проверка состояния путей
-axios
-	.get('http://localhost:5173')
-	.then((response) => {
-		console.log('User data:', response);
-	})
-	.catch((error) => {
-		console.error('Error fetching users:', error);
-	});
+const getTokens = () => {
+	return {
+		accessToken: localStorage.getItem('accessToken'),
+		refreshToken: localStorage.getItem('refreshToken'),
+	};
+};
 
-// Перехватчик запроса
-instance.interceptors.request.use((config) => {
-	// localStorage сохраняем accessToken
-	console.log(config.headers.Authorization);
-	const token = localStorage.getItem('accessToken');
-	// Если есть токен, то сохраняем в конфиге токен с припиской Breare
-	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
+const setTokens = ({ accessToken, refreshToken }: Token) => {
+	localStorage.setItem('accessToken', accessToken);
+	if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+};
+
+api.interceptors.request.use((config) => {
+	const { accessToken } = getTokens();
+	console.log(accessToken);
+	console.log(config);
+	if (accessToken) {
+		config.headers.Authorization = `Bearer ${accessToken}`;
 	}
-
 	return config;
 });
-export default instance;
-instance.interceptors.response.use(
+
+api.interceptors.response.use(
 	(response) => {
+		console.log(response);
 		return response;
 	},
 	async (error) => {
-		if (error.response.status === 401) {
-			try {
-				return axios(error.config);
-			} catch (refreshError) {
-				console.error('Token refresh failed:', refreshError);
-				return Promise.reject(refreshError);
+		const originalRequest = error.config;
+		if (error.response && error.response.status === 401 && !originalRequest._retry) {
+			originalRequest._retry = true;
+			const { refreshToken } = getTokens();
+			if (refreshToken) {
+				try {
+					const res = await axios.post('https://easydev.club/api/v1/auth/refresh', {
+						refreshToken,
+					});
+					setTokens(res.data);
+					originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+					return api(originalRequest);
+				} catch (refreshError) {
+					localStorage.clear();
+					window.location.href = '/';
+				}
 			}
 		}
-
 		return Promise.reject(error);
 	},
 );
+
+export default api;

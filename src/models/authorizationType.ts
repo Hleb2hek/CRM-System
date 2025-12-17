@@ -25,6 +25,11 @@ export interface AuthData {
 	password: string;
 }
 
+export interface AuthState {
+	isAuth: boolean;
+	isLoading: boolean;
+}
+
 export interface RefreshToken {
 	refreshToken: string;
 }

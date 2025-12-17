@@ -10,7 +10,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 
-import { updateForm, registerUser } from './registrationSlice';
+import { registerUser } from './registrationSlice';
 import { ErrorStatus, UserRegistration } from '../../models/authorizationType';
 import { openModal } from '../modal/statusSlice';
 import StatusModal from '../modal/Modal';
@@ -53,13 +53,6 @@ export default function Registration() {
 			}
 		}
 	};
-
-	const handleChange =
-		(field: keyof UserRegistration) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			const event = e.target.value;
-			dispatch(updateForm({ field, value: event }));
-		};
-
 	return (
 		<>
 			<Flex>
@@ -85,11 +78,7 @@ export default function Registration() {
 									{ pattern: /^[a-zA-Zа-яА-Я\s]+$/, message: 'Only letters and spaces' },
 									{ min: 1, max: 60 },
 								]}>
-								<Input
-									prefix={<UserOutlined />}
-									placeholder="John Doe"
-									onChange={handleChange('username')}
-								/>
+								<Input prefix={<UserOutlined />} placeholder="John Doe" />
 							</Form.Item>
 
 							<Form.Item
@@ -100,11 +89,7 @@ export default function Registration() {
 									{ min: 2, max: 60, message: '2–60 characters' },
 									{ pattern: /^[a-zA-Z]+$/, message: 'Only letters and spaces' },
 								]}>
-								<Input
-									prefix={<LoginOutlined />}
-									placeholder="myLogin123"
-									onChange={handleChange('login')}
-								/>
+								<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
 							</Form.Item>
 
 							<Form.Item
@@ -114,19 +99,11 @@ export default function Registration() {
 									{ required: true, message: 'Please enter your email!' },
 									{ type: 'email', message: 'Invalid email address!' },
 								]}>
-								<Input
-									prefix={<MailOutlined />}
-									placeholder="mail@abc.com"
-									onChange={handleChange('email')}
-								/>
+								<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
 							</Form.Item>
 
 							<Form.Item label="Phone" name="phoneNumber">
-								<Input
-									prefix={<PhoneOutlined />}
-									placeholder="+7 (999) 123-45-67"
-									onChange={handleChange('phoneNumber')}
-								/>
+								<Input prefix={<PhoneOutlined />} placeholder="+7 (999) 123-45-67" />
 							</Form.Item>
 
 							<Form.Item
@@ -136,11 +113,7 @@ export default function Registration() {
 									{ required: true, message: 'Please enter your password!' },
 									{ min: 6, max: 60, message: 'Password must be 6–60 characters' },
 								]}>
-								<Input.Password
-									prefix={<LockOutlined />}
-									placeholder="*********"
-									onChange={handleChange('password')}
-								/>
+								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 							</Form.Item>
 
 							<Form.Item

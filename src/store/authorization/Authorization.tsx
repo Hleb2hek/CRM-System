@@ -4,7 +4,7 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
 import { useAppDispatch } from '../store';
 import { AuthData, ErrorStatus } from '../../models/authorizationType';
-import { authForm, authUser } from './authSlice';
+import { authUser } from './authSlice';
 import { openModal } from '../modal/statusSlice';
 import StatusModal from '../modal/Modal';
 
@@ -41,11 +41,6 @@ export default function Authorization() {
 			}
 		}
 	};
-
-	const handleChange = (field: keyof AuthData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-		const event = e.target.value;
-		dispatch(authForm({ field, value: event }));
-	};
 	return (
 		<>
 			<Flex>
@@ -67,24 +62,14 @@ export default function Authorization() {
 								label="Login"
 								name="login"
 								rules={[{ required: true, message: 'Please input your login' }]}>
-								<Input
-									prefix={<MailOutlined />}
-									placeholder="mail@abc.com"
-									onChange={handleChange('login')}
-								/>
+								<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
 							</Form.Item>
 
 							<Form.Item
 								label="Password"
 								name="password"
-								rules={[
-									{ required: true, message: 'Please input your password!' },
-								]}>
-								<Input.Password
-									prefix={<LockOutlined />}
-									placeholder="*********"
-									onChange={handleChange('password')}
-								/>
+								rules={[{ required: true, message: 'Please input your password!' }]}>
+								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 							</Form.Item>
 
 							<Form.Item>

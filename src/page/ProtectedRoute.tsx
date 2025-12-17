@@ -1,12 +1,17 @@
-// import { Navigate, Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAppSelector } from '../store/store';
 
-// export default function ProtectedRoute() {
-// 	const token = localStorage.getItem('accessToken');
+export default function ProtectedRoute() {
+	const { isAuth, isLoading } = useAppSelector((s) => s.authorization);
 
-// 	if (!token) {
-// 		return <Navigate to="/" replace />;
-// 	}
-// 	<Navigate to="/todo" replace />;
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
 
-// 	return <Outlet />;
-// }
+	if (!isAuth) {
+		return <Navigate to="/login" replace />;
+	}
+
+	return <Outlet />;
+}

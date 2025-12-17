@@ -51,14 +51,7 @@ export const registerUser = createAsyncThunk(
 export const registrationSlice = createSlice({
 	name: 'registration',
 	initialState,
-	reducers: {
-		updateForm(state, action: PayloadAction<{ field: keyof UserRegistration; value: string }>) {
-			const { field, value } = action.payload;
-			state[field] = value;
-		},
-	},
+	reducers: {},
 });
-
-export const { updateForm } = registrationSlice.actions;
 
 export default registrationSlice.reducer;

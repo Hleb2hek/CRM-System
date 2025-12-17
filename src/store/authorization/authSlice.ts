@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { AuthData, ErrorStatus, Token } from '../../models/authorizationType';
-import { instance } from './api.config';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { AuthData, AuthState, ErrorStatus, Token } from '../../models/authorizationType';
+import instance from './api.config';
 
-const initialState: AuthData = {
-	login: '',
-	password: '',
+const initialState: AuthState = {
+	isAuth: false,
+	isLoading: true,
 };
 
 export const authUser = createAsyncThunk(
@@ -12,6 +12,9 @@ export const authUser = createAsyncThunk(
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
 			const response = await instance.post<Token>('/signin', data);
+			const { accessToken, refreshToken } = response.data;
+			localStorage.setItem('refreshToken', refreshToken);
+			localStorage.setItem('accessToken', accessToken);
 			return response.data;
 		} catch (error: unknown) {
 			function isError(error: any): error is ErrorStatus {
@@ -44,18 +47,49 @@ export const authUser = createAsyncThunk(
 		}
 	},
 );
+export const initAuth = createAsyncThunk(
+	'authorization/initAuth',
+	async (_, { rejectWithValue }) => {
+		try {
+			await instance.get('/todo');
+			return true;
+		} catch {
+			return rejectWithValue(false);
+		}
+	},
+);
 
 export const authSlice = createSlice({
 	name: 'authorization',
 	initialState,
-	reducers: {
-		authForm(state, action: PayloadAction<{ field: keyof AuthData; value: string }>) {
-			const { field, value } = action.payload;
-			state[field] = value;
-		},
+	reducers: {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(authUser.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(authUser.fulfilled, (state) => {
+				state.isAuth = true;
+				state.isLoading = false;
+			})
+			.addCase(authUser.rejected, (state) => {
+				state.isAuth = false;
+				state.isLoading = false;
+			});
+
+		builder
+			.addCase(initAuth.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(initAuth.fulfilled, (state) => {
+				state.isAuth = true;
+				state.isLoading = false;
+			})
+			.addCase(initAuth.rejected, (state) => {
+				state.isAuth = false;
+				state.isLoading = false;
+			});
 	},
 });
-
-export const { authForm } = authSlice.actions;
 
 export default authSlice.reducer;
