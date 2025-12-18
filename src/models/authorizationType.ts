@@ -26,8 +26,8 @@ export interface AuthData {
 }
 
 export interface AuthState {
-	isAuth: boolean;
-	isLoading: boolean;
+	userToken: null | string;
+	isAuthenticated: boolean;
 }
 
 export interface RefreshToken {
