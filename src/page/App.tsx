@@ -1,10 +1,9 @@
-import { createBrowserRouter, redirect } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import Authorization from '../store/authorization/Authorization';
 import Registration from '../store/registration/Registration';
 import Root from './Root';
 import TodoListPage from './TodoListPage';
 import Profile from './Profile';
-import ProtectedRoute from './ProtectedRoute';
 
 export const root = createBrowserRouter([
 	{
@@ -16,7 +15,6 @@ export const root = createBrowserRouter([
 		element: <Registration />,
 	},
 	{
-		element: <ProtectedRoute />,
 		children: [
 			{
 				path: '/todo',

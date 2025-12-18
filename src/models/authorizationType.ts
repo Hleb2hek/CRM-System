@@ -5,35 +5,17 @@ export interface UserRegistration {
 	email: string;
 	phoneNumber?: string;
 }
-
-export interface StatusState {
-	showModal?: boolean;
-	message: string | string[];
-	type: 'success' | 'error' | null;
-}
-
-export interface ErrorStatus {
-	message: string;
-	status: number;
-	response: {
-		status: number;
-		data?: any;
-	};
-}
 export interface AuthData {
 	login: string;
 	password: string;
 }
 
-export interface AuthState {
-	isAuth: boolean;
-	isLoading: boolean;
+export interface LoadingState {
+	loading: boolean;
 }
-
 export interface RefreshToken {
 	refreshToken: string;
 }
-
 export interface Profile {
 	id: number;
 	username: string;

@@ -3,10 +3,8 @@ import { Flex, Form, Input, Button, Typography, Checkbox } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
 import { useAppDispatch } from '../store';
-import { AuthData, ErrorStatus } from '../../models/authorizationType';
+import { AuthData } from '../../models/authorizationType';
 import { authUser } from './authSlice';
-import { openModal } from '../modal/statusSlice';
-import StatusModal from '../modal/Modal';
 
 export default function Authorization() {
 	const navigate = useNavigate();
@@ -18,26 +16,11 @@ export default function Authorization() {
 			await dispatch(authUser(values)).unwrap();
 			form.resetFields();
 			navigate('/todo');
-		} catch (error: unknown) {
-			function isError(error: any): error is ErrorStatus {
-				return error;
-			}
-			if (isError(error)) {
-				if (error.status === 404) {
-					dispatch(
-						openModal({
-							message: error.message,
-							type: 'error',
-						}),
-					);
-				} else if (error.status === 401 || error.status === 403) {
-					dispatch(
-						openModal({
-							message: error.message,
-							type: 'error',
-						}),
-					);
-				}
+		} catch (error: any) {
+			if (error.status === 404) {
+				console.log(error);
+			} else if (error.status === 401 || error.status === 403) {
+				console.log(error);
 			}
 		}
 	};
@@ -99,7 +82,6 @@ export default function Authorization() {
 					</Flex>
 				</Flex>
 			</Flex>
-			<StatusModal />
 		</>
 	);
 }

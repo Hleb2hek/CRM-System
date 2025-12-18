@@ -7,49 +7,32 @@ import {
 	PhoneOutlined,
 	LoginOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store';
-
+import { UserRegistration } from '../../models/authorizationType';
 import { registerUser } from './registrationSlice';
-import { ErrorStatus, UserRegistration } from '../../models/authorizationType';
-import { openModal } from '../modal/statusSlice';
-import StatusModal from '../modal/Modal';
 
 export default function Registration() {
 	const [form] = Form.useForm();
 	const dispatch = useAppDispatch();
 
+	const navigate = useNavigate();
+
 	const onFinish = async (values: UserRegistration) => {
 		console.log(values);
+
 		try {
 			if (!values.phoneNumber) {
 				delete values.phoneNumber;
 			}
-
 			await dispatch(registerUser(values)).unwrap();
 			form.resetFields();
-
-			dispatch(openModal({ message: 'Вы успешно прошли регистрацию', type: 'success' }));
-		} catch (error: unknown) {
-			function isError(error: any): error is ErrorStatus {
-				return error;
-			}
-			if (isError(error)) {
-				if (error.status === 404) {
-					dispatch(
-						openModal({
-							message: error.message,
-							type: 'error',
-						}),
-					);
-				} else if (error.status === 409) {
-					dispatch(
-						openModal({
-							message: error.message,
-							type: 'error',
-						}),
-					);
-				}
+			navigate('/');
+		} catch (error: any) {
+			if (error.status === 404) {
+				console.log(error);
+			} else if (error.status === 409) {
+				console.log(error);
 			}
 		}
 	};
@@ -153,7 +136,6 @@ export default function Registration() {
 					</Flex>
 				</Flex>
 			</Flex>
-			<StatusModal />
 		</>
 	);
 }

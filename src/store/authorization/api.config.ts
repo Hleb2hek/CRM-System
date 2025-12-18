@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Token } from '../../models/authorizationType';
 
-export const api = axios.create({
+export const instance = axios.create({
 	baseURL: 'https://easydev.club/api/v1/auth',
 	withCredentials: true,
 });
@@ -17,7 +17,7 @@ const setTokens = ({ accessToken, refreshToken }: Token) => {
 	if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
 };
 
-api.interceptors.request.use((config) => {
+instance.interceptors.request.use((config) => {
 	const { accessToken } = getTokens();
 	console.log(accessToken);
 	console.log(config);
@@ -27,7 +27,7 @@ api.interceptors.request.use((config) => {
 	return config;
 });
 
-api.interceptors.response.use(
+instance.interceptors.response.use(
 	(response) => {
 		console.log(response);
 		return response;
@@ -44,7 +44,7 @@ api.interceptors.response.use(
 					});
 					setTokens(res.data);
 					originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
-					return api(originalRequest);
+					return instance(originalRequest);
 				} catch (refreshError) {
 					localStorage.clear();
 					window.location.href = '/';
@@ -55,4 +55,4 @@ api.interceptors.response.use(
 	},
 );
 
-export default api;
+export default instance;

@@ -1,13 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import registrationReducer from './registration/registrationSlice';
-import statusReducer from './modal/statusSlice';
 import authorizationReducer from './authorization/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 export const store = configureStore({
 	reducer: {
 		registration: registrationReducer,
-		status: statusReducer,
 		authorization: authorizationReducer,
 	},
 });
