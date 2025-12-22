@@ -1,9 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { AuthData, LoadingState, Token } from '../../models/authorizationType';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { AuthData, AuthState, Token } from '../../models/authorizationType';
 import instance from './api.config';
+import { setTokens } from './auth.service';
 
-const initialState: LoadingState = {
+const initialState: AuthState = {
 	loading: false,
+	userAuth: false,
 };
 
 export const authUser = createAsyncThunk<Token, AuthData>(
@@ -41,7 +43,23 @@ export const authUser = createAsyncThunk<Token, AuthData>(
 		}
 	},
 );
-
+export const refreshToken = createAsyncThunk<Token, void, { rejectValue: { message: string } }>(
+	'authorization/refreshToken',
+	async (_, { rejectWithValue }) => {
+		const refreshToken = localStorage.getItem('refreshToken');
+		if (!refreshToken) {
+			return rejectWithValue({ message: 'No refresh token' });
+		}
+		try {
+			const response = await instance.post<Token>('/refresh', { refreshToken });
+			setTokens(response.data);
+			return response.data;
+		} catch (error: any) {
+			localStorage.clear();
+			return rejectWithValue({ message: 'Refresh failed' });
+		}
+	},
+);
 export const authorizationSlice = createSlice({
 	name: 'authorization',
 	initialState,
@@ -53,9 +71,22 @@ export const authorizationSlice = createSlice({
 			})
 			.addCase(authUser.fulfilled, (state) => {
 				state.loading = false;
+				state.userAuth = true;
 			})
 			.addCase(authUser.rejected, (state) => {
 				state.loading = false;
+				state.userAuth = false;
+			})
+			.addCase(refreshToken.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(refreshToken.fulfilled, (state) => {
+				state.loading = false;
+				state.userAuth = true;
+			})
+			.addCase(refreshToken.rejected, (state) => {
+				state.loading = false;
+				state.userAuth = false;
 			});
 	},
 });

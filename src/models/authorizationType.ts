@@ -10,6 +10,10 @@ export interface AuthData {
 	password: string;
 }
 
+export interface AuthState {
+	loading: boolean;
+	userAuth: boolean;
+}
 export interface LoadingState {
 	loading: boolean;
 }

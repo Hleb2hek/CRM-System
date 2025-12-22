@@ -1,21 +1,10 @@
 import axios from 'axios';
-import { Token } from '../../models/authorizationType';
+import { getTokens, setTokens } from './auth.service';
 
 export const instance = axios.create({
 	baseURL: 'https://easydev.club/api/v1/auth',
 	withCredentials: true,
 });
-const getTokens = () => {
-	return {
-		accessToken: localStorage.getItem('accessToken'),
-		refreshToken: localStorage.getItem('refreshToken'),
-	};
-};
-
-const setTokens = ({ accessToken, refreshToken }: Token) => {
-	localStorage.setItem('accessToken', accessToken);
-	if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
-};
 
 instance.interceptors.request.use((config) => {
 	const { accessToken } = getTokens();
@@ -34,7 +23,11 @@ instance.interceptors.response.use(
 	},
 	async (error) => {
 		const originalRequest = error.config;
-		if (error.response && error.response.status === 401 && !originalRequest._retry) {
+		if (
+			error.response.status === 401 &&
+			!originalRequest._retry &&
+			originalRequest.url?.includes('/refresh')
+		) {
 			originalRequest._retry = true;
 			const { refreshToken } = getTokens();
 			if (refreshToken) {
@@ -47,7 +40,6 @@ instance.interceptors.response.use(
 					return instance(originalRequest);
 				} catch (refreshError) {
 					localStorage.clear();
-					window.location.href = '/';
 				}
 			}
 		}
