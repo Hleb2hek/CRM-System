@@ -58,12 +58,7 @@ export default function TodoListPage() {
 				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
 			</Flex>
 
-			<TodoList
-				filter={filter}
-				tasks={tasks}
-				refreshTasks={refreshTasks}
-				setError={setError}
-			/>
+			<TodoList filter={filter} tasks={tasks} refreshTasks={refreshTasks} setError={setError} />
 		</>
 	);
 }

@@ -1,49 +1,39 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { ErrorStatus, UserRegistration } from '../../models/authorizationType';
+import { AuthState, RejectValue, UserRegistration } from '../../models/authorizationType';
 
-const initialState: UserRegistration = {
-	login: '',
-	username: '',
-	password: '',
-	email: '',
-	phoneNumber: '',
+const initialState: AuthState = {
+	loading: false,
+	userAuth: false,
+	error: null,
 };
 
-export const registerUser = createAsyncThunk(
+export const registerUser = createAsyncThunk<void, UserRegistration, { rejectValue: RejectValue }>(
 	'registration/registerUser',
-	async (data: UserRegistration, { rejectWithValue }) => {
+	async (data, { rejectWithValue }) => {
 		try {
-			const response = await axios.post('https://easydev.club/api/v1/auth/signup', data);
-			return response.data;
-		} catch (error: unknown) {
-			function isError(error: any): error is ErrorStatus {
-				return error;
+			const payload = { ...data };
+			if (!payload.phoneNumber?.trim()) {
+				delete payload.phoneNumber;
 			}
-			if (isError(error)) {
-				if (error.response) {
-					if (error.response.status === 404) {
-						return rejectWithValue({
-							status: 404,
-							message: 'Сервис недоступен. Попробуйте позже.',
-						});
-					}
-					if (error.response.status === 409) {
-						return rejectWithValue({
-							status: error.response.status,
-							message: 'Ошибка регистрации: такой логин или email уже существует',
-						});
-					}
-					return rejectWithValue({
-						status: error.response.status,
-						message: 'Произошла ошибка',
-					});
+
+			await axios.post('https://easydev.club/api/v1/auth/signup', payload);
+		} catch (error: any) {
+			if (error.response) {
+				const status = error.response.status;
+				let message = 'Произошла неизвестная ошибка';
+
+				if (status === 404) {
+					message = 'Сервис временно недоступен. Попробуйте позже.';
+				} else if (status === 409) {
+					message = 'Пользователь с таким логином или email уже существует';
+				} else if (status >= 500) {
+					message = 'Ошибка сервера. Попробуйте позже.';
 				}
-				return rejectWithValue({
-					status: 500,
-					message: 'Ошибка отправки данных',
-				});
+
+				return rejectWithValue({ status, message });
 			}
+			return rejectWithValue({ message: 'Ошибка сети. Проверьте подключение.' });
 		}
 	},
 );
@@ -52,6 +42,24 @@ export const registrationSlice = createSlice({
 	name: 'registration',
 	initialState,
 	reducers: {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(registerUser.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+				state.userAuth = false;
+			})
+			.addCase(registerUser.fulfilled, (state) => {
+				state.loading = false;
+				state.userAuth = true;
+				state.error = null;
+			})
+			.addCase(registerUser.rejected, (state, action) => {
+				state.loading = false;
+				state.userAuth = false;
+				state.error = action.payload?.message || 'Неизвестная ошибка регистрации';
+			});
+	},
 });
 
 export default registrationSlice.reducer;

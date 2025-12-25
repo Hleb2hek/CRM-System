@@ -1,4 +1,4 @@
-import { createBrowserRouter, redirect } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import Authorization from '../store/authorization/Authorization';
 import Registration from '../store/registration/Registration';
 import Root from './Root';

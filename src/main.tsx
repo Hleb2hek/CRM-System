@@ -2,9 +2,8 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router';
 import { StrictMode } from 'react';
-import { root } from './page/App';
+import { root } from './page/AppRouter';
 import { store } from './store/store';
-
 createRoot(document.getElementById('root') as HTMLElement).render(
 	<StrictMode>
 		<Provider store={store}>

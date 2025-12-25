@@ -5,35 +5,24 @@ export interface UserRegistration {
 	email: string;
 	phoneNumber?: string;
 }
-
-export interface StatusState {
-	showModal?: boolean;
-	message: string | string[];
-	type: 'success' | 'error' | null;
-}
-
-export interface ErrorStatus {
-	message: string;
-	status: number;
-	response: {
-		status: number;
-		data?: any;
-	};
-}
 export interface AuthData {
 	login: string;
 	password: string;
 }
 
 export interface AuthState {
-	userToken: null | string;
-	isAuthenticated: boolean;
+	loading: boolean;
+	userAuth: boolean;
+	error: string | null;
 }
 
+export interface RejectValue {
+	message: string;
+	status?: number;
+}
 export interface RefreshToken {
 	refreshToken: string;
 }
-
 export interface Profile {
 	id: number;
 	username: string;
@@ -42,6 +31,11 @@ export interface Profile {
 	isBlocked: boolean;
 	phoneNumber: string;
 }
+export type ProfileState = {
+	data: Profile | null;
+	loading: boolean;
+	error: string | null;
+};
 
 export interface ProfileRequest {
 	username: string;

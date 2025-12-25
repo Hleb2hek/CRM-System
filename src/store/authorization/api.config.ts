@@ -1,40 +1,26 @@
 import axios from 'axios';
-import { Token } from '../../models/authorizationType';
+import { getTokens, setTokens } from './auth.service';
 
-export const api = axios.create({
-	baseURL: 'https://easydev.club/api/v1/auth',
+export const instance = axios.create({
+	baseURL: 'https://easydev.club/api/v1',
 	withCredentials: true,
 });
-const getTokens = () => {
-	return {
-		accessToken: localStorage.getItem('accessToken'),
-		refreshToken: localStorage.getItem('refreshToken'),
-	};
-};
 
-const setTokens = ({ accessToken, refreshToken }: Token) => {
-	localStorage.setItem('accessToken', accessToken);
-	if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
-};
-
-api.interceptors.request.use((config) => {
+instance.interceptors.request.use((config) => {
 	const { accessToken } = getTokens();
-	console.log(accessToken);
-	console.log(config);
 	if (accessToken) {
 		config.headers.Authorization = `Bearer ${accessToken}`;
 	}
 	return config;
 });
 
-api.interceptors.response.use(
+instance.interceptors.response.use(
 	(response) => {
-		console.log(response);
 		return response;
 	},
 	async (error) => {
 		const originalRequest = error.config;
-		if (error.response && error.response.status === 401 && !originalRequest._retry) {
+		if (error.response.status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 			const { refreshToken } = getTokens();
 			if (refreshToken) {
@@ -44,10 +30,9 @@ api.interceptors.response.use(
 					});
 					setTokens(res.data);
 					originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
-					return api(originalRequest);
+					return instance(originalRequest);
 				} catch (refreshError) {
 					localStorage.clear();
-					window.location.href = '/';
 				}
 			}
 		}
@@ -55,4 +40,4 @@ api.interceptors.response.use(
 	},
 );
 
-export default api;
+export default instance;
