@@ -1,8 +1,8 @@
 import img from '../../../public/illustration.png';
-import { Flex, Form, Input, Button, Typography, Checkbox } from 'antd';
+import { Flex, Form, Input, Button, Typography, Checkbox, message, Alert } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { AuthData } from '../../models/authorizationType';
 import { authUser } from './authSlice';
 
@@ -10,78 +10,72 @@ export default function Authorization() {
 	const navigate = useNavigate();
 	const [form] = Form.useForm();
 	const dispatch = useAppDispatch();
+	const { error: serverError, loading } = useAppSelector((state) => state.authorization);
 
 	const onFinish = async (values: AuthData) => {
 		try {
 			await dispatch(authUser(values)).unwrap();
 			form.resetFields();
 			navigate('/todo');
-		} catch (error: any) {
-			if (error.status === 404) {
-				console.log(error);
-			} else if (error.status === 401 || error.status === 403) {
-				console.log(error);
-			}
-		}
+		} catch {}
 	};
 	return (
-		<>
-			<Flex>
-				<img style={{ height: '100dvh' }} src={img} alt="Фон для авторизации" />
+		<Flex>
+			<img style={{ height: '100dvh' }} src={img} alt="Фон для авторизации" />
 
-				<Flex style={{ width: '100%' }} justify="center" align="center">
-					<Flex style={{ width: '420px' }} vertical gap={32}>
-						<Flex vertical gap={8}>
-							<Typography.Title level={2} style={{ margin: 0 }}>
-								Login to your Account
-							</Typography.Title>
-							<Typography.Text type="secondary">
-								See what is going on with your business
-							</Typography.Text>
-						</Flex>
+			<Flex style={{ width: '100%' }} justify="center" align="center">
+				<Flex style={{ width: '420px' }} vertical gap={32}>
+					<Flex vertical gap={8}>
+						<Typography.Title level={2} style={{ margin: 0 }}>
+							Зайдите в свой аккаунт
+						</Typography.Title>
+						<Typography.Text type="secondary">
+							Посмотрите, что происходит с вашим бизнесом
+						</Typography.Text>
+					</Flex>
 
-						<Form form={form} layout="vertical" onFinish={onFinish}>
-							<Form.Item
-								label="Login"
-								name="login"
-								rules={[{ required: true, message: 'Please input your login' }]}>
-								<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
-							</Form.Item>
+					{serverError && (
+						<Alert
+							message={serverError}
+							type="error"
+							showIcon
+							style={{ borderRadius: 8 }}
+							closable
+						/>
+					)}
 
-							<Form.Item
-								label="Password"
-								name="password"
-								rules={[{ required: true, message: 'Please input your password!' }]}>
-								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
-							</Form.Item>
+					<Form form={form} layout="vertical" onFinish={onFinish}>
+						<Form.Item
+							label="Логин"
+							name="login"
+							rules={[{ required: true, message: 'Пожалуйста, введите свой логин' }]}>
+							<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
+						</Form.Item>
 
-							<Form.Item>
-								<Flex justify="space-between" align="center">
-									<Checkbox>Remember Me</Checkbox>
-									<Typography.Link href="#" style={{ fontSize: 14 }}>
-										Forgot Password?
-									</Typography.Link>
-								</Flex>
-							</Form.Item>
+						<Form.Item
+							label="Пароль"
+							name="password"
+							rules={[{ required: true, message: 'Пожалуйста, введите свой пароль!' }]}>
+							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
+						</Form.Item>
 
-							<Form.Item>
-								<Button type="primary" htmlType="submit" block size="large">
-									Login
-								</Button>
-							</Form.Item>
-						</Form>
+						<Form.Item>
+							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
+								Login
+							</Button>
+						</Form.Item>
+					</Form>
 
-						<Flex justify="center">
-							<Typography.Text type="secondary">
-								Not Registered Yet?
-								<Link to="/registration" style={{ marginLeft: '10px' }}>
-									Create an account
-								</Link>
-							</Typography.Text>
-						</Flex>
+					<Flex justify="center">
+						<Typography.Text type="secondary">
+							Еще не зарегистрировались?
+							<Link to="/registration" style={{ marginLeft: '10px' }}>
+								Создать учетную запись
+							</Link>
+						</Typography.Text>
 					</Flex>
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 }

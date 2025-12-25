@@ -1,3 +1,4 @@
+import { Profile } from '../models/authorizationType';
 import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from '../models/todo';
 
 import axios from 'axios';

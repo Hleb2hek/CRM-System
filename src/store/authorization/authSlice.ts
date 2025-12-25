@@ -1,21 +1,24 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AuthData, AuthState, Token } from '../../models/authorizationType';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { AuthData, AuthState, RejectValue, Token } from '../../models/authorizationType';
 import instance from './api.config';
 import { setTokens } from './auth.service';
 
 const initialState: AuthState = {
 	loading: false,
 	userAuth: false,
+	error: null,
 };
 
-export const authUser = createAsyncThunk<Token, AuthData>(
+export const authUser = createAsyncThunk<Token, AuthData, { rejectValue: RejectValue }>(
 	'authorization/authUser',
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
-			const response = await instance.post<Token>('/signin', data);
+			const response = await instance.post<Token>('/auth/signin', data);
 			const { accessToken, refreshToken } = response.data;
+
 			localStorage.setItem('refreshToken', refreshToken);
 			localStorage.setItem('accessToken', accessToken);
+
 			return response.data;
 		} catch (error: any) {
 			if (error.response) {
@@ -33,33 +36,34 @@ export const authUser = createAsyncThunk<Token, AuthData>(
 				}
 				return rejectWithValue({
 					status: error.response.status,
-					message: 'Произошла ошибка',
+					message: 'Произошла ошибка на сервере',
 				});
 			}
 			return rejectWithValue({
-				status: 500,
-				message: 'Ошибка отправки данных',
+				message: 'Ошибка сети или отправки данных',
 			});
 		}
 	},
 );
-export const refreshToken = createAsyncThunk<Token, void, { rejectValue: { message: string } }>(
-	'authorization/refreshToken',
-	async (_, { rejectWithValue }) => {
-		const refreshToken = localStorage.getItem('refreshToken');
-		if (!refreshToken) {
-			return rejectWithValue({ message: 'No refresh token' });
-		}
-		try {
-			const response = await instance.post<Token>('/refresh', { refreshToken });
-			setTokens(response.data);
-			return response.data;
-		} catch (error: any) {
-			localStorage.clear();
-			return rejectWithValue({ message: 'Refresh failed' });
-		}
-	},
-);
+
+// export const refreshToken = createAsyncThunk<Token, void, { rejectValue: RejectValue }>(
+// 	'authorization/refreshToken',
+// 	async (_, { rejectWithValue }) => {
+// 		const refreshToken = localStorage.getItem('refreshToken');
+// 		if (!refreshToken) {
+// 			return rejectWithValue({ message: 'No refresh token' });
+// 		}
+// 		try {
+// 			const response = await instance.post<Token>('/auth/refresh', { refreshToken });
+// 			setTokens(response.data);
+// 			return response.data;
+// 		} catch (error: any) {
+// 			localStorage.clear();
+// 			return rejectWithValue({ message: 'Refresh token failed' });
+// 		}
+// 	},
+// );
+
 export const authorizationSlice = createSlice({
 	name: 'authorization',
 	initialState,
@@ -68,26 +72,32 @@ export const authorizationSlice = createSlice({
 		builder
 			.addCase(authUser.pending, (state) => {
 				state.loading = true;
+				state.error = null;
 			})
 			.addCase(authUser.fulfilled, (state) => {
 				state.loading = false;
 				state.userAuth = true;
+				state.error = null;
 			})
-			.addCase(authUser.rejected, (state) => {
+			.addCase(authUser.rejected, (state, action) => {
 				state.loading = false;
 				state.userAuth = false;
-			})
-			.addCase(refreshToken.pending, (state) => {
-				state.loading = true;
-			})
-			.addCase(refreshToken.fulfilled, (state) => {
-				state.loading = false;
-				state.userAuth = true;
-			})
-			.addCase(refreshToken.rejected, (state) => {
-				state.loading = false;
-				state.userAuth = false;
+				state.error = action.payload?.message || 'Неизвестная ошибка авторизации';
 			});
+		// .addCase(refreshToken.pending, (state) => {
+		// 	state.loading = true;
+		// })
+		// .addCase(refreshToken.fulfilled, (state) => {
+		// 	state.loading = false;
+		// 	state.userAuth = true;
+		// 	state.error = null;
+		// })
+		// .addCase(refreshToken.rejected, (state, action) => {
+		// 	state.loading = false;
+		// 	state.userAuth = false;
+		// 	state.error = action.payload?.message || 'Сессия истекла';
+		// });
 	},
 });
+
 export default authorizationSlice.reducer;

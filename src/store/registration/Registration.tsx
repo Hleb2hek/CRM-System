@@ -1,5 +1,5 @@
 import img from '../../../public/illustration.png';
-import { Flex, Form, Input, Button, Typography, message } from 'antd';
+import { Flex, Form, Input, Button, Typography, Alert, Space, message } from 'antd';
 import {
 	LockOutlined,
 	MailOutlined,
@@ -7,111 +7,129 @@ import {
 	PhoneOutlined,
 	LoginOutlined,
 } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../store';
-import { UserRegistration } from '../../models/authorizationType';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../store';
 import { registerUser } from './registrationSlice';
+import { UserRegistration } from '../../models/authorizationType';
 
 export default function Registration() {
 	const [form] = Form.useForm();
 	const dispatch = useAppDispatch();
 
-	const navigate = useNavigate();
+	const { loading, error, userAuth } = useAppSelector((state) => state.registration);
 
 	const onFinish = async (values: UserRegistration) => {
-		console.log(values);
-
-		try {
-			if (!values.phoneNumber) {
-				delete values.phoneNumber;
-			}
-			await dispatch(registerUser(values)).unwrap();
-			form.resetFields();
-			navigate('/');
-		} catch (error: any) {
-			if (error.status === 404) {
-				console.log(error);
-			} else if (error.status === 409) {
-				console.log(error);
-			}
-		}
+		await dispatch(registerUser(values));
 	};
+
 	return (
-		<>
-			<Flex>
-				<img style={{ height: '100dvh' }} src={img} alt="Registration background" />
+		<Flex>
+			<img style={{ height: '100dvh' }} src={img} alt="Registration background" />
 
-				<Flex style={{ width: '100%' }} justify="center" align="center">
-					<Flex style={{ width: '420px' }} vertical gap={32}>
-						<Flex vertical gap={8}>
-							<Typography.Title level={2} style={{ margin: 0 }}>
-								Create an Account
-							</Typography.Title>
-							<Typography.Text type="secondary">
-								Join us and start managing your business
-							</Typography.Text>
-						</Flex>
+			<Flex style={{ width: '100%' }} justify="center" align="center">
+				<Flex style={{ width: '420px' }} vertical gap={32}>
+					<Flex vertical gap={8}>
+						<Typography.Title level={2} style={{ margin: 0 }}>
+							Создайте Аккаунт
+						</Typography.Title>
+						<Typography.Text type="secondary">Присоединяйтесь к нам</Typography.Text>
+					</Flex>
 
+					{userAuth && (
+						<Alert
+							message="Регистрация прошла успешно!"
+							description={
+								<Space direction="vertical">
+									<span>Теперь вы можете войти в систему.</span>
+									<Link to="/" style={{ fontWeight: 500 }}>
+										Перейти на страницу авторизации
+									</Link>
+								</Space>
+							}
+							type="success"
+							showIcon
+						/>
+					)}
+
+					{error && !userAuth && (
+						<Alert message={error} type="error" showIcon style={{ marginBottom: 24 }} />
+					)}
+
+					{!userAuth && (
 						<Form form={form} layout="vertical" onFinish={onFinish}>
 							<Form.Item
-								label="Full Name"
+								label="Имя пользователя"
 								name="username"
 								rules={[
-									{ required: true, message: 'Please enter your full name!' },
-									{ pattern: /^[a-zA-Zа-яА-Я\s]+$/, message: 'Only letters and spaces' },
-									{ min: 1, max: 60 },
+									{ required: true, message: 'Введите ваше имя!' },
+									{
+										pattern: /^[a-zA-Zа-яА-Я\s]+$/,
+										message: 'Только буквы (русские или латинские) и пробелы',
+									},
+									{ min: 1, max: 60, message: 'От 1 до 60 символов' },
 								]}>
-								<Input prefix={<UserOutlined />} placeholder="John Doe" />
+								<Input prefix={<UserOutlined />} placeholder="Иван Иванов" />
 							</Form.Item>
 
 							<Form.Item
-								label="Login"
+								label="Логин"
 								name="login"
 								rules={[
-									{ required: true, message: 'Please enter your login!' },
-									{ min: 2, max: 60, message: '2–60 characters' },
-									{ pattern: /^[a-zA-Z]+$/, message: 'Only letters and spaces' },
+									{ required: true, message: 'Введите логин!' },
+									{ min: 2, max: 60, message: 'От 2 до 60 символов' },
+									{
+										pattern: /^[a-zA-Z0-9]+$/,
+										message: 'Только латинские буквы и цифры',
+									},
 								]}>
 								<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
 							</Form.Item>
 
 							<Form.Item
-								label="Email"
+								label="Почта"
 								name="email"
 								rules={[
-									{ required: true, message: 'Please enter your email!' },
-									{ type: 'email', message: 'Invalid email address!' },
+									{ required: true, message: 'Введите email!' },
+									{ type: 'email', message: 'Некорректный email!' },
 								]}>
 								<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
 							</Form.Item>
 
-							<Form.Item label="Phone" name="phoneNumber">
+							<Form.Item
+								label="Телефон (необязательно)"
+								name="phoneNumber"
+								rules={[
+									{
+										pattern: /^\+?[0-9\s\-\(\)]+$/,
+										message: 'Некорректный формат телефона',
+									},
+								]}>
 								<Input prefix={<PhoneOutlined />} placeholder="+7 (999) 123-45-67" />
 							</Form.Item>
 
 							<Form.Item
-								label="Password"
+								label="Пароль"
 								name="password"
 								rules={[
-									{ required: true, message: 'Please enter your password!' },
-									{ min: 6, max: 60, message: 'Password must be 6–60 characters' },
+									{ required: true, message: 'Введите пароль!' },
+									{ min: 6, max: 60, message: 'Пароль от 6 до 60 символов' },
 								]}>
 								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 							</Form.Item>
 
 							<Form.Item
 								name="confirm"
-								label="Confirm Password"
+								label="Повторите пароль"
 								dependencies={['password']}
 								hasFeedback
 								rules={[
-									{ required: true, message: 'Please confirm your password!' },
+									{ required: true, message: 'Подтвердите пароль!' },
 									({ getFieldValue }) => ({
 										validator(_, value) {
 											if (!value || getFieldValue('password') === value) {
 												return Promise.resolve();
 											}
-											return Promise.reject(new Error('Passwords do not match!'));
+											return Promise.reject(new Error('Пароли не совпадают!'));
 										},
 									}),
 								]}>
@@ -119,23 +137,23 @@ export default function Registration() {
 							</Form.Item>
 
 							<Form.Item>
-								<Button type="primary" htmlType="submit" block size="large">
-									Create Account
+								<Button type="primary" htmlType="submit" block size="large" loading={loading}>
+									Зарегистрироваться
 								</Button>
 							</Form.Item>
 						</Form>
+					)}
 
-						<Flex justify="center">
-							<Typography.Text type="secondary">
-								Already have an account?
-								<Link to="/" style={{ marginLeft: '10px' }}>
-									Sign in
-								</Link>
-							</Typography.Text>
-						</Flex>
+					<Flex justify="center">
+						<Typography.Text type="secondary">
+							Уже есть аккаунт?
+							<Link to="/" style={{ marginLeft: '10px' }}>
+								Войти
+							</Link>
+						</Typography.Text>
 					</Flex>
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 }

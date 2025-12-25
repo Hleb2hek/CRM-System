@@ -13,9 +13,12 @@ export interface AuthData {
 export interface AuthState {
 	loading: boolean;
 	userAuth: boolean;
+	error: string | null;
 }
-export interface LoadingState {
-	loading: boolean;
+
+export interface RejectValue {
+	message: string;
+	status?: number;
 }
 export interface RefreshToken {
 	refreshToken: string;
@@ -28,6 +31,11 @@ export interface Profile {
 	isBlocked: boolean;
 	phoneNumber: string;
 }
+export type ProfileState = {
+	data: Profile | null;
+	loading: boolean;
+	error: string | null;
+};
 
 export interface ProfileRequest {
 	username: string;
