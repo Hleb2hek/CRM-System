@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthData, AuthState, RejectValue, Token } from '../../models/authorizationType';
 import instance from './api.config';
-import { setTokens } from './auth.service';
 
 const initialState: AuthState = {
 	loading: false,
 	userAuth: false,
 	error: null,
+	accessToken: null,
 };
 
 export const authUser = createAsyncThunk<Token, AuthData, { rejectValue: RejectValue }>(
@@ -14,10 +14,9 @@ export const authUser = createAsyncThunk<Token, AuthData, { rejectValue: RejectV
 	async (data: AuthData, { rejectWithValue }) => {
 		try {
 			const response = await instance.post<Token>('/auth/signin', data);
-			const { accessToken, refreshToken } = response.data;
+			const { refreshToken } = response.data;
 
 			localStorage.setItem('refreshToken', refreshToken);
-			localStorage.setItem('accessToken', accessToken);
 
 			return response.data;
 		} catch (error: any) {
@@ -46,58 +45,39 @@ export const authUser = createAsyncThunk<Token, AuthData, { rejectValue: RejectV
 	},
 );
 
-// export const refreshToken = createAsyncThunk<Token, void, { rejectValue: RejectValue }>(
-// 	'authorization/refreshToken',
-// 	async (_, { rejectWithValue }) => {
-// 		const refreshToken = localStorage.getItem('refreshToken');
-// 		if (!refreshToken) {
-// 			return rejectWithValue({ message: 'No refresh token' });
-// 		}
-// 		try {
-// 			const response = await instance.post<Token>('/auth/refresh', { refreshToken });
-// 			setTokens(response.data);
-// 			return response.data;
-// 		} catch (error: any) {
-// 			localStorage.clear();
-// 			return rejectWithValue({ message: 'Refresh token failed' });
-// 		}
-// 	},
-// );
-
 export const authorizationSlice = createSlice({
 	name: 'authorization',
 	initialState,
-	reducers: {},
+	reducers: {
+		setAccessToken(state, action) {
+			state.accessToken = action.payload;
+		},
+		logout(state) {
+			state.userAuth = false;
+			state.accessToken = null;
+			state.error = null;
+			localStorage.removeItem('refreshToken');
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(authUser.pending, (state) => {
 				state.loading = true;
 				state.error = null;
 			})
-			.addCase(authUser.fulfilled, (state) => {
+			.addCase(authUser.fulfilled, (state, action) => {
 				state.loading = false;
 				state.userAuth = true;
 				state.error = null;
+				state.accessToken = action.payload.accessToken;
 			})
 			.addCase(authUser.rejected, (state, action) => {
 				state.loading = false;
 				state.userAuth = false;
+				state.accessToken = null;
 				state.error = action.payload?.message || 'Неизвестная ошибка авторизации';
 			});
-		// .addCase(refreshToken.pending, (state) => {
-		// 	state.loading = true;
-		// })
-		// .addCase(refreshToken.fulfilled, (state) => {
-		// 	state.loading = false;
-		// 	state.userAuth = true;
-		// 	state.error = null;
-		// })
-		// .addCase(refreshToken.rejected, (state, action) => {
-		// 	state.loading = false;
-		// 	state.userAuth = false;
-		// 	state.error = action.payload?.message || 'Сессия истекла';
-		// });
 	},
 });
-
+export const { logout, setAccessToken } = authorizationSlice.actions;
 export default authorizationSlice.reducer;

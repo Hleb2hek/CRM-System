@@ -6,6 +6,7 @@ const initialState: AuthState = {
 	loading: false,
 	userAuth: false,
 	error: null,
+	accessToken: null,
 };
 
 export const registerUser = createAsyncThunk<void, UserRegistration, { rejectValue: RejectValue }>(

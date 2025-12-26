@@ -14,6 +14,7 @@ export interface AuthState {
 	loading: boolean;
 	userAuth: boolean;
 	error: string | null;
+	accessToken: string | null;
 }
 
 export interface RejectValue {
