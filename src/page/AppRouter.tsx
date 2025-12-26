@@ -16,6 +16,7 @@ export const root = createBrowserRouter([
 		element: <Registration />,
 	},
 	{
+		path: '/',
 		element: <ProtectedRoute />,
 		children: [
 			{
