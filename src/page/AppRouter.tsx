@@ -19,7 +19,7 @@ export const root = createBrowserRouter([
 		element: <ProtectedRoute />,
 		children: [
 			{
-				path: '/todo',
+				path: 'todo',
 				element: <Root />,
 				children: [
 					{
