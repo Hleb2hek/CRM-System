@@ -49,18 +49,25 @@ export default function Authorization() {
 							label="Логин"
 							name="login"
 							rules={[{ required: true, message: 'Пожалуйста, введите свой логин' }]}>
-							<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
+							<Input prefix={<MailOutlined />} placeholder="Логин" />
 						</Form.Item>
 
 						<Form.Item
 							label="Пароль"
 							name="password"
-							rules={[{ required: true, message: 'Пожалуйста, введите свой пароль!' }]}>
+							rules={[
+								{ required: true, message: 'Пожалуйста, введите свой пароль!' },
+							]}>
 							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 						</Form.Item>
 
 						<Form.Item>
-							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
+							<Button
+								type="primary"
+								htmlType="submit"
+								block
+								size="large"
+								loading={loading}>
 								Login
 							</Button>
 						</Form.Item>
