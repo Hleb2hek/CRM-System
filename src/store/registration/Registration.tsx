@@ -1,4 +1,4 @@
-import img from '@/public/illustration.png';
+import img from '../../assets/illustration.png';
 import { Flex, Form, Input, Button, Typography, Alert, Space, message } from 'antd';
 import {
 	LockOutlined,
