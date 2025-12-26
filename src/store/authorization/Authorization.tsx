@@ -1,4 +1,4 @@
-import img from '../../../public/illustration.png';
+import img from '@/public/illustration.png';
 import { Flex, Form, Input, Button, Typography, Checkbox, message, Alert } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
