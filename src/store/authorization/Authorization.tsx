@@ -19,6 +19,7 @@ export default function Authorization() {
 			navigate('/todo');
 		} catch {}
 	};
+
 	return (
 		<Flex>
 			<img style={{ height: '100dvh' }} src={img} alt="Фон для авторизации" />
@@ -55,19 +56,12 @@ export default function Authorization() {
 						<Form.Item
 							label="Пароль"
 							name="password"
-							rules={[
-								{ required: true, message: 'Пожалуйста, введите свой пароль!' },
-							]}>
+							rules={[{ required: true, message: 'Пожалуйста, введите свой пароль!' }]}>
 							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 						</Form.Item>
 
 						<Form.Item>
-							<Button
-								type="primary"
-								htmlType="submit"
-								block
-								size="large"
-								loading={loading}>
+							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
 								Login
 							</Button>
 						</Form.Item>

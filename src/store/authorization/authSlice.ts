@@ -3,12 +3,28 @@ import { AuthData, AuthState, RejectValue, Token } from '../../models/authorizat
 import instance from './api.config';
 
 const initialState: AuthState = {
-	loading: false,
+	loading: true,
 	userAuth: false,
 	error: null,
 	accessToken: null,
 };
+export const initAuth = createAsyncThunk<Token, void, { rejectValue: RejectValue }>(
+	'authorization/initAuth',
+	async (_, { rejectWithValue }) => {
+		const refreshToken = localStorage.getItem('refreshToken');
+		if (!refreshToken) return rejectWithValue({ message: 'Нет токена' });
 
+		try {
+			const response = await instance.post<Token>('/auth/refresh', { refreshToken });
+			console.log(response);
+			localStorage.setItem('refreshToken', response.data.refreshToken);
+			return response.data;
+		} catch (err: any) {
+			localStorage.removeItem('refreshToken');
+			return rejectWithValue({ message: 'Обновление провалилось' });
+		}
+	},
+);
 export const authUser = createAsyncThunk<Token, AuthData, { rejectValue: RejectValue }>(
 	'authorization/authUser',
 	async (data: AuthData, { rejectWithValue }) => {
@@ -63,12 +79,10 @@ export const authorizationSlice = createSlice({
 		builder
 			.addCase(authUser.pending, (state) => {
 				state.loading = true;
-				state.error = null;
 			})
 			.addCase(authUser.fulfilled, (state, action) => {
 				state.loading = false;
 				state.userAuth = true;
-				state.error = null;
 				state.accessToken = action.payload.accessToken;
 			})
 			.addCase(authUser.rejected, (state, action) => {
@@ -76,6 +90,19 @@ export const authorizationSlice = createSlice({
 				state.userAuth = false;
 				state.accessToken = null;
 				state.error = action.payload?.message || 'Неизвестная ошибка авторизации';
+			})
+			.addCase(initAuth.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(initAuth.fulfilled, (state, action) => {
+				state.loading = false;
+				state.userAuth = true;
+				state.accessToken = action.payload.accessToken;
+			})
+			.addCase(initAuth.rejected, (state) => {
+				state.loading = false;
+				state.userAuth = false;
+				state.accessToken = null;
 			});
 	},
 });

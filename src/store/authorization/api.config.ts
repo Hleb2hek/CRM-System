@@ -38,7 +38,7 @@ instance.interceptors.response.use(
 				store.dispatch(setAccessToken(res.data.accessToken));
 
 				originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
-
+				console.log(instance(originalRequest));
 				return instance(originalRequest);
 			} catch {
 				store.dispatch(logout());

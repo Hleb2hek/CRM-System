@@ -5,31 +5,24 @@ import Root from './Root';
 import TodoListPage from './TodoListPage';
 import Profile from './Profile';
 import ProtectedRoute from './ProtectedRoute';
+import RefreshToken from './RefreshToken';
 
 export const root = createBrowserRouter([
 	{
-		path: '/',
-		element: <Authorization />,
-	},
-	{
-		path: '/registration',
-		element: <Registration />,
-	},
-	{
-		path: '/',
-		element: <ProtectedRoute />,
+		element: <RefreshToken />,
 		children: [
+			{ path: '/', element: <Authorization /> },
+			{ path: '/registration', element: <Registration /> },
 			{
-				path: 'todo',
-				element: <Root />,
+				element: <ProtectedRoute />,
 				children: [
 					{
-						index: true,
-						element: <TodoListPage />,
-					},
-					{
-						path: 'profile',
-						element: <Profile />,
+						path: '/todo',
+						element: <Root />,
+						children: [
+							{ index: true, element: <TodoListPage /> },
+							{ path: 'profile', element: <Profile /> },
+						],
 					},
 				],
 			},
