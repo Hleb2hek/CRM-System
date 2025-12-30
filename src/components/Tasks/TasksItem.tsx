@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { editUserTodo, deleteUserTodo } from '../../api/todoApi';
+import { editUserTodo, deleteUserTodo } from '../../services/todoApi';
 
 import { Card, Checkbox, Button, Flex, Form, Input } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -69,7 +69,11 @@ export const TasksItem: React.FC<Props> = ({ id, title, isDone, refreshTasks, se
 			<Card style={{ width: '100%' }}>
 				{!isEdit ? (
 					<Flex gap="1.25rem" align="center" justify="space-between">
-						<Checkbox onChange={handleChangeTodoStatus} checked={isDone} type="checkbox" />
+						<Checkbox
+							onChange={handleChangeTodoStatus}
+							checked={isDone}
+							type="checkbox"
+						/>
 						<p style={{ margin: 0, overflowWrap: 'anywhere' }}>{title}</p>
 						<Flex gap="0.625rem">
 							<Button onClick={openEditMode}>
@@ -88,11 +92,13 @@ export const TasksItem: React.FC<Props> = ({ id, title, isDone, refreshTasks, se
 							rules={[
 								{
 									max: MAX_TITLE_LENGTH,
-									message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
+									message:
+										'Название слишком динное. Допустимая максимальная длина 64 символа',
 								},
 								{
 									min: MIN_TITLE_LENGTH,
-									message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
+									message:
+										'Название слишком короткое. Допустимая минимальная длина 2 символа',
 								},
 							]}>
 							<Input placeholder="Введите название" />

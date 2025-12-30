@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { addUserTodo } from '../../api/todoApi';
+import { addUserTodo } from '../../services/todoApi';
 
 import { Flex, Form, Input, Button } from 'antd';
 
@@ -38,11 +38,13 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 							{ whitespace: true, message: 'Уберите пробелы' },
 							{
 								max: MAX_TITLE_LENGTH,
-								message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
+								message:
+									'Название слишком динное. Допустимая максимальная длина 64 символа',
 							},
 							{
 								min: MIN_TITLE_LENGTH,
-								message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
+								message:
+									'Название слишком короткое. Допустимая минимальная длина 2 символа',
 							},
 						]}>
 						<Input placeholder="Введите название" />

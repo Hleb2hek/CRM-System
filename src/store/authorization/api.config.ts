@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { selectAccessToken, store } from '../store';
-import { Token } from '../../models/authorizationType';
+import { Token } from '../../types/user';
 import { logout, setAccessToken } from './authSlice';
 
 export const instance = axios.create({

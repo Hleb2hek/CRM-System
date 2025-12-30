@@ -1,10 +1,10 @@
 import img from '../../assets/illustration.png';
-import { Flex, Form, Input, Button, Typography, Checkbox, message, Alert } from 'antd';
+import { Flex, Form, Input, Button, Typography, Alert } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../store';
-import { AuthData } from '../../models/authorizationType';
-import { authUser } from './authSlice';
+import { authLogin } from './authSlice';
+import { AuthData } from '../../types/users';
 
 export default function Authorization() {
 	const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function Authorization() {
 
 	const onFinish = async (values: AuthData) => {
 		try {
-			await dispatch(authUser(values)).unwrap();
+			await dispatch(authLogin(values)).unwrap();
 			form.resetFields();
 			navigate('/todo');
 		} catch {}
@@ -56,12 +56,19 @@ export default function Authorization() {
 						<Form.Item
 							label="Пароль"
 							name="password"
-							rules={[{ required: true, message: 'Пожалуйста, введите свой пароль!' }]}>
+							rules={[
+								{ required: true, message: 'Пожалуйста, введите свой пароль!' },
+							]}>
 							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 						</Form.Item>
 
 						<Form.Item>
-							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
+							<Button
+								type="primary"
+								htmlType="submit"
+								block
+								size="large"
+								loading={loading}>
 								Login
 							</Button>
 						</Form.Item>

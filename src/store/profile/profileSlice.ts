@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { Profile, ProfileState, RejectValue } from '../../models/authorizationType';
-import instance from '../authorization/api.config';
+import { getProfileUser } from '../../services/usersApi';
+import { Profile } from '../../types/users';
 
 const initialState: ProfileState = {
 	data: null,
@@ -9,14 +8,13 @@ const initialState: ProfileState = {
 	error: null,
 };
 
-export const getProfile = createAsyncThunk<Profile, void, { rejectValue: RejectValue }>(
+export const getProfile = createAsyncThunk<Profile, void, { rejectValue: string }>(
 	'profile/getProfile',
 	async (_, { rejectWithValue }) => {
 		try {
-			const response = await instance.get<Profile>('/user/profile');
-			return response.data;
-		} catch {
-			return rejectWithValue({ message: 'Не удаётся связаться с сервером' });
+			return await getProfileUser();
+		} catch (error: any) {
+			return rejectWithValue(error.message);
 		}
 	},
 );

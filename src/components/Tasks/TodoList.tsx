@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TasksItem } from './TasksItem';
-import { Filter, Todo } from '../../models/todo';
+import { Filter, Todo } from '../../types/todo';
 
 import { Flex, List } from 'antd';
 

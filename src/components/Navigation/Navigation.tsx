@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
-import { MenuItem } from '../../models/todo';
+import { MenuItem } from '../../types/todo';
 const { Sider } = Layout;
 
 export default function Navigation() {

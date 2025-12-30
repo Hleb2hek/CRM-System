@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Tabs } from 'antd';
 
-import { Filter, TodoInfo } from '../../models/todo';
+import { Filter, TodoInfo } from '../../types/todo';
 
 interface Props {
 	setFilter: (filter: Filter) => void;
