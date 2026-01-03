@@ -6,9 +6,7 @@ import { root } from './page/AppRouter';
 import { store } from './store/store';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
-	<StrictMode>
-		<Provider store={store}>
-			<RouterProvider router={root} />
-		</Provider>
-	</StrictMode>,
+	<Provider store={store}>
+		<RouterProvider router={root} />
+	</Provider>,
 );

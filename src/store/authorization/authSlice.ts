@@ -1,55 +1,25 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { authorizationUser } from '../../services/usersApi';
-import { AuthData, Token } from '../../types/users';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthState } from '../../types/users';
+import authClass from '../../utils/AuthClass';
 
 const initialState: AuthState = {
-	loading: true,
-	userAuth: false,
-	error: null,
-	accessToken: null,
+	isAuthorization: false,
 };
-export const authLogin = createAsyncThunk<Token, AuthData, { rejectValue: string }>(
-	'authorization/authLogin',
-	async (data, { rejectWithValue }) => {
-		try {
-			return await authorizationUser(data);
-		} catch (error: any) {
-			return rejectWithValue(error.message);
-		}
-	},
-);
 
-export const authorizationSlice = createSlice({
-	name: 'authorization',
+const authorizationSlice = createSlice({
+	name: 'auth',
 	initialState,
 	reducers: {
-		setAccessToken(state, action) {
-			state.accessToken = action.payload;
+		login(state, action: PayloadAction<string>) {
+			state.isAuthorization = true;
+			localStorage.setItem('refreshToken', action.payload);
 		},
 		logout(state) {
-			state.userAuth = false;
-			state.accessToken = null;
-			state.error = null;
+			state.isAuthorization = false;
+			authClass.clearAccessToken();
 			localStorage.removeItem('refreshToken');
 		},
 	},
-	extraReducers: (builder) => {
-		builder
-			.addCase(authLogin.pending, (state) => {
-				state.loading = true;
-			})
-			.addCase(authLogin.fulfilled, (state, action) => {
-				state.loading = false;
-				state.userAuth = true;
-				state.accessToken = action.payload.accessToken;
-			})
-			.addCase(authLogin.rejected, (state, action) => {
-				state.loading = false;
-				state.userAuth = false;
-				state.accessToken = null;
-				state.error = action.payload?.message || 'Неизвестная ошибка авторизации';
-			});
-	},
 });
-export const { logout, setAccessToken } = authorizationSlice.actions;
+export const { logout, login } = authorizationSlice.actions;
 export default authorizationSlice.reducer;

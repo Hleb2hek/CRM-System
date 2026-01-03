@@ -11,10 +11,13 @@ export interface AuthData {
 }
 
 export interface AuthState {
-	loading: boolean;
 	isAuthorization: boolean;
+}
+
+export interface ProfileState {
+	data: Profile | null;
+	loading: boolean;
 	error: string | null;
-	accessToken: string | null;
 }
 
 export interface RefreshToken {

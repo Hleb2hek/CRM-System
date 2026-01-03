@@ -1,23 +1,41 @@
-import img from '../../assets/illustration.png';
+import img from '../assets/illustration.png';
 import { Flex, Form, Input, Button, Typography, Alert } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
-import { useAppDispatch, useAppSelector } from '../store';
-import { authLogin } from './authSlice';
-import { AuthData } from '../../types/users';
+import { useAppDispatch, useAppSelector } from '../store/store';
+import { AuthData, Token } from '../types/users';
+import authClass from '../utils/AuthClass';
+import { authorizationUser } from '../services/usersApi';
+import { login } from '../store/authorization/authSlice';
+import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 export default function Authorization() {
-	const navigate = useNavigate();
+	const [error, setError] = useState<string>('');
+	const [loading, setLoading] = useState<boolean>(false);
 	const [form] = Form.useForm();
+
+	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const { error: serverError, loading } = useAppSelector((state) => state.authorization);
 
 	const onFinish = async (values: AuthData) => {
+		setLoading(true);
 		try {
-			await dispatch(authLogin(values)).unwrap();
+			const { accessToken, refreshToken }: Token = await authorizationUser(values);
+
+			authClass.setAccessToken(accessToken);
+			dispatch(login(refreshToken));
+
 			form.resetFields();
 			navigate('/todo');
-		} catch {}
+			setError('');
+			setLoading(false);
+		} catch (error: unknown) {
+			if (error instanceof AxiosError) {
+				setError(error.message);
+				setLoading(false);
+			}
+		}
 	};
 
 	return (
@@ -35,14 +53,8 @@ export default function Authorization() {
 						</Typography.Text>
 					</Flex>
 
-					{serverError && (
-						<Alert
-							message={serverError}
-							type="error"
-							showIcon
-							style={{ borderRadius: 8 }}
-							closable
-						/>
+					{error && (
+						<Alert message={error} type="error" showIcon style={{ borderRadius: 8 }} closable />
 					)}
 
 					<Form form={form} layout="vertical" onFinish={onFinish}>
@@ -56,19 +68,12 @@ export default function Authorization() {
 						<Form.Item
 							label="Пароль"
 							name="password"
-							rules={[
-								{ required: true, message: 'Пожалуйста, введите свой пароль!' },
-							]}>
+							rules={[{ required: true, message: 'Пожалуйста, введите свой пароль!' }]}>
 							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 						</Form.Item>
 
 						<Form.Item>
-							<Button
-								type="primary"
-								htmlType="submit"
-								block
-								size="large"
-								loading={loading}>
+							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
 								Login
 							</Button>
 						</Form.Item>

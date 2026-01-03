@@ -1,18 +1,55 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/store';
-import { getProfile } from '../store/profile/profileSlice';
+import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../store/store';
 import { logout } from '../store/authorization/authSlice';
 import { Card, Typography, Button, Spin, Space, Row, Col } from 'antd';
+import { getProfileUser } from '../services/usersApi';
+import { AxiosError } from 'axios';
+import authClass from '../utils/AuthClass';
+import { useNavigate } from 'react-router-dom';
+import type { Profile } from '../types/users';
 
 const { Title, Text } = Typography;
 
 export default function Profile() {
 	const dispatch = useAppDispatch();
-	const { data, loading, error } = useAppSelector((state) => state.profile);
+	const navigate = useNavigate();
+
+	const [data, setData] = useState<Profile | null>(null);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
+	const [loggout, setLoggout] = useState<boolean>(false);
 
 	useEffect(() => {
-		dispatch(getProfile());
-	}, [dispatch]);
+		setLoading(true);
+		(async () => {
+			try {
+				const profile = await getProfileUser();
+				setData(profile);
+			} catch (error) {
+				if (error instanceof AxiosError) {
+					setError(error.message);
+				} else {
+					setError('Ошибка загрузки профиля');
+				}
+			} finally {
+				setLoading(false);
+			}
+		})();
+	}, []);
+
+	const handleLogout = async () => {
+		try {
+			setLoggout(true);
+
+			authClass.clearAccessToken();
+			localStorage.removeItem('refreshToken');
+			dispatch(logout());
+
+			navigate('/auth');
+		} finally {
+			setLoggout(false);
+		}
+	};
 
 	if (loading) {
 		return (
@@ -39,13 +76,13 @@ export default function Profile() {
 					title={<Title level={3}>Профиль пользователя</Title>}
 					style={{ width: 350, textAlign: 'center' }}
 					actions={[
-						<Button type="primary" danger onClick={() => dispatch(logout())}>
+						<Button type="primary" danger onClick={handleLogout} loading={loggout}>
 							Logout
 						</Button>,
 					]}>
 					<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 						<div>
-							<Text strong>Username: </Text>
+							<Text strong>Логин: </Text>
 							<Text>{data.username}</Text>
 						</div>
 						<div>
@@ -53,8 +90,8 @@ export default function Profile() {
 							<Text>{data.email}</Text>
 						</div>
 						<div>
-							<Text strong>Phone: </Text>
-							<Text>{data.phoneNumber || '-'}</Text>
+							<Text strong>Телефон: </Text>
+							<Text>{data.phoneNumber || 'Отсутствует'}</Text>
 						</div>
 					</Space>
 				</Card>

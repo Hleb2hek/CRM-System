@@ -1,5 +1,5 @@
-import img from '../../assets/illustration.png';
-import { Flex, Form, Input, Button, Typography, Alert, Space, message } from 'antd';
+import img from '../assets/illustration.png';
+import { Flex, Form, Input, Button, Typography, Alert, Space } from 'antd';
 import {
 	LockOutlined,
 	MailOutlined,
@@ -8,18 +8,32 @@ import {
 	LoginOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store';
-import { registerUser } from './registrationSlice';
-import { UserRegistration } from '../../types/user';
+import { UserRegistration } from '../types/users';
+import { registrationUser } from '../services/usersApi';
+import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 export default function Registration() {
 	const [form] = Form.useForm();
-	const dispatch = useAppDispatch();
 
-	const { loading, error, userAuth } = useAppSelector((state) => state.registration);
+	const [error, setError] = useState<string>('');
+	const [isRegistr, setIsRegistr] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const onFinish = async (values: UserRegistration) => {
-		await dispatch(registerUser(values));
+		setLoading(true);
+		try {
+			await registrationUser(values);
+			setError('');
+			setIsRegistr(true);
+			setLoading(false);
+		} catch (error: unknown) {
+			if (error instanceof AxiosError) {
+				setIsRegistr(false);
+				setError(error.message);
+				setLoading(false);
+			}
+		}
 	};
 
 	return (
@@ -35,7 +49,7 @@ export default function Registration() {
 						<Typography.Text type="secondary">Присоединяйтесь к нам</Typography.Text>
 					</Flex>
 
-					{userAuth && (
+					{isRegistr && (
 						<Alert
 							message="Регистрация прошла успешно!"
 							description={
@@ -51,11 +65,9 @@ export default function Registration() {
 						/>
 					)}
 
-					{error && !userAuth && (
-						<Alert message={error} type="error" showIcon style={{ marginBottom: 24 }} />
-					)}
+					{error && <Alert message={error} type="error" showIcon />}
 
-					{!userAuth && (
+					{!isRegistr && (
 						<Form form={form} layout="vertical" onFinish={onFinish}>
 							<Form.Item
 								label="Имя пользователя"
@@ -104,10 +116,7 @@ export default function Registration() {
 										message: 'Некорректный формат телефона',
 									},
 								]}>
-								<Input
-									prefix={<PhoneOutlined />}
-									placeholder="+7 (999) 123-45-67"
-								/>
+								<Input prefix={<PhoneOutlined />} placeholder="+7 (999) 123-45-67" />
 							</Form.Item>
 
 							<Form.Item
@@ -132,9 +141,7 @@ export default function Registration() {
 											if (!value || getFieldValue('password') === value) {
 												return Promise.resolve();
 											}
-											return Promise.reject(
-												new Error('Пароли не совпадают!'),
-											);
+											return Promise.reject(new Error('Пароли не совпадают!'));
 										},
 									}),
 								]}>
@@ -142,12 +149,7 @@ export default function Registration() {
 							</Form.Item>
 
 							<Form.Item>
-								<Button
-									type="primary"
-									htmlType="submit"
-									block
-									size="large"
-									loading={loading}>
+								<Button type="primary" htmlType="submit" block size="large" loading={loading}>
 									Зарегистрироваться
 								</Button>
 							</Form.Item>
