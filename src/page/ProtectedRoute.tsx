@@ -19,29 +19,29 @@ export default function ProtectedRoute() {
 			const refreshToken = localStorage.getItem('refreshToken');
 			const accessToken = authClass.getAccessToken();
 
-			if (!refreshToken) {
-				dispatch(logout());
-				setLoading(false);
-				return;
-			}
-
-			try {
+			if (refreshToken) {
 				if (!accessToken) {
-					const newTokens = await refreshTokenSession({ refreshToken });
-					authClass.setAccessToken(newTokens.accessToken);
-					dispatch(login(newTokens.refreshToken));
+					try {
+						const newTokens = await refreshTokenSession({ refreshToken });
+						authClass.setAccessToken(newTokens.accessToken);
+						dispatch(login(newTokens.refreshToken));
+					} catch (error) {
+						if (error instanceof AxiosError) {
+							if (error.response?.status === 401) {
+								dispatch(logout());
+							}
+						}
+					}
 				} else {
 					dispatch(login(refreshToken));
 				}
-			} catch (error) {
-				if (error instanceof AxiosError) {
-					dispatch(logout());
-				}
+			} else {
+				dispatch(logout());
 			}
+			setLoading(false);
 		};
-
 		checkAuth();
-	}, [dispatch]);
+	}, []);
 
 	if (loading) {
 		return (
