@@ -18,5 +18,4 @@ const authTokenData = () => {
 };
 
 const authClass = authTokenData();
-console.log(authClass.getAccessToken());
 export default authClass;
