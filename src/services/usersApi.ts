@@ -1,6 +1,10 @@
 import axios, { AxiosError } from 'axios';
-import { instance } from './index';
+import { API, instance } from './index';
 import { AuthData, Profile, RefreshToken, Token, UserRegistration } from '../types/users';
+
+const refreshAPI = axios.create({
+	baseURL: API,
+});
 
 export const authorizationUser = async (data: AuthData) => {
 	try {
@@ -51,9 +55,8 @@ export const getProfileUser = async () => {
 
 export async function refreshTokenSession(refreshToken: RefreshToken) {
 	try {
-		const response = await instance.post('/auth/refresh', refreshToken);
-
-		const resData: Token = await response.data;
+		const response = await refreshAPI.post('/auth/refresh', refreshToken);
+		const resData: Token = response.data;
 		return resData;
 	} catch {
 		throw new AxiosError('Не удаётся связаться с сервером');

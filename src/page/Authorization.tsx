@@ -2,9 +2,9 @@ import img from '../assets/illustration.png';
 import { Flex, Form, Input, Button, Typography, Alert } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
-import { useAppDispatch, useAppSelector } from '../store/store';
+import { useAppDispatch } from '../store/store';
 import { AuthData, Token } from '../types/users';
-import authClass from '../utils/AuthClass';
+import authTokenStore from '../utils/authTokenStore';
 import { authorizationUser } from '../services/usersApi';
 import { login } from '../store/authorization/authSlice';
 import { useState } from 'react';
@@ -23,7 +23,7 @@ export default function Authorization() {
 		try {
 			const { accessToken, refreshToken }: Token = await authorizationUser(values);
 
-			authClass.setAccessToken(accessToken);
+			authTokenStore.setAccessToken(accessToken);
 			dispatch(login(refreshToken));
 
 			form.resetFields();

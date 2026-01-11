@@ -1,4 +1,4 @@
-const authTokenData = () => {
+const createAuthTokenStore = () => {
 	let accessToken: string = '';
 
 	const getAccessToken = () => {
@@ -17,5 +17,5 @@ const authTokenData = () => {
 	};
 };
 
-const authClass = authTokenData();
-export default authClass;
+const authTokenStore = createAuthTokenStore();
+export default authTokenStore;

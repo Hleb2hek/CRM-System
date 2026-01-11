@@ -1,13 +1,15 @@
 import axios from 'axios';
-import authClass from '../utils/AuthClass';
+import authTokenStore from '../utils/authTokenStore';
 import { refreshTokenSession } from './usersApi';
 
+export const API = 'https://easydev.club/api/v1';
+
 export const instance = axios.create({
-	baseURL: 'https://easydev.club/api/v1',
+	baseURL: API,
 });
 
 instance.interceptors.request.use((config) => {
-	const token = authClass.getAccessToken();
+	const token = authTokenStore.getAccessToken();
 
 	config.headers.Authorization = `Bearer ${token}`;
 	return config;
@@ -27,7 +29,7 @@ instance.interceptors.response.use(
 				if (refreshToken) {
 					const response = await refreshTokenSession({ refreshToken });
 					localStorage.setItem('refreshToken', response.refreshToken);
-					authClass.setAccessToken(response.accessToken);
+					authTokenStore.setAccessToken(response.accessToken);
 					return instance(originalRequest);
 				}
 			} catch {

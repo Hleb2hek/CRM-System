@@ -4,7 +4,7 @@ import { logout } from '../store/authorization/authSlice';
 import { Card, Typography, Button, Spin, Space, Row, Col } from 'antd';
 import { getProfileUser } from '../services/usersApi';
 import { AxiosError } from 'axios';
-import authClass from '../utils/AuthClass';
+import authTokenStore from '../utils/authTokenStore';
 import { useNavigate } from 'react-router-dom';
 import type { Profile } from '../types/users';
 
@@ -41,7 +41,7 @@ export default function Profile() {
 		try {
 			setLoggout(true);
 
-			authClass.clearAccessToken();
+			authTokenStore.clearAccessToken();
 			localStorage.removeItem('refreshToken');
 			dispatch(logout());
 

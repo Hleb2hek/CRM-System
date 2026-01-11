@@ -15,6 +15,7 @@ interface Props {
 
 export const TasksItem: React.FC<Props> = ({ id, title, isDone, refreshTasks, setError }) => {
 	const [isEdit, setIsEdit] = useState<boolean>(false);
+	const [form] = Form.useForm();
 
 	const MAX_TITLE_LENGTH = 64;
 	const MIN_TITLE_LENGTH = 2;
@@ -69,11 +70,7 @@ export const TasksItem: React.FC<Props> = ({ id, title, isDone, refreshTasks, se
 			<Card style={{ width: '100%' }}>
 				{!isEdit ? (
 					<Flex gap="1.25rem" align="center" justify="space-between">
-						<Checkbox
-							onChange={handleChangeTodoStatus}
-							checked={isDone}
-							type="checkbox"
-						/>
+						<Checkbox onChange={handleChangeTodoStatus} checked={isDone} type="checkbox" />
 						<p style={{ margin: 0, overflowWrap: 'anywhere' }}>{title}</p>
 						<Flex gap="0.625rem">
 							<Button onClick={openEditMode}>
@@ -85,20 +82,18 @@ export const TasksItem: React.FC<Props> = ({ id, title, isDone, refreshTasks, se
 						</Flex>
 					</Flex>
 				) : (
-					<Form onFinish={handleEditTask}>
+					<Form form={form} initialValues={{ task: title }} onFinish={handleEditTask}>
 						<Form.Item
 							name="task"
 							validateTrigger="onSubmit"
 							rules={[
 								{
 									max: MAX_TITLE_LENGTH,
-									message:
-										'Название слишком динное. Допустимая максимальная длина 64 символа',
+									message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
 								},
 								{
 									min: MIN_TITLE_LENGTH,
-									message:
-										'Название слишком короткое. Допустимая минимальная длина 2 символа',
+									message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
 								},
 							]}>
 							<Input placeholder="Введите название" />

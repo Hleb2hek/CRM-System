@@ -21,13 +21,13 @@ const TabsList: React.FC<Props> = ({ setFilter, tabs: { all, completed, inWork }
 		return ['all', 'completed', 'inWork'].includes(key);
 	};
 
-	const handlFilterChange = (key: string) => {
+	const handleFilterChange = (key: string) => {
 		if (isFilter(key)) {
 			setFilter(key);
 		}
 	};
 
-	return <Tabs activeKey={filter} onChange={handlFilterChange} items={tabItems} centered />;
+	return <Tabs activeKey={filter} onChange={handleFilterChange} items={tabItems} centered />;
 };
 
 export default TabsList;

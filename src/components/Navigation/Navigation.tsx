@@ -8,7 +8,7 @@ const { Sider } = Layout;
 export default function Navigation() {
 	const navigation = useNavigate();
 
-	const locations = useLocation();
+	const location = useLocation();
 
 	const itemsArr: MenuItem[] = [
 		{
@@ -25,7 +25,7 @@ export default function Navigation() {
 		},
 	];
 
-	const defaultKey = itemsArr.find((item) => item.path === locations.pathname)?.key || '1';
+	const defaultKey = itemsArr.find((item) => item.path === location.pathname)?.key || '1';
 
 	const handleClick = (key: string) => {
 		const path = itemsArr.find((arr) => arr.key === key)?.path;

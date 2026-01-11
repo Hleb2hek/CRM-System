@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { Spin, Layout } from 'antd';
 import { useEffect, useState } from 'react';
-import authClass from '../utils/AuthClass';
+import authTokenStore from '../utils/authTokenStore';
 import { refreshTokenSession } from '../services/usersApi';
 import { login, logout } from '../store/authorization/authSlice';
 import { AxiosError } from 'axios';
@@ -17,13 +17,13 @@ export default function ProtectedRoute() {
 	useEffect(() => {
 		const checkAuth = async () => {
 			const refreshToken = localStorage.getItem('refreshToken');
-			const accessToken = authClass.getAccessToken();
+			const accessToken = authTokenStore.getAccessToken();
 
 			if (refreshToken) {
 				if (!accessToken) {
 					try {
 						const newTokens = await refreshTokenSession({ refreshToken });
-						authClass.setAccessToken(newTokens.accessToken);
+						authTokenStore.setAccessToken(newTokens.accessToken);
 						dispatch(login(newTokens.refreshToken));
 					} catch (error) {
 						if (error instanceof AxiosError) {
@@ -41,7 +41,7 @@ export default function ProtectedRoute() {
 			setLoading(false);
 		};
 		checkAuth();
-	}, []);
+	}, [dispatch]);
 
 	if (loading) {
 		return (

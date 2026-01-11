@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/users';
-import authClass from '../../utils/AuthClass';
+import authTokenStore from '../../utils/authTokenStore';
 
 const initialState: AuthState = {
 	isAuthorization: false,
@@ -16,7 +16,7 @@ const authorizationSlice = createSlice({
 		},
 		logout(state) {
 			state.isAuthorization = false;
-			authClass.clearAccessToken();
+			authTokenStore.clearAccessToken();
 			localStorage.removeItem('refreshToken');
 		},
 	},
