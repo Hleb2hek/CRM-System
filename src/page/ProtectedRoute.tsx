@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../store/store';
 import { Spin, Layout } from 'antd';
 import { useEffect, useState } from 'react';
 import authTokenStore from '../utils/authTokenStore';
-import { refreshTokenSession } from '../services/usersApi';
+import { refreshTokenSession } from '../api/usersApi';
 import { login, logout } from '../store/authorization/authSlice';
 import { AxiosError } from 'axios';
 
@@ -46,7 +46,8 @@ export default function ProtectedRoute() {
 	if (loading) {
 		return (
 			<Layout style={{ height: '100dvh' }}>
-				<Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+				<Content
+					style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 					<Spin size="large" tip="Loading..." />
 				</Content>
 			</Layout>

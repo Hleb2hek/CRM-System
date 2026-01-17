@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { UserRegistration } from '../types/users';
-import { registrationUser } from '../services/usersApi';
+import { registerUser } from '../api/usersApi';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 
@@ -23,7 +23,7 @@ export default function Registration() {
 	const onFinish = async (values: UserRegistration) => {
 		setLoading(true);
 		try {
-			await registrationUser(values);
+			await registerUser(values);
 			setError('');
 			setIsRegistr(true);
 			setLoading(false);
@@ -116,7 +116,10 @@ export default function Registration() {
 										message: 'Некорректный формат телефона',
 									},
 								]}>
-								<Input prefix={<PhoneOutlined />} placeholder="+7 (999) 123-45-67" />
+								<Input
+									prefix={<PhoneOutlined />}
+									placeholder="+7 (999) 123-45-67"
+								/>
 							</Form.Item>
 
 							<Form.Item
@@ -141,7 +144,9 @@ export default function Registration() {
 											if (!value || getFieldValue('password') === value) {
 												return Promise.resolve();
 											}
-											return Promise.reject(new Error('Пароли не совпадают!'));
+											return Promise.reject(
+												new Error('Пароли не совпадают!'),
+											);
 										},
 									}),
 								]}>
@@ -149,7 +154,12 @@ export default function Registration() {
 							</Form.Item>
 
 							<Form.Item>
-								<Button type="primary" htmlType="submit" block size="large" loading={loading}>
+								<Button
+									type="primary"
+									htmlType="submit"
+									block
+									size="large"
+									loading={loading}>
 									Зарегистрироваться
 								</Button>
 							</Form.Item>

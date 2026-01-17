@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../store/store';
 import { logout } from '../store/authorization/authSlice';
 import { Card, Typography, Button, Spin, Space, Row, Col } from 'antd';
-import { getProfileUser } from '../services/usersApi';
+import { getProfileUser } from '../api/usersApi';
 import { AxiosError } from 'axios';
 import authTokenStore from '../utils/authTokenStore';
 import { useNavigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ export default function Profile() {
 		})();
 	}, []);
 
-	const handleLogout = async () => {
+	const handleLogout = () => {
 		try {
 			setLoggout(true);
 

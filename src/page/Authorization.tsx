@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router';
 import { useAppDispatch } from '../store/store';
 import { AuthData, Token } from '../types/users';
 import authTokenStore from '../utils/authTokenStore';
-import { authorizationUser } from '../services/usersApi';
+import { loginUser } from '../api/usersApi';
 import { login } from '../store/authorization/authSlice';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
@@ -21,7 +21,7 @@ export default function Authorization() {
 	const onFinish = async (values: AuthData) => {
 		setLoading(true);
 		try {
-			const { accessToken, refreshToken }: Token = await authorizationUser(values);
+			const { accessToken, refreshToken } = await loginUser(values);
 
 			authTokenStore.setAccessToken(accessToken);
 			dispatch(login(refreshToken));
@@ -54,7 +54,13 @@ export default function Authorization() {
 					</Flex>
 
 					{error && (
-						<Alert message={error} type="error" showIcon style={{ borderRadius: 8 }} closable />
+						<Alert
+							message={error}
+							type="error"
+							showIcon
+							style={{ borderRadius: 8 }}
+							closable
+						/>
 					)}
 
 					<Form form={form} layout="vertical" onFinish={onFinish}>
@@ -68,12 +74,19 @@ export default function Authorization() {
 						<Form.Item
 							label="Пароль"
 							name="password"
-							rules={[{ required: true, message: 'Пожалуйста, введите свой пароль!' }]}>
+							rules={[
+								{ required: true, message: 'Пожалуйста, введите свой пароль!' },
+							]}>
 							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
 						</Form.Item>
 
 						<Form.Item>
-							<Button type="primary" htmlType="submit" block size="large" loading={loading}>
+							<Button
+								type="primary"
+								htmlType="submit"
+								block
+								size="large"
+								loading={loading}>
 								Login
 							</Button>
 						</Form.Item>

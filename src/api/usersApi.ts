@@ -6,7 +6,7 @@ const refreshAPI = axios.create({
 	baseURL: API,
 });
 
-export const authorizationUser = async (data: AuthData) => {
+export const loginUser = async (data: AuthData) => {
 	try {
 		const response = await instance.post<Token>(`auth/signin`, data);
 		return response.data;
@@ -24,7 +24,7 @@ export const authorizationUser = async (data: AuthData) => {
 	}
 };
 
-export const registrationUser = async (data: UserRegistration) => {
+export const registerUser = async (data: UserRegistration) => {
 	try {
 		const payload = { ...data };
 		if (!payload.phoneNumber?.trim()) {
