@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { addUserTodo } from '../../api/todoApi';
 
 import { Flex, Form, Input, Button, message } from 'antd';
+import axios from 'axios';
 
 interface Props {
 	refreshTasks: () => void;
@@ -12,10 +13,10 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
 	const [messageApi, contextHolder] = message.useMessage();
 
-	const errorAntd = () => {
+	const errorAntd = (error: string) => {
 		messageApi.open({
 			type: 'error',
-			content: 'This is an error message',
+			content: error,
 		});
 	};
 	const MAX_TITLE_LENGTH = 64;
@@ -27,8 +28,13 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 			refreshTasks();
 			setErrorTasks(null);
 		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				errorAntd(error.response?.data?.message ?? error.message ?? 'Ошибка запроса');
+				return;
+			}
+
 			if (error instanceof Error) {
-				errorAntd();
+				errorAntd(error.message);
 			}
 		}
 	};
@@ -45,13 +51,11 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 							{ whitespace: true, message: 'Уберите пробелы' },
 							{
 								max: MAX_TITLE_LENGTH,
-								message:
-									'Название слишком длинное. Допустимая максимальная длина 64 символа',
+								message: 'Название слишком длинное. Допустимая максимальная длина 64 символа',
 							},
 							{
 								min: MIN_TITLE_LENGTH,
-								message:
-									'Название слишком короткое. Допустимая минимальная длина 2 символа',
+								message: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
 							},
 						]}>
 						<Input placeholder="Введите название" />

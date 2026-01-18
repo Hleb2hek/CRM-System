@@ -1,16 +1,19 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from '../types/todo';
 import { instance } from './index';
 
 // Запрос на отправку таски
 export async function addUserTodo(task: string): Promise<Todo> {
 	try {
-		const response = await instance.post<Todo>('/todo', {
+		const response = await instance.post<Todo>('/todos', {
 			title: task,
 		});
 		return response.data;
 	} catch (error) {
-		throw new AxiosError(`Ошибка отправки данных`);
+		if (axios.isAxiosError(error)) {
+			throw error;
+		}
+		throw new Error('Неизвестная ошибка');
 	}
 }
 // Запрос на удаление
