@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { addUserTodo } from '../../api/todoApi';
 
 import { Flex, Form, Input, Button, message } from 'antd';
-import axios from 'axios';
+import { AxiosError } from 'axios';
 
 interface Props {
 	refreshTasks: () => void;
@@ -28,7 +28,7 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 			refreshTasks();
 			setErrorTasks(null);
 		} catch (error: unknown) {
-			if (axios.isAxiosError(error)) {
+			if (error instanceof AxiosError) {
 				errorAntd(error.response?.data?.message ?? error.message ?? 'Ошибка запроса');
 				return;
 			}

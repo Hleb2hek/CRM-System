@@ -5,7 +5,7 @@ import { instance } from './index';
 // Запрос на отправку таски
 export async function addUserTodo(task: string): Promise<Todo> {
 	try {
-		const response = await instance.post<Todo>('/todos', {
+		const response = await instance.post<Todo>('/todo', {
 			title: task,
 		});
 		return response.data;
