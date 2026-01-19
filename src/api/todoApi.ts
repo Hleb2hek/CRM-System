@@ -5,9 +5,10 @@ import { instance } from './index';
 // Запрос на отправку таски
 export async function addUserTodo(task: string): Promise<Todo> {
 	try {
-		const response = await instance.post<Todo>('/todo', {
+		const response = await instance.post<Todo>('/todos', {
 			title: task,
 		});
+		console.log(response);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
