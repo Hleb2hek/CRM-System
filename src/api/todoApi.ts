@@ -8,7 +8,6 @@ export async function addUserTodo(task: string): Promise<Todo> {
 		const response = await instance.post<Todo>('/todos', {
 			title: task,
 		});
-		console.log(response);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
