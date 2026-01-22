@@ -2,31 +2,30 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
-import { MenuItem } from '../../models/todo';
+import { MenuItem } from '../../types/todo';
 const { Sider } = Layout;
 
 export default function Navigation() {
-	// Программный Link
 	const navigation = useNavigate();
 
-	const locations = useLocation();
+	const location = useLocation();
 
 	const itemsArr: MenuItem[] = [
 		{
 			key: '1',
 			icon: <UnorderedListOutlined />,
 			label: 'Список задач',
-			path: '/',
+			path: '/todo',
 		},
 		{
 			key: '2',
 			icon: <UserOutlined />,
 			label: 'Профиль',
-			path: '/profile',
+			path: '/todo/profile',
 		},
 	];
 
-	const defaultKey = itemsArr.find((item) => item.path === locations.pathname)?.key || '1';
+	const defaultKey = itemsArr.find((item) => item.path === location.pathname)?.key || '1';
 
 	const handleClick = (key: string) => {
 		const path = itemsArr.find((arr) => arr.key === key)?.path;

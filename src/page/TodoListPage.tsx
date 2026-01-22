@@ -4,8 +4,8 @@ import AddTodo from '../components/AddTodo/AddTodo';
 import TabsList from '../components/TabsList/TabsList';
 import TodoList from '../components/Tasks/TodoList';
 
-import { getTodosByFilter } from '../api/http';
-import { Filter, Todo, TodoInfo } from '../models/todo';
+import { getTodosByFilter } from '../api/todoApi';
+import { Filter, Todo, TodoInfo } from '../types/todo';
 
 import { Flex } from 'antd';
 
@@ -58,7 +58,12 @@ export default function TodoListPage() {
 				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
 			</Flex>
 
-			<TodoList filter={filter} tasks={tasks} refreshTasks={refreshTasks} setError={setError} />
+			<TodoList
+				filter={filter}
+				tasks={tasks}
+				refreshTasks={refreshTasks}
+				setError={setError}
+			/>
 		</>
 	);
 }

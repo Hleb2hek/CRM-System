@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
-import { addUserTodo } from '../../api/http';
+import { addUserTodo } from '../../api/todoApi';
 
-import { Flex, Form, Input, Button } from 'antd';
+import { Flex, Form, Input, Button, message } from 'antd';
+import { AxiosError } from 'axios';
 
 interface Props {
 	refreshTasks: () => void;
@@ -10,7 +11,14 @@ interface Props {
 
 const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
+	const [messageApi, contextHolder] = message.useMessage();
 
+	const errorAntd = (error: string) => {
+		messageApi.open({
+			type: 'error',
+			content: error,
+		});
+	};
 	const MAX_TITLE_LENGTH = 64;
 	const MIN_TITLE_LENGTH = 2;
 
@@ -20,8 +28,13 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 			refreshTasks();
 			setErrorTasks(null);
 		} catch (error: unknown) {
+			if (error instanceof AxiosError) {
+				errorAntd(error.response?.data?.message ?? error.message ?? 'Ошибка запроса');
+				return;
+			}
+
 			if (error instanceof Error) {
-				setErrorTasks(error);
+				errorAntd(error.message);
 			}
 		}
 	};
@@ -38,7 +51,7 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 							{ whitespace: true, message: 'Уберите пробелы' },
 							{
 								max: MAX_TITLE_LENGTH,
-								message: 'Название слишком динное. Допустимая максимальная длина 64 символа',
+								message: 'Название слишком длинное. Допустимая максимальная длина 64 символа',
 							},
 							{
 								min: MIN_TITLE_LENGTH,
@@ -51,7 +64,7 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 						<Button htmlType="submit">Добавить</Button>
 					</Form.Item>
 				</Flex>
-				{errorTasks && <p>{errorTasks.message}</p>}
+				{contextHolder}
 			</Form>
 		</Flex>
 	);
