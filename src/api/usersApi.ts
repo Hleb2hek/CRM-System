@@ -47,7 +47,6 @@ export const registerUser = async (data: UserRegistration) => {
 export const getProfileUser = async () => {
 	try {
 		const response = await instance.get<Profile>('/user/profile');
-		console.log(response.data);
 		return response.data;
 	} catch {
 		throw new AxiosError('Не удаётся связаться с сервером');

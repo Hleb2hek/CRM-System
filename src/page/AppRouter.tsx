@@ -5,6 +5,8 @@ import Root from './Root';
 import TodoListPage from './TodoListPage';
 import Profile from './Profile';
 import ProtectedRoute from './ProtectedRoute';
+import { Users } from './Users';
+import ProtectedRouteAdmin from './ProtectedRouteAdmin';
 
 export const root = createBrowserRouter([
 	{ path: '/', element: <Authorization /> },
@@ -18,6 +20,15 @@ export const root = createBrowserRouter([
 				children: [
 					{ index: true, element: <TodoListPage /> },
 					{ path: 'profile', element: <Profile /> },
+					{
+						element: <ProtectedRouteAdmin />,
+						children: [
+							{
+								path: 'users',
+								element: <Users />,
+							},
+						],
+					},
 				],
 			},
 		],

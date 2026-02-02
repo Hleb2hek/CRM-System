@@ -30,7 +30,9 @@ export interface Profile {
 	date: string;
 	isBlocked: boolean;
 	phoneNumber: string;
+	roles: string[];
 }
+
 export interface ProfileRequest {
 	username: string;
 	email: string;

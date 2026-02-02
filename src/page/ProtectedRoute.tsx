@@ -46,8 +46,7 @@ export default function ProtectedRoute() {
 	if (loading) {
 		return (
 			<Layout style={{ height: '100dvh' }}>
-				<Content
-					style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+				<Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 					<Spin size="large" tip="Loading..." />
 				</Content>
 			</Layout>
