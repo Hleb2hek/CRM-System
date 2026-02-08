@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch } from '../store/store';
-import { logout } from '../store/authorization/authSlice';
+import { useAppDispatch } from '../../store/store';
+import { logout } from '../../store/authorization/authSlice';
 import { Card, Typography, Button, Spin, Space, Row, Col } from 'antd';
-import { getProfileUser } from '../api/usersApi';
+import { getProfileUser } from '../../api/usersApi';
 import { AxiosError } from 'axios';
-import authTokenStore from '../utils/authTokenStore';
+import authTokenStore from '../../utils/authTokenStore';
 import { useNavigate } from 'react-router-dom';
-import type { Profile } from '../types/users';
+import type { Profile } from '../../types/users';
 
 const { Title, Text } = Typography;
 

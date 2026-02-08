@@ -1,16 +1,18 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
-import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined, UserOutlined, BarsOutlined } from '@ant-design/icons';
 import { MenuItem } from '../../types/todo';
+import { ContextType } from '../../types/admin';
 const { Sider } = Layout;
 
 export default function Navigation() {
-	const navigation = useNavigate();
+	const { hasAccess } = useOutletContext<ContextType>();
 
+	const navigation = useNavigate();
 	const location = useLocation();
 
-	const itemsArr: MenuItem[] = [
+	let itemsArr: MenuItem[] = [
 		{
 			key: '1',
 			icon: <UnorderedListOutlined />,
@@ -23,7 +25,17 @@ export default function Navigation() {
 			label: 'Профиль',
 			path: '/todo/profile',
 		},
+		{
+			key: '3',
+			icon: <BarsOutlined />,
+			label: 'Пользователи',
+			path: '/todo/users',
+		},
 	];
+
+	if (!hasAccess) {
+		itemsArr.splice(2);
+	}
 
 	const defaultKey = itemsArr.find((item) => item.path === location.pathname)?.key || '1';
 
