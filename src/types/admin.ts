@@ -18,8 +18,8 @@ export interface User {
 	roles: Roles[];
 	phoneNumber: string;
 }
-// Интерфейс метаинформации
 
+// Интерфейс метаинформации
 export interface MetaResponse<T> {
 	data: T[];
 	meta: {
@@ -28,6 +28,7 @@ export interface MetaResponse<T> {
 		sortOrder: 'asc' | 'desc';
 	};
 }
+
 // Интерфейс для обновления прав пользователя
 export interface UserRolesRequest {
 	roles: Roles[]; // при вызове этой апи роли будут обновлены к тому массиву который будет передан
@@ -47,3 +48,5 @@ export enum Roles {
 	MODERATOR = 'MODERATOR',
 	USER = 'USER',
 }
+
+export type ContextType = { hasAccess: boolean };
