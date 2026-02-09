@@ -6,6 +6,7 @@ import TodoListPage from './dashboard/TodoListPage';
 import Profile from './dashboard/Profile';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { Users } from './dashboard/Users';
+import { UserEdit } from './dashboard/UserEdit';
 
 export const root = createBrowserRouter([
 	{ path: '/', element: <Authorization /> },
@@ -20,6 +21,7 @@ export const root = createBrowserRouter([
 					{ index: true, element: <TodoListPage /> },
 					{ path: 'profile', element: <Profile /> },
 					{ path: 'users', element: <Users /> },
+					{ path: 'users/:id', element: <UserEdit /> },
 				],
 			},
 		],
