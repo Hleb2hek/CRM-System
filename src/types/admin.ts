@@ -6,6 +6,7 @@ export interface UserFilters {
 	isBlocked?: boolean;
 	limit?: number; // сколько на странице
 	page?: number; // страницу
+	offset?: number; // страницу
 }
 
 // Интерфейс пользователя

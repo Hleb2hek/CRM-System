@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { instance } from '.';
 import { MetaResponse, User, UserRequest, UserRolesRequest, UserFilters } from '../types/admin';
 
-export const getListUsers = async (filters?: UserFilters): Promise<MetaResponse<User>> => {
+export const getListUsers = async (filters?: UserFilters) => {
 	try {
 		const response = await instance.get<MetaResponse<User>>('/admin/users', {
 			params: filters,
@@ -13,7 +13,7 @@ export const getListUsers = async (filters?: UserFilters): Promise<MetaResponse<
 	}
 };
 
-export const getUserById = async (id: number): Promise<User> => {
+export const getUserById = async (id: number) => {
 	try {
 		const response = await instance.get<User>(`/admin/users/${id}`);
 		return response.data;
@@ -21,17 +21,17 @@ export const getUserById = async (id: number): Promise<User> => {
 		throw new AxiosError('Не удалось загрузить пользователя');
 	}
 };
-
-export const updateUser = async (id: number, data: UserRequest): Promise<User> => {
+export const updateUser = async (id: number, data: UserRequest) => {
 	try {
-		const response = await instance.put<User>(`/admin/users/${id}`, data);
+		const response = await instance.put<UserRequest>(`/admin/users/${id}`, data);
 		return response.data;
-	} catch (error) {
-		throw new AxiosError('Не удалось обновить данные пользователя');
+	} catch (error: any) {
+		console.log('← Ответ сервера:', error.response?.status, error.response?.data);
+		throw error;
 	}
 };
 
-export const updateUserRoles = async (id: number, data: UserRolesRequest): Promise<User> => {
+export const updateUserRoles = async (id: number, data: UserRolesRequest) => {
 	try {
 		const response = await instance.put<User>(`/admin/users/${id}/rights`, data);
 		return response.data;
@@ -40,7 +40,7 @@ export const updateUserRoles = async (id: number, data: UserRolesRequest): Promi
 	}
 };
 
-export const blockUser = async (id: number): Promise<User> => {
+export const blockUser = async (id: number) => {
 	try {
 		const response = await instance.post<User>(`/admin/users/${id}/block`);
 		return response.data;
@@ -49,7 +49,7 @@ export const blockUser = async (id: number): Promise<User> => {
 	}
 };
 
-export const unblockUser = async (id: number): Promise<User> => {
+export const unblockUser = async (id: number) => {
 	try {
 		const response = await instance.post<User>(`/admin/users/${id}/unblock`);
 		return response.data;
@@ -58,7 +58,7 @@ export const unblockUser = async (id: number): Promise<User> => {
 	}
 };
 
-export const deleteUser = async (id: number): Promise<void> => {
+export const deleteUser = async (id: number) => {
 	try {
 		await instance.delete(`/admin/users/${id}`);
 	} catch (error) {

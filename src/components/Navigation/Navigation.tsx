@@ -37,7 +37,7 @@ export default function Navigation() {
 		itemsArr.splice(2);
 	}
 
-	const defaultKey = itemsArr.find((item) => item.path === location.pathname)?.key || '1';
+	const defaultKey = itemsArr.find((item) => item.path === location.pathname)?.key ?? '';
 
 	const handleClick = (key: string) => {
 		const path = itemsArr.find((arr) => arr.key === key)?.path;

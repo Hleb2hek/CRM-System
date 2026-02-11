@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { API, instance } from './index';
 import { AuthData, Profile, RefreshToken, Token, UserRegistration } from '../types/users';
 
-const refreshAPI = axios.create({
+export const refreshAPI = axios.create({
 	baseURL: API,
 });
 
