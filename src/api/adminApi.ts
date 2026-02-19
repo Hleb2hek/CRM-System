@@ -5,7 +5,7 @@ import { MetaResponse, User, UserRequest, UserRolesRequest, UserFilters } from '
 export const getListUsers = async (filters?: UserFilters) => {
 	try {
 		const response = await instance.get<MetaResponse<User>>('/admin/users', {
-			params: filters,
+			params: { ...filters },
 		});
 		return response.data;
 	} catch (error) {
@@ -21,19 +21,19 @@ export const getUserById = async (id: number) => {
 		throw new AxiosError('Не удалось загрузить пользователя');
 	}
 };
+
 export const updateUser = async (id: number, data: UserRequest) => {
 	try {
 		const response = await instance.put<UserRequest>(`/admin/users/${id}`, data);
 		return response.data;
-	} catch (error: any) {
-		console.log('← Ответ сервера:', error.response?.status, error.response?.data);
-		throw error;
+	} catch (error) {
+		throw new AxiosError('Не удалось обновить пользователя');
 	}
 };
 
 export const updateUserRoles = async (id: number, data: UserRolesRequest) => {
 	try {
-		const response = await instance.put<User>(`/admin/users/${id}/rights`, data);
+		const response = await instance.post<User>(`/admin/users/${id}/rights`, data);
 		return response.data;
 	} catch (error) {
 		throw new AxiosError('Не удалось обновить роли пользователя');
