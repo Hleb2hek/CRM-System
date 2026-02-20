@@ -16,7 +16,8 @@ export const UserEdit = () => {
 
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [editing, setEditing] = useState(false);
+	const [saving, setSaving] = useState(false);
+	const [isEditing, setIsEditing] = useState(false);
 
 	const [error, setError] = useState<string>('');
 	const [success, setSuccess] = useState<string>('');
@@ -41,27 +42,65 @@ export const UserEdit = () => {
 		};
 
 		loadUser();
-	}, [userId]);
+	}, [userId, form]);
 
-	const handleSave = async (values: UserRequest) => {
+	const handleSave = async () => {
 		setError('');
 		setSuccess('');
+		setSaving(true);
 
 		try {
-			await updateUser(userId, values);
+			const changedFields: Partial<UserRequest> = {};
+			const current = form.getFieldsValue();
 
-			setUser({
-				...user!,
-				...values,
-			});
-
-			setEditing(false);
-			setSuccess('Данные успешно обновлены');
-		} catch (error: unknown) {
-			if (error instanceof AxiosError) {
-				setError(error.message || 'Не удалось загрузить список пользователей');
+			if (current.username !== user?.username) changedFields.username = current.username;
+			if (current.email !== user?.email) changedFields.email = current.email;
+			if (current.phoneNumber !== user?.phoneNumber) {
+				changedFields.phoneNumber = current.phoneNumber || undefined;
 			}
+
+			if (Object.keys(changedFields).length === 0) {
+				setSuccess('Нет изменений для сохранения');
+				setIsEditing(false);
+				setSaving(false);
+				return;
+			}
+
+			await updateUser(userId, changedFields);
+
+			// Обновляем данные пользователя
+			setUser((prev) => (prev ? { ...prev, ...changedFields } : null));
+
+			setSuccess('Данные успешно обновлены');
+			setIsEditing(false); // ← возвращаемся в режим просмотра
+		} catch (error: unknown) {
+			let msg = 'Не удалось обновить данные';
+			if (error instanceof AxiosError) {
+				msg = error.response?.data?.message || error.message || msg;
+			}
+			setError(msg);
+		} finally {
+			setSaving(false);
 		}
+	};
+
+	const handleEdit = () => {
+		setError('');
+		setSuccess('');
+		setIsEditing(true);
+	};
+
+	const handleCancel = () => {
+		if (user) {
+			form.setFieldsValue({
+				username: user.username,
+				email: user.email,
+				phoneNumber: user.phoneNumber,
+			});
+		}
+		setError('');
+		setSuccess('');
+		setIsEditing(false);
 	};
 
 	if (loading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
@@ -72,44 +111,15 @@ export const UserEdit = () => {
 		<div style={{ maxWidth: 600, margin: '32px auto', padding: '0 16px' }}>
 			<Title level={3}>Профиль пользователя</Title>
 
-			{success && <Alert message={success} type="success" showIcon style={{ marginBottom: 16 }} />}
+			{success && (
+				<Alert message={success} type="success" showIcon style={{ marginBottom: 16 }} />
+			)}
 
 			{error && <Alert message={error} type="error" showIcon style={{ marginBottom: 16 }} />}
 
 			<Card>
-				{!editing ? (
-					<Space direction="vertical" size="middle" style={{ width: '100%' }}>
-						<div>
-							<Text type="secondary">Имя пользователя</Text>
-							<div>{user.username}</div>
-						</div>
-
-						<div>
-							<Text type="secondary">Email</Text>
-							<div>{user.email}</div>
-						</div>
-
-						<div>
-							<Text type="secondary">Телефон</Text>
-							<div>{user.phoneNumber || '—'}</div>
-						</div>
-
-						<Space>
-							<Button
-								type="primary"
-								onClick={() => {
-									setError('');
-									setSuccess('');
-									setEditing(true);
-								}}>
-								Редактировать
-							</Button>
-
-							<Button onClick={() => navigate('/todo/users')}>Вернуться</Button>
-						</Space>
-					</Space>
-				) : (
-					<Form form={form} layout="vertical" onFinish={handleSave}>
+				{isEditing ? (
+					<Form form={form} layout="vertical">
 						<Form.Item
 							name="username"
 							label="Имя пользователя"
@@ -132,12 +142,44 @@ export const UserEdit = () => {
 						</Form.Item>
 
 						<Space>
-							<Button type="primary" htmlType="submit">
+							<Button
+								type="primary"
+								onClick={handleSave}
+								loading={saving}
+								disabled={saving}>
 								Сохранить
 							</Button>
-							<Button onClick={() => setEditing(false)}>Отмена</Button>
+							<Button onClick={handleCancel} disabled={saving}>
+								Отмена
+							</Button>
 						</Space>
 					</Form>
+				) : (
+					<Space direction="vertical" size="middle" style={{ width: '100%' }}>
+						<div>
+							<Text type="secondary">Имя пользователя</Text>
+							<div>{user.username}</div>
+						</div>
+
+						<div>
+							<Text type="secondary">Email</Text>
+							<div>{user.email}</div>
+						</div>
+
+						<div>
+							<Text type="secondary">Телефон</Text>
+							<div>{user.phoneNumber || '—'}</div>
+						</div>
+
+						<Space>
+							<Button type="primary" onClick={handleEdit}>
+								Редактировать
+							</Button>
+							<Button onClick={() => navigate('/todo/users')}>
+								Вернуться к списку
+							</Button>
+						</Space>
+					</Space>
 				)}
 			</Card>
 		</div>

@@ -25,6 +25,7 @@ export const getUserById = async (id: number) => {
 export const updateUser = async (id: number, data: UserRequest) => {
 	try {
 		const response = await instance.put<UserRequest>(`/admin/users/${id}`, data);
+		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		throw new AxiosError('Не удалось обновить пользователя');
