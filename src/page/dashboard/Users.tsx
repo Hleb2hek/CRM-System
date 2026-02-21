@@ -19,6 +19,7 @@ import {
 	Modal,
 	Select,
 	type SelectProps,
+	Alert,
 } from 'antd';
 import type { ColumnsType, SorterResult } from 'antd/es/table/interface';
 import { SearchOutlined, FilterOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
@@ -65,20 +66,39 @@ const roleSelectOptions: SelectProps['options'] = Object.values(Roles).map((role
 export const Users = () => {
 	const [usersResponse, setUsersResponse] = useState<MetaResponse<User>>();
 	const [usersFilter, setUsersFilter] = useState<UserFilters>({});
+
 	const [usersLoading, setUsersLoading] = useState<boolean>(false);
+
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [currentRoles, setCurrentRoles] = useState<Roles[]>([]);
+
+	const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
 	const navigate = useNavigate();
+
+	const showAlert = (type: 'success' | 'error', message: string) => {
+		setAlert({ type, message });
+		setTimeout(() => setAlert(null), 4500);
+	};
 
 	const fetchUsers = useCallback(async (queryParams: UserFilters) => {
 		setUsersLoading(true);
 		try {
 			const { offset, ...rest } = queryParams;
-			const newUsersList = await getListUsers({
+			const response = await getListUsers({
 				...rest,
 				page: offset !== undefined ? offset + 1 : undefined,
 			});
-			setUsersResponse(newUsersList);
+
+			const normalizedData = response.data.map((user) => ({
+				...user,
+				roles: user.roles?.length ? user.roles : [Roles.USER],
+			}));
+
+			setUsersResponse({
+				...response,
+				data: normalizedData,
+			});
 		} catch (error) {
 			if (error instanceof AxiosError) console.error(error);
 		} finally {
@@ -90,8 +110,11 @@ export const Users = () => {
 		try {
 			await deleteUser(id);
 			fetchUsers(usersFilter);
+			showAlert('success', 'Пользователь успешно удалён');
 		} catch (error) {
-			if (error instanceof AxiosError) console.error(error);
+			if (error instanceof AxiosError) {
+				showAlert('error', error.message);
+			}
 		}
 	};
 
@@ -99,8 +122,11 @@ export const Users = () => {
 		try {
 			await blockUser(id);
 			fetchUsers(usersFilter);
+			showAlert('success', 'Пользователь заблокирован');
 		} catch (error) {
-			if (error instanceof AxiosError) console.error(error);
+			if (error instanceof AxiosError) {
+				showAlert('error', error.message);
+			}
 		}
 	};
 
@@ -108,20 +134,27 @@ export const Users = () => {
 		try {
 			await unblockUser(id);
 			fetchUsers(usersFilter);
+			showAlert('success', 'Пользователь разблокирован');
 		} catch (error) {
-			if (error instanceof AxiosError) console.error(error);
+			if (error instanceof AxiosError) {
+				showAlert('error', error.message);
+			}
 		}
 	};
 
 	const handleRolesModalOk = async () => {
 		if (!selectedUser) return;
+
 		try {
 			await updateUserRoles(selectedUser.id, { roles: currentRoles });
 			setSelectedUser(null);
 			fetchUsers(usersFilter);
+			showAlert('success', 'Роль(и) пользователя обновлены ');
 		} catch (error) {
-			if (error instanceof AxiosError) console.error(error);
-			setSelectedUser(null);
+			if (error instanceof AxiosError) {
+				showAlert('error', error.message);
+				setSelectedUser(null);
+			}
 		}
 	};
 
@@ -144,7 +177,11 @@ export const Users = () => {
 		const sort = sorter as SorterResult<User>;
 		const sortOrder = sort.order?.slice(0, -3);
 		if (sortOrder === 'asc' || sortOrder === 'desc') {
-			setUsersFilter((prev) => ({ ...prev, sortOrder, sortBy: sort.field?.toString() ?? 'id' }));
+			setUsersFilter((prev) => ({
+				...prev,
+				sortOrder,
+				sortBy: sort.field?.toString() ?? 'id',
+			}));
 		} else {
 			setUsersFilter((prev) => ({ ...prev, sortOrder: undefined, sortBy: undefined }));
 		}
@@ -311,13 +348,15 @@ export const Users = () => {
 		{
 			label: 'Заблокированные',
 			key: 'blocked',
-			onClick: () => setUsersFilter((prev) => ({ ...prev, isBlocked: true, offset: undefined })),
+			onClick: () =>
+				setUsersFilter((prev) => ({ ...prev, isBlocked: true, offset: undefined })),
 			style: usersFilter.isBlocked === true ? selectedMenuItemStyle : undefined,
 		},
 		{
 			label: 'Незаблокированные',
 			key: 'unblocked',
-			onClick: () => setUsersFilter((prev) => ({ ...prev, isBlocked: false, offset: undefined })),
+			onClick: () =>
+				setUsersFilter((prev) => ({ ...prev, isBlocked: false, offset: undefined })),
 			style: usersFilter.isBlocked === false ? selectedMenuItemStyle : undefined,
 		},
 	];
@@ -325,7 +364,10 @@ export const Users = () => {
 	return (
 		<Flex vertical style={{ width: '100%' }}>
 			<Title>Пользователи</Title>
-			<Flex vertical style={{ border: '1px solid #E4E4E4', borderRadius: 10, padding: '1.5rem' }}>
+
+			<Flex
+				vertical
+				style={{ border: '1px solid #E4E4E4', borderRadius: 10, padding: '1.5rem' }}>
 				<Row style={{ paddingBottom: '1rem' }}>
 					<Col span={10}>
 						<Title level={3}>{getHeading(usersFilter.isBlocked)}</Title>
@@ -338,18 +380,34 @@ export const Users = () => {
 								placeholder="Поиск по имени или email"
 								defaultValue={usersFilter.search}
 								onChange={(e) => handleSearchDebounced(e.currentTarget.value)}
+								allowClear
 							/>
 							<Dropdown menu={{ items: filterMenuItems }}>
-								<Button style={{ minWidth: '12ch', border: '2px solid black', height: '2.5rem' }}>
+								<Button
+									style={{
+										minWidth: '12ch',
+										border: '2px solid black',
+										height: '2.5rem',
+									}}>
 									<Space>
 										<FilterOutlined />
-										<p>Фильтр</p>
+										Фильтр
 									</Space>
 								</Button>
 							</Dropdown>
 						</Flex>
 					</Col>
 				</Row>
+				{alert && (
+					<Alert
+						message={alert.message}
+						type={alert.type}
+						showIcon
+						closable
+						onClose={() => setAlert(null)}
+						style={{ marginBottom: 16 }}
+					/>
+				)}
 				{usersResponse ? (
 					<Table
 						rowKey="id"

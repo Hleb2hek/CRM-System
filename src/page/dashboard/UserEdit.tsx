@@ -22,27 +22,23 @@ export const UserEdit = () => {
 	const [error, setError] = useState<string>('');
 	const [success, setSuccess] = useState<string>('');
 
-	useEffect(() => {
-		const loadUser = async () => {
-			try {
-				const data = await getUserById(userId);
-				setUser(data);
-				form.setFieldsValue({
-					username: data.username,
-					email: data.email,
-					phoneNumber: data.phoneNumber,
-				});
-			} catch (error: unknown) {
-				if (error instanceof AxiosError) {
-					setError(error.message || 'Не удалось загрузить пользователя');
-				}
-			} finally {
-				setLoading(false);
+	const loadUser = async () => {
+		try {
+			const data = await getUserById(userId);
+			setUser(data);
+			form.setFieldsValue({
+				username: data.username,
+				email: data.email,
+				phoneNumber: data.phoneNumber,
+			});
+		} catch (error: unknown) {
+			if (error instanceof AxiosError) {
+				setError(error.message);
 			}
-		};
-
-		loadUser();
-	}, [userId, form]);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleSave = async () => {
 		setError('');
@@ -68,17 +64,14 @@ export const UserEdit = () => {
 
 			await updateUser(userId, changedFields);
 
-			// Обновляем данные пользователя
 			setUser((prev) => (prev ? { ...prev, ...changedFields } : null));
 
 			setSuccess('Данные успешно обновлены');
-			setIsEditing(false); // ← возвращаемся в режим просмотра
+			setIsEditing(false);
 		} catch (error: unknown) {
-			let msg = 'Не удалось обновить данные';
 			if (error instanceof AxiosError) {
-				msg = error.response?.data?.message || error.message || msg;
+				setError(error.message);
 			}
-			setError(msg);
 		} finally {
 			setSaving(false);
 		}
@@ -102,6 +95,10 @@ export const UserEdit = () => {
 		setSuccess('');
 		setIsEditing(false);
 	};
+
+	useEffect(() => {
+		loadUser();
+	}, [userId, form]);
 
 	if (loading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
 

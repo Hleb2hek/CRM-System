@@ -1,7 +1,13 @@
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
-import { UnorderedListOutlined, UserOutlined, BarsOutlined } from '@ant-design/icons';
+import {
+	UnorderedListOutlined,
+	UserOutlined,
+	BarsOutlined,
+	UserSwitchOutlined,
+	UsergroupAddOutlined,
+} from '@ant-design/icons';
 import { MenuItem } from '../../types/todo';
 import { ContextType } from '../../types/admin';
 const { Sider } = Layout;
@@ -27,7 +33,7 @@ export default function Navigation() {
 		},
 		{
 			key: '3',
-			icon: <BarsOutlined />,
+			icon: <UsergroupAddOutlined />,
 			label: 'Пользователи',
 			path: '/todo/users',
 		},
