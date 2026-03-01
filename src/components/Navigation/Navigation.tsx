@@ -15,10 +15,10 @@ const { Sider } = Layout;
 export default function Navigation() {
 	const { hasAccess } = useOutletContext<ContextType>();
 
-	const navigation = useNavigate();
+	const navigate = useNavigate();
 	const location = useLocation();
 
-	let itemsArr: MenuItem[] = [
+	let itemsArray: MenuItem[] = [
 		{
 			key: '1',
 			icon: <UnorderedListOutlined />,
@@ -40,15 +40,16 @@ export default function Navigation() {
 	];
 
 	if (!hasAccess) {
-		itemsArr.splice(2);
+		const adminMenuStartIndex = 2;
+		itemsArray.splice(adminMenuStartIndex);
 	}
 
-	const defaultKey = itemsArr.find((item) => item.path === location.pathname)?.key ?? '';
+	const defaultKey = itemsArray.find((item) => item.path === location.pathname)?.key ?? '';
 
 	const handleClick = (key: string) => {
-		const path = itemsArr.find((arr) => arr.key === key)?.path;
+		const path = itemsArray.find((arr) => arr.key === key)?.path;
 		if (path) {
-			return navigation(path);
+			return navigate(path);
 		}
 	};
 
@@ -60,7 +61,7 @@ export default function Navigation() {
 				selectedKeys={[defaultKey]}
 				style={{ height: '100%', borderRight: 0, position: 'relative' }}
 				onClick={(e) => handleClick(e.key)}
-				items={itemsArr.map(({ key, icon, label }) => ({
+				items={itemsArray.map(({ key, icon, label }) => ({
 					key,
 					icon,
 					label,

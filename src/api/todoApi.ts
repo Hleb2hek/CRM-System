@@ -1,11 +1,11 @@
 import axios, { AxiosError } from 'axios';
 import { Filter, MetaResponse, Todo, TodoInfo, TodoRequest } from '../types/todo';
-import { instance } from './index';
+import { httpClient } from './index';
 
 // Запрос на отправку таски
 export async function addUserTodo(task: string): Promise<Todo> {
 	try {
-		const response = await instance.post<Todo>('/todos', {
+		const response = await httpClient.post<Todo>('/todos', {
 			title: task,
 		});
 		return response.data;
@@ -19,7 +19,7 @@ export async function addUserTodo(task: string): Promise<Todo> {
 // Запрос на удаление
 export async function deleteUserTodo(id: number): Promise<void> {
 	try {
-		await instance.delete(`/todos/${id}`);
+		await httpClient.delete(`/todos/${id}`);
 	} catch (error) {
 		throw new AxiosError(`Ошибка удаления`);
 	}
@@ -27,7 +27,7 @@ export async function deleteUserTodo(id: number): Promise<void> {
 // Запрос на редактирование
 export async function editUserTodo(id: number, todoRequest: TodoRequest): Promise<Todo> {
 	try {
-		const response = await instance.put<Todo>(`/todos/${id}`, todoRequest);
+		const response = await httpClient.put<Todo>(`/todos/${id}`, todoRequest);
 		return response.data;
 	} catch (error) {
 		throw new AxiosError(`Ошибка редактирования`);
@@ -39,7 +39,7 @@ export async function getTodosByFilter(
 	filter: Filter = 'all',
 ): Promise<MetaResponse<Todo, TodoInfo>> {
 	try {
-		const response = await instance.get<MetaResponse<Todo, TodoInfo>>('/todos', {
+		const response = await httpClient.get<MetaResponse<Todo, TodoInfo>>('/todos', {
 			params: { filter },
 		});
 		return response.data;

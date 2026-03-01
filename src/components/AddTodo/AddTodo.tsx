@@ -4,16 +4,17 @@ import { addUserTodo } from '../../api/todoApi';
 
 import { Flex, Form, Input, Button, message } from 'antd';
 import { AxiosError } from 'axios';
+import { Todo } from '../../types/todo';
 
 interface Props {
 	refreshTasks: () => void;
 }
 
 const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
-	const [errorTasks, setErrorTasks] = useState<Error | null>(null);
+	const [, setErrorTasks] = useState<Error | null>(null);
 	const [messageApi, contextHolder] = message.useMessage();
 
-	const errorAntd = (error: string) => {
+	const showError = (error: string) => {
 		messageApi.open({
 			type: 'error',
 			content: error,
@@ -22,26 +23,26 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 	const MAX_TITLE_LENGTH = 64;
 	const MIN_TITLE_LENGTH = 2;
 
-	const createTasks = async (value: { task: string }) => {
+	const handleAddTodo = async (value: { task: string }): Promise<void> => {
 		try {
 			await addUserTodo(value.task?.trim());
 			refreshTasks();
 			setErrorTasks(null);
 		} catch (error: unknown) {
 			if (error instanceof AxiosError) {
-				errorAntd(error.response?.data?.message ?? error.message ?? 'Ошибка запроса');
+				showError(error.response?.data?.message ?? error.message ?? 'Ошибка запроса');
 				return;
 			}
 
 			if (error instanceof Error) {
-				errorAntd(error.message);
+				showError(error.message);
 			}
 		}
 	};
 
 	return (
 		<Flex justify="center" align="center" vertical style={{ marginTop: '4rem' }}>
-			<Form onFinish={createTasks}>
+			<Form onFinish={handleAddTodo}>
 				<Flex gap="small" justify="center">
 					<Form.Item
 						name="task"
