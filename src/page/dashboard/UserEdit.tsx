@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Button, Form, Input, Spin, Typography, Space, Alert } from 'antd';
+
 import { User, UserRequest } from '../../types/admin';
 import { getUserById, updateUser } from '../../api/adminApi';
-import { AxiosError } from 'axios';
 
 const { Title, Text } = Typography;
 
@@ -15,104 +16,118 @@ export const UserEdit = () => {
 	const [form] = Form.useForm<UserRequest>();
 
 	const [user, setUser] = useState<User | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [saving, setSaving] = useState(false);
-	const [isEditing, setIsEditing] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [isEditing, setIsEditing] = useState<boolean>(false);
 
-	const [error, setError] = useState<string>('');
-	const [success, setSuccess] = useState<string>('');
+	const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-	const loadUser = async () => {
+	const showAlert = (type: 'success' | 'error', message: string) => {
+		setAlert({ type, message });
+		setTimeout(() => setAlert(null), 4500);
+	};
+
+	const loadUser = useCallback(async () => {
+		setIsLoading(true);
 		try {
 			const data = await getUserById(userId);
+
 			setUser(data);
+
 			form.setFieldsValue({
 				username: data.username,
 				email: data.email,
 				phoneNumber: data.phoneNumber,
 			});
-		} catch (error: unknown) {
+		} catch (error) {
 			if (error instanceof AxiosError) {
-				setError(error.message);
+				showAlert('error', error.message);
 			}
 		} finally {
-			setLoading(false);
+			setIsLoading(false);
 		}
-	};
+	}, [userId, form]);
 
 	const handleSave = async () => {
-		setError('');
-		setSuccess('');
-		setSaving(true);
+		if (!user) return;
+
+		setIsSaving(true);
 
 		try {
-			const changedFields: Partial<UserRequest> = {};
 			const current = form.getFieldsValue();
+			const changedFields: Partial<UserRequest> = {};
 
-			if (current.username !== user?.username) changedFields.username = current.username;
-			if (current.email !== user?.email) changedFields.email = current.email;
-			if (current.phoneNumber !== user?.phoneNumber) {
+			if (current.username !== user.username) {
+				changedFields.username = current.username;
+			}
+
+			if (current.email !== user.email) {
+				changedFields.email = current.email;
+			}
+
+			if (current.phoneNumber !== user.phoneNumber) {
 				changedFields.phoneNumber = current.phoneNumber || undefined;
 			}
 
-			if (Object.keys(changedFields).length === 0) {
-				setSuccess('Нет изменений для сохранения');
+			if (!Object.keys(changedFields).length) {
+				showAlert('success', 'Нет изменений для сохранения');
 				setIsEditing(false);
-				setSaving(false);
 				return;
 			}
 
 			await updateUser(userId, changedFields);
 
 			setUser((prev) => (prev ? { ...prev, ...changedFields } : null));
-
-			setSuccess('Данные успешно обновлены');
 			setIsEditing(false);
-		} catch (error: unknown) {
+
+			showAlert('success', 'Данные успешно обновлены');
+		} catch (error) {
 			if (error instanceof AxiosError) {
-				setError(error.message);
+				showAlert('error', error.message);
 			}
 		} finally {
-			setSaving(false);
+			setIsSaving(false);
 		}
-	};
-
-	const handleEdit = () => {
-		setError('');
-		setSuccess('');
-		setIsEditing(true);
 	};
 
 	const handleCancel = () => {
-		if (user) {
-			form.setFieldsValue({
-				username: user.username,
-				email: user.email,
-				phoneNumber: user.phoneNumber,
-			});
-		}
-		setError('');
-		setSuccess('');
+		if (!user) return;
+
+		form.setFieldsValue({
+			username: user.username,
+			email: user.email,
+			phoneNumber: user.phoneNumber,
+		});
+
 		setIsEditing(false);
 	};
 
 	useEffect(() => {
 		loadUser();
-	}, [userId, form]);
+	}, [loadUser]);
 
-	if (loading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
+	if (isLoading) {
+		return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
+	}
 
-	if (!user) return <div>Пользователь не найден</div>;
+	if (!user) {
+		return <div style={{ textAlign: 'center', marginTop: 40 }}>Пользователь не найден</div>;
+	}
 
 	return (
 		<div style={{ maxWidth: 600, margin: '32px auto', padding: '0 16px' }}>
 			<Title level={3}>Профиль пользователя</Title>
 
-			{success && (
-				<Alert message={success} type="success" showIcon style={{ marginBottom: 16 }} />
+			{alert && (
+				<Alert
+					message={alert.message}
+					type={alert.type}
+					showIcon
+					closable
+					onClose={() => setAlert(null)}
+					style={{ marginBottom: 16 }}
+				/>
 			)}
-
-			{error && <Alert message={error} type="error" showIcon style={{ marginBottom: 16 }} />}
 
 			<Card>
 				{isEditing ? (
@@ -142,11 +157,12 @@ export const UserEdit = () => {
 							<Button
 								type="primary"
 								onClick={handleSave}
-								loading={saving}
-								disabled={saving}>
+								loading={isSaving}
+								disabled={isSaving}>
 								Сохранить
 							</Button>
-							<Button onClick={handleCancel} disabled={saving}>
+
+							<Button onClick={handleCancel} disabled={isSaving}>
 								Отмена
 							</Button>
 						</Space>
@@ -169,9 +185,10 @@ export const UserEdit = () => {
 						</div>
 
 						<Space>
-							<Button type="primary" onClick={handleEdit}>
+							<Button type="primary" onClick={() => setIsEditing(true)}>
 								Редактировать
 							</Button>
+
 							<Button onClick={() => navigate('/todo/users')}>
 								Вернуться к списку
 							</Button>

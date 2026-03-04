@@ -2,32 +2,33 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { Spin, Layout } from 'antd';
 import { useEffect, useState } from 'react';
-import authTokenStore from '../../utils/authTokenStore';
-import { getProfileUser, refreshTokenSession } from '../../api/usersApi';
+import tokenManager from '../../utils/tokenManager';
+import { refreshTokenSession } from '../../api/usersApi';
 import { login, logout } from '../../store/authorization/authSlice';
 import { AxiosError } from 'axios';
-import { ContextType, Roles } from '../../types/admin';
 
 const { Content } = Layout;
 
 export const ProtectedRoute = () => {
-	const [role, setRole] = useState<string[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	const dispatch = useAppDispatch();
-	const { isAuthorization } = useAppSelector((s) => s.authorization);
+	const { isAuthorization } = useAppSelector((select) => select.authorization);
 
 	useEffect(() => {
 		const checkAuth = async () => {
-			const refreshToken = localStorage.getItem('refreshToken');
-			const accessToken = authTokenStore.getAccessToken();
+			const refreshToken = tokenManager.getRefreshToken();
+			const accessToken = tokenManager.getAccessToken();
 
 			if (refreshToken) {
 				if (!accessToken) {
 					try {
 						const newTokens = await refreshTokenSession({ refreshToken });
-						authTokenStore.setAccessToken(newTokens.accessToken);
-						dispatch(login(newTokens.refreshToken));
+
+						tokenManager.setAccessToken(newTokens.accessToken);
+						tokenManager.setRefreshToken(newTokens.refreshToken);
+
+						dispatch(login());
 					} catch (error) {
 						if (error instanceof AxiosError) {
 							if (error.response?.status === 401) {
@@ -36,35 +37,22 @@ export const ProtectedRoute = () => {
 						}
 					}
 				} else {
-					dispatch(login(refreshToken));
+					dispatch(login());
 				}
 			} else {
 				dispatch(logout());
 			}
-			setLoading(false);
+			setIsLoading(false);
 		};
 		checkAuth();
 	}, [dispatch]);
 
-	useEffect(() => {
-		const checkRole = async () => {
-			try {
-				const res = await getProfileUser();
-				setRole(res.roles);
-			} finally {
-				setLoading(false);
-			}
-		};
-		checkRole();
-	}, []);
-
-	const hasAccess = role.includes(Roles.ADMIN) || role.includes(Roles.MODERATOR);
-
-	if (loading) {
+	if (isLoading) {
 		return (
 			<Layout style={{ height: '100dvh' }}>
-				<Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-					<Spin size="large" tip="Loading..." />
+				<Content
+					style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<Spin size="large" tip="isLoading..." />
 				</Content>
 			</Layout>
 		);
@@ -74,5 +62,5 @@ export const ProtectedRoute = () => {
 		return <Navigate to="/" replace />;
 	}
 
-	return <Outlet context={{ hasAccess } satisfies ContextType} />;
+	return <Outlet />;
 };

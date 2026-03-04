@@ -4,7 +4,6 @@ import { addUserTodo } from '../../api/todoApi';
 
 import { Flex, Form, Input, Button, message } from 'antd';
 import { AxiosError } from 'axios';
-import { Todo } from '../../types/todo';
 
 interface Props {
 	refreshTasks: () => void;

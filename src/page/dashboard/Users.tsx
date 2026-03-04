@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router';
+
 import {
 	Flex,
 	Skeleton,
@@ -21,8 +22,9 @@ import {
 	type SelectProps,
 	Alert,
 } from 'antd';
-import type { ColumnsType, SorterResult } from 'antd/es/table/interface';
 import { SearchOutlined, FilterOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
+import type { ColumnsType, SorterResult } from 'antd/es/table/interface';
+
 import { debounce } from 'lodash';
 
 import { MetaResponse, Roles, User, UserFilters } from '../../types/admin';
@@ -67,7 +69,7 @@ export const Users = () => {
 	const [usersResponse, setUsersResponse] = useState<MetaResponse<User>>();
 	const [usersFilter, setUsersFilter] = useState<UserFilters>({});
 
-	const [usersLoading, setUsersLoading] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [currentRoles, setCurrentRoles] = useState<Roles[]>([]);
@@ -82,7 +84,7 @@ export const Users = () => {
 	};
 
 	const fetchUsers = useCallback(async (queryParams: UserFilters) => {
-		setUsersLoading(true);
+		setIsLoading(true);
 		try {
 			const { offset, ...rest } = queryParams;
 			const response = await getListUsers({
@@ -99,10 +101,14 @@ export const Users = () => {
 				...response,
 				data: normalizedData,
 			});
+
+			showAlert('success', 'Список пользователей загружен');
 		} catch (error) {
-			if (error instanceof AxiosError) console.error(error);
+			if (error instanceof AxiosError) {
+				showAlert('error', error.message);
+			}
 		} finally {
-			setUsersLoading(false);
+			setIsLoading(false);
 		}
 	}, []);
 
@@ -412,7 +418,7 @@ export const Users = () => {
 					<Table
 						rowKey="id"
 						tableLayout="fixed"
-						loading={usersLoading}
+						loading={isLoading}
 						dataSource={usersResponse.data}
 						columns={columns}
 						size="middle"

@@ -1,4 +1,4 @@
-import img from '../../assets/illustration.png';
+import image from '../../assets/illustration.png';
 import { Flex, Form, Input, Button, Typography, Alert, Space } from 'antd';
 import {
 	LockOutlined,
@@ -15,30 +15,40 @@ import { AxiosError } from 'axios';
 
 export default function Registration() {
 	const [form] = Form.useForm();
+	const [isloading, setIsLoading] = useState<boolean>(false);
 
-	const [error, setError] = useState<string>('');
-	const [isRegistr, setIsRegistr] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(false);
+	const [alert, setAlert] = useState<{
+		type: 'success' | 'error';
+		message: string;
+	} | null>(null);
 
-	const onFinish = async (values: UserRegistration) => {
-		setLoading(true);
+	const showAlert = (type: 'success' | 'error', message: string) => {
+		setAlert({ type, message });
+	};
+
+	const handleRegisterUser = async (values: UserRegistration) => {
+		setIsLoading(true);
+		setAlert(null);
+
 		try {
 			await registerUser(values);
-			setError('');
-			setIsRegistr(true);
-			setLoading(false);
+
+			showAlert('success', 'Регистрация прошла успешно!');
+			form.resetFields();
 		} catch (error: unknown) {
 			if (error instanceof AxiosError) {
-				setIsRegistr(false);
-				setError(error.message);
-				setLoading(false);
+				showAlert('error', error.message);
+			} else {
+				showAlert('error', 'Произошла ошибка при регистрации');
 			}
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	return (
 		<Flex>
-			<img style={{ height: '100dvh' }} src={img} alt="Registration background" />
+			<img style={{ height: '100dvh' }} src={image} alt="Registration background" />
 
 			<Flex style={{ width: '100%' }} justify="center" align="center">
 				<Flex style={{ width: '420px' }} vertical gap={32}>
@@ -49,9 +59,10 @@ export default function Registration() {
 						<Typography.Text type="secondary">Присоединяйтесь к нам</Typography.Text>
 					</Flex>
 
-					{isRegistr && (
+					{alert?.type === 'success' ? (
 						<Alert
-							message="Регистрация прошла успешно!"
+							message={alert.message}
+							type="success"
 							description={
 								<Space direction="vertical">
 									<span>Теперь вы можете войти в систему.</span>
@@ -60,110 +71,137 @@ export default function Registration() {
 									</Link>
 								</Space>
 							}
-							type="success"
 							showIcon
+							closable
+							onClose={() => setAlert(null)}
 						/>
-					)}
+					) : (
+						<>
+							{alert && (
+								<Alert
+									message={alert.message}
+									type="error"
+									showIcon
+									closable
+									onClose={() => setAlert(null)}
+									style={{ marginBottom: 16 }}
+								/>
+							)}
 
-					{error && <Alert message={error} type="error" showIcon />}
-
-					{!isRegistr && (
-						<Form form={form} layout="vertical" onFinish={onFinish}>
-							<Form.Item
-								label="Имя пользователя"
-								name="username"
-								rules={[
-									{ required: true, message: 'Введите ваше имя!' },
-									{
-										pattern: /^[a-zA-Zа-яА-Я\s]+$/,
-										message: 'Только буквы (русские или латинские) и пробелы',
-									},
-									{ min: 1, max: 60, message: 'От 1 до 60 символов' },
-								]}>
-								<Input prefix={<UserOutlined />} placeholder="Иван Иванов" />
-							</Form.Item>
-
-							<Form.Item
-								label="Логин"
-								name="login"
-								rules={[
-									{ required: true, message: 'Введите логин!' },
-									{ min: 2, max: 60, message: 'От 2 до 60 символов' },
-									{
-										pattern: /^[a-zA-Z0-9]+$/,
-										message: 'Только латинские буквы и цифры',
-									},
-								]}>
-								<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
-							</Form.Item>
-
-							<Form.Item
-								label="Почта"
-								name="email"
-								rules={[
-									{ required: true, message: 'Введите email!' },
-									{ type: 'email', message: 'Некорректный email!' },
-								]}>
-								<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
-							</Form.Item>
-
-							<Form.Item
-								label="Телефон (необязательно)"
-								name="phoneNumber"
-								rules={[
-									{
-										pattern: /^\+?[0-9\s\-\(\)]+$/,
-										message: 'Некорректный формат телефона',
-									},
-								]}>
-								<Input prefix={<PhoneOutlined />} placeholder="+7 (999) 123-45-67" />
-							</Form.Item>
-
-							<Form.Item
-								label="Пароль"
-								name="password"
-								rules={[
-									{ required: true, message: 'Введите пароль!' },
-									{ min: 6, max: 60, message: 'Пароль от 6 до 60 символов' },
-								]}>
-								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
-							</Form.Item>
-
-							<Form.Item
-								name="confirm"
-								label="Повторите пароль"
-								dependencies={['password']}
-								hasFeedback
-								rules={[
-									{ required: true, message: 'Подтвердите пароль!' },
-									({ getFieldValue }) => ({
-										validator(_, value) {
-											if (!value || getFieldValue('password') === value) {
-												return Promise.resolve();
-											}
-											return Promise.reject(new Error('Пароли не совпадают!'));
+							<Form form={form} layout="vertical" onFinish={handleRegisterUser}>
+								<Form.Item
+									label="Имя пользователя"
+									name="username"
+									rules={[
+										{ required: true, message: 'Введите ваше имя!' },
+										{
+											pattern: /^[a-zA-Zа-яА-Я\s]+$/,
+											message:
+												'Только буквы (русские или латинские) и пробелы',
 										},
-									}),
-								]}>
-								<Input.Password prefix={<LockOutlined />} placeholder="*********" />
-							</Form.Item>
+										{ min: 1, max: 60, message: 'От 1 до 60 символов' },
+									]}>
+									<Input prefix={<UserOutlined />} placeholder="Иван Иванов" />
+								</Form.Item>
 
-							<Form.Item>
-								<Button type="primary" htmlType="submit" block size="large" loading={loading}>
-									Зарегистрироваться
-								</Button>
-							</Form.Item>
-						</Form>
+								<Form.Item
+									label="Логин"
+									name="login"
+									rules={[
+										{ required: true, message: 'Введите логин!' },
+										{ min: 2, max: 60, message: 'От 2 до 60 символов' },
+										{
+											pattern: /^[a-zA-Z0-9]+$/,
+											message: 'Только латинские буквы и цифры',
+										},
+									]}>
+									<Input prefix={<LoginOutlined />} placeholder="myLogin123" />
+								</Form.Item>
+
+								<Form.Item
+									label="Почта"
+									name="email"
+									rules={[
+										{ required: true, message: 'Введите email!' },
+										{ type: 'email', message: 'Некорректный email!' },
+									]}>
+									<Input prefix={<MailOutlined />} placeholder="mail@abc.com" />
+								</Form.Item>
+
+								<Form.Item
+									label="Телефон (необязательно)"
+									name="phoneNumber"
+									rules={[
+										{
+											pattern: /^\+?[0-9\s\-\(\)]+$/,
+											message: 'Некорректный формат телефона',
+										},
+									]}>
+									<Input
+										prefix={<PhoneOutlined />}
+										placeholder="+7 (999) 123-45-67"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									label="Пароль"
+									name="password"
+									rules={[
+										{ required: true, message: 'Введите пароль!' },
+										{ min: 6, max: 60, message: 'Пароль от 6 до 60 символов' },
+									]}>
+									<Input.Password
+										prefix={<LockOutlined />}
+										placeholder="*********"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									name="confirm"
+									label="Повторите пароль"
+									dependencies={['password']}
+									hasFeedback
+									rules={[
+										{ required: true, message: 'Подтвердите пароль!' },
+										({ getFieldValue }) => ({
+											validator(_, value) {
+												if (!value || getFieldValue('password') === value) {
+													return Promise.resolve();
+												}
+												return Promise.reject(
+													new Error('Пароли не совпадают!'),
+												);
+											},
+										}),
+									]}>
+									<Input.Password
+										prefix={<LockOutlined />}
+										placeholder="*********"
+									/>
+								</Form.Item>
+
+								<Form.Item>
+									<Button
+										type="primary"
+										htmlType="submit"
+										block
+										size="large"
+										loading={isloading}>
+										Зарегистрироваться
+									</Button>
+								</Form.Item>
+							</Form>
+
+							<Flex justify="center">
+								<Typography.Text type="secondary">
+									Уже есть аккаунт?
+									<Link to="/" style={{ marginLeft: '10px' }}>
+										Войти
+									</Link>
+								</Typography.Text>
+							</Flex>
+						</>
 					)}
-
-					<Flex justify="center">
-						<Typography.Text type="secondary">
-							Уже есть аккаунт?
-							<Link to="/" style={{ marginLeft: '10px' }}>
-								Войти
-							</Link>
-						</Typography.Text>
-					</Flex>
 				</Flex>
 			</Flex>
 		</Flex>

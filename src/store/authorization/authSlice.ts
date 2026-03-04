@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/users';
-import authTokenStore from '../../utils/authTokenStore';
+import tokenManager from '../../utils/tokenManager';
 
 const initialState: AuthState = {
 	isAuthorization: false,
@@ -10,14 +10,12 @@ const authorizationSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		login(state, action: PayloadAction<string>) {
+		login(state) {
 			state.isAuthorization = true;
-			localStorage.setItem('refreshToken', action.payload);
 		},
 		logout(state) {
 			state.isAuthorization = false;
-			authTokenStore.clearAccessToken();
-			localStorage.removeItem('refreshToken');
+			tokenManager.clearAccessToken();
 		},
 	},
 });

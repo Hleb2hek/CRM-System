@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { httpClient } from '.';
 import { MetaResponse, User, UserRequest, UserRolesRequest, UserFilters } from '../types/admin';
 
@@ -6,7 +5,6 @@ export const getListUsers = async (filters?: UserFilters): Promise<MetaResponse<
 	const response = await httpClient.get<MetaResponse<User>>('/admin/users', {
 		params: { ...filters },
 	});
-
 	return response.data;
 };
 

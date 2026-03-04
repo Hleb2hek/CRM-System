@@ -1,19 +1,15 @@
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
-import {
-	UnorderedListOutlined,
-	UserOutlined,
-	BarsOutlined,
-	UserSwitchOutlined,
-	UsergroupAddOutlined,
-} from '@ant-design/icons';
+import { UnorderedListOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { MenuItem } from '../../types/todo';
-import { ContextType } from '../../types/admin';
+import { ContextType, Roles } from '../../types/admin';
+import { useEffect, useState } from 'react';
+import { getProfileUser } from '../../api/usersApi';
 const { Sider } = Layout;
 
 export default function Navigation() {
-	const { hasAccess } = useOutletContext<ContextType>();
+	const [roles, setRoles] = useState<string[]>([]);
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -38,6 +34,7 @@ export default function Navigation() {
 			path: '/todo/users',
 		},
 	];
+	const hasAccess = roles.includes(Roles.ADMIN) || roles.includes(Roles.MODERATOR);
 
 	if (!hasAccess) {
 		const adminMenuStartIndex = 2;
@@ -53,6 +50,13 @@ export default function Navigation() {
 		}
 	};
 
+	useEffect(() => {
+		const role = async () => {
+			const res = await getProfileUser();
+			setRoles(res.roles);
+		};
+		role();
+	}, []);
 	return (
 		<Sider theme="light">
 			<Menu
