@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { httpClient } from '.';
 import { MetaResponse, User, UserRequest, UserRolesRequest, UserFilters } from '../types/admin';
 

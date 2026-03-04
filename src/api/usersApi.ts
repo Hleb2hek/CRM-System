@@ -1,14 +1,14 @@
 import axios, { AxiosError } from 'axios';
-import { API, instance } from './index';
+import { httpClient, apiBaseUrl } from './index';
 import { AuthData, Profile, RefreshToken, Token, UserRegistration } from '../types/users';
 
 export const refreshAPI = axios.create({
-	baseURL: API,
+	baseURL: apiBaseUrl,
 });
 
 export const loginUser = async (data: AuthData) => {
 	try {
-		const response = await instance.post<Token>(`auth/signin`, data);
+		const response = await httpClient.post<Token>(`auth/signin`, data);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
@@ -30,7 +30,7 @@ export const registerUser = async (data: UserRegistration) => {
 		if (!payload.phoneNumber?.trim()) {
 			delete payload.phoneNumber;
 		}
-		await instance.post('/auth/signup', payload);
+		await httpClient.post('/auth/signup', payload);
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			if (error.response?.status === 404) {
@@ -46,7 +46,7 @@ export const registerUser = async (data: UserRegistration) => {
 
 export const getProfileUser = async () => {
 	try {
-		const response = await instance.get<Profile>('/user/profile');
+		const response = await httpClient.get<Profile>('/user/profile');
 		return response.data;
 	} catch {
 		throw new AxiosError('Не удаётся связаться с сервером');
