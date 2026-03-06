@@ -1,18 +1,11 @@
 import React from 'react';
 
 import { TasksItem } from './TasksItem';
-import { Filter, Todo } from '../../types/todo';
+import { TodoListProps } from '../../types/todo';
 
 import { Flex, List } from 'antd';
 
-interface Props {
-	filter: Filter;
-	tasks: Todo[];
-	refreshTasks: () => void;
-	setError: (arg: Error | null) => void;
-}
-
-const TodoList: React.FC<Props> = ({ tasks, refreshTasks, setError }) => {
+const TodoList: React.FC<TodoListProps> = ({ tasks, refreshTasks, setError }) => {
 	return (
 		<Flex justify="center">
 			<List

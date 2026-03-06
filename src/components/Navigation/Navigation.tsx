@@ -1,12 +1,18 @@
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import { UnorderedListOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { MenuItem } from '../../types/todo';
-import { ContextType, Roles } from '../../types/admin';
+import { Roles } from '../../types/admin';
 import { useEffect, useState } from 'react';
 import { getProfileUser } from '../../api/usersApi';
 const { Sider } = Layout;
+
+const NAVIGATION_TEXT = {
+	TASKS_LIST: 'Список задач',
+	PROFILE: 'Профиль',
+	USERS: 'Пользователи',
+};
 
 export default function Navigation() {
 	const [roles, setRoles] = useState<string[]>([]);
@@ -18,19 +24,19 @@ export default function Navigation() {
 		{
 			key: '1',
 			icon: <UnorderedListOutlined />,
-			label: 'Список задач',
+			label: NAVIGATION_TEXT.TASKS_LIST,
 			path: '/todo',
 		},
 		{
 			key: '2',
 			icon: <UserOutlined />,
-			label: 'Профиль',
+			label: NAVIGATION_TEXT.PROFILE,
 			path: '/todo/profile',
 		},
 		{
 			key: '3',
 			icon: <UsergroupAddOutlined />,
-			label: 'Пользователи',
+			label: NAVIGATION_TEXT.USERS,
 			path: '/todo/users',
 		},
 	];

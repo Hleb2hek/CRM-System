@@ -10,12 +10,14 @@ import type { Profile } from '../../types/users';
 
 const { Title, Text } = Typography;
 
-const objectString = {
-	profile: 'Профиль пользователя',
-	login: 'Логин: ',
-	email: 'Email: ',
-	phone: 'Телефон: ',
-	phoneNumberAvailability: 'Отсутствует',
+const PROFILE_TEXT = {
+	PROFILE: 'Профиль пользователя',
+	LOGIN: 'Логин',
+	EMAIL: 'Email',
+	PHONE: 'Телефон',
+	PHONE_EMPTY: 'Отсутствует',
+	PROFILE_LOADED: 'Профиль загружен',
+	LOADING: 'Загрузка...',
 };
 
 export default function Profile() {
@@ -39,7 +41,7 @@ export default function Profile() {
 			try {
 				const profile = await getProfileUser();
 				setProfile(profile);
-				showAlert('success', 'Профиль пользователя загружен');
+				showAlert('success', PROFILE_TEXT.PROFILE_LOADED);
 			} catch (error) {
 				if (error instanceof AxiosError) {
 					showAlert('error', error.message);
@@ -66,7 +68,7 @@ export default function Profile() {
 	if (isloading) {
 		return (
 			<Row justify="center" align="middle" style={{ height: '100vh' }}>
-				<Spin size="large" tip="Загрузка..." />
+				<Spin size="large" />
 			</Row>
 		);
 	}
@@ -87,7 +89,7 @@ export default function Profile() {
 					/>
 				)}
 				<Card
-					title={<Title level={3}>{objectString.profile}</Title>}
+					title={<Title level={3}>{PROFILE_TEXT.PROFILE}</Title>}
 					style={{ width: 350, textAlign: 'center' }}
 					actions={[
 						<Button type="primary" danger onClick={handleLogout} loading={isLoggout}>
@@ -97,18 +99,16 @@ export default function Profile() {
 					{profile ? (
 						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 							<div>
-								<Text strong>{objectString.login}</Text>
+								<Text strong>{PROFILE_TEXT.LOGIN}</Text>
 								<Text>{profile.username}</Text>
 							</div>
 							<div>
-								<Text strong>{objectString.email}</Text>
+								<Text strong>{PROFILE_TEXT.EMAIL}</Text>
 								<Text>{profile.email}</Text>
 							</div>
 							<div>
-								<Text strong>{objectString.phone}</Text>
-								<Text>
-									{profile.phoneNumber || objectString.phoneNumberAvailability}
-								</Text>
+								<Text strong>{PROFILE_TEXT.PHONE}</Text>
+								<Text>{profile.phoneNumber || PROFILE_TEXT.PHONE_EMPTY}</Text>
 							</div>
 						</Space>
 					) : (

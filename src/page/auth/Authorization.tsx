@@ -10,6 +10,26 @@ import { login } from '../../store/authorization/authSlice';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 
+const AUTHORIZATION_TEXT = {
+	IMAGE_ALT: 'Фон для авторизации',
+
+	TITLE: 'Зайдите в свой аккаунт',
+	SUBTITLE: 'Посмотрите, что происходит с вашим бизнесом',
+
+	LOGIN_LABEL: 'Логин',
+	LOGIN_PLACEHOLDER: 'Логин',
+	LOGIN_REQUIRED: 'Пожалуйста, введите свой логин',
+
+	PASSWORD_LABEL: 'Пароль',
+	PASSWORD_PLACEHOLDER: '*********',
+	PASSWORD_REQUIRED: 'Пожалуйста, введите свой пароль',
+
+	LOGIN_BUTTON: 'Login',
+
+	NOT_REGISTERED: 'Еще не зарегистрировались?',
+	CREATE_ACCOUNT: 'Создать учетную запись',
+};
+
 export default function Authorization() {
 	const [form] = Form.useForm();
 	const [isLoading, setIsLoading] = useState(false);
@@ -45,17 +65,15 @@ export default function Authorization() {
 
 	return (
 		<Flex>
-			<img style={{ height: '100dvh' }} src={image} alt="Фон для авторизации" />
+			<img style={{ height: '100dvh' }} src={image} alt={AUTHORIZATION_TEXT.IMAGE_ALT} />
 
 			<Flex style={{ width: '100%' }} justify="center" align="center">
 				<Flex style={{ width: '420px' }} vertical gap={32}>
 					<Flex vertical gap={8}>
 						<Typography.Title level={2} style={{ margin: 0 }}>
-							Зайдите в свой аккаунт
+							{AUTHORIZATION_TEXT.TITLE}
 						</Typography.Title>
-						<Typography.Text type="secondary">
-							Посмотрите, что происходит с вашим бизнесом
-						</Typography.Text>
+						<Typography.Text type="secondary">{AUTHORIZATION_TEXT.SUBTITLE}</Typography.Text>
 					</Flex>
 
 					{alert && (
@@ -71,38 +89,34 @@ export default function Authorization() {
 
 					<Form form={form} layout="vertical" onFinish={onFinish}>
 						<Form.Item
-							label="Логин"
+							label={AUTHORIZATION_TEXT.LOGIN_LABEL}
 							name="login"
-							rules={[{ required: true, message: 'Пожалуйста, введите свой логин' }]}>
-							<Input prefix={<MailOutlined />} placeholder="Логин" />
+							rules={[{ required: true, message: AUTHORIZATION_TEXT.LOGIN_REQUIRED }]}>
+							<Input prefix={<MailOutlined />} placeholder={AUTHORIZATION_TEXT.LOGIN_PLACEHOLDER} />
 						</Form.Item>
 
 						<Form.Item
-							label="Пароль"
+							label={AUTHORIZATION_TEXT.PASSWORD_LABEL}
 							name="password"
-							rules={[
-								{ required: true, message: 'Пожалуйста, введите свой пароль!' },
-							]}>
-							<Input.Password prefix={<LockOutlined />} placeholder="*********" />
+							rules={[{ required: true, message: AUTHORIZATION_TEXT.PASSWORD_REQUIRED }]}>
+							<Input.Password
+								prefix={<LockOutlined />}
+								placeholder={AUTHORIZATION_TEXT.PASSWORD_PLACEHOLDER}
+							/>
 						</Form.Item>
 
 						<Form.Item>
-							<Button
-								type="primary"
-								htmlType="submit"
-								block
-								size="large"
-								loading={isLoading}>
-								Login
+							<Button type="primary" htmlType="submit" block size="large" loading={isLoading}>
+								{AUTHORIZATION_TEXT.LOGIN_BUTTON}
 							</Button>
 						</Form.Item>
 					</Form>
 
 					<Flex justify="center">
 						<Typography.Text type="secondary">
-							Еще не зарегистрировались?
+							{AUTHORIZATION_TEXT.NOT_REGISTERED}
 							<Link to="/registration" style={{ marginLeft: '10px' }}>
-								Создать учетную запись
+								{AUTHORIZATION_TEXT.CREATE_ACCOUNT}
 							</Link>
 						</Typography.Text>
 					</Flex>

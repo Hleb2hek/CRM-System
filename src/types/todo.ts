@@ -25,9 +25,34 @@ export interface MetaResponse<T, N> {
 
 export type Filter = 'all' | 'completed' | 'inWork';
 
+export interface AddTodoProps {
+	refreshTasks: () => void;
+}
+
 export interface MenuItem {
 	key: string;
 	icon: ReactNode;
 	label: string;
 	path: string;
+}
+
+export interface TabListProps {
+	setFilter: (filter: Filter) => void;
+	tabs: TodoInfo;
+	filter: Filter;
+}
+
+export interface TaskItemProps {
+	id: number;
+	title: string;
+	isDone: boolean;
+	setError: (arg: Error | null) => void;
+	refreshTasks: () => void;
+}
+
+export interface TodoListProps {
+	filter: Filter;
+	tasks: Todo[];
+	refreshTasks: () => void;
+	setError: (arg: Error | null) => void;
 }

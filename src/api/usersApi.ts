@@ -4,7 +4,6 @@ import { AuthData, Profile, RefreshToken, Token, UserRegistration } from '../typ
 
 export const refreshAPI = axios.create({
 	baseURL: apiBaseUrl,
-	baseURL: apiBaseUrl,
 });
 
 export const loginUser = async (data: AuthData): Promise<Token> => {

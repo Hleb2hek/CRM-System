@@ -35,8 +35,64 @@ import {
 	unblockUser,
 	updateUserRoles,
 } from '../../api/adminApi';
+import { formatDate } from '../../utils/formatDate';
 
 const { Title } = Typography;
+
+const USERS_PAGE_TEXT = {
+	TITLE: 'Пользователи',
+
+	HEADING_ALL: 'Все пользователи',
+	HEADING_BLOCKED: 'Заблокированные пользователи',
+	HEADING_UNBLOCKED: 'Незаблокированные пользователи',
+
+	USERNAME: 'Имя',
+	EMAIL: 'Email',
+	PHONE: 'Телефон',
+	ROLES: 'Роли',
+	STATUS: 'Статус',
+	REGISTRATION_DATE: 'Дата регистрации',
+	ACTIONS: 'Действия',
+
+	STATUS_BLOCKED: 'Заблокирован',
+	STATUS_ACTIVE: 'Активен',
+
+	GO_TO_PROFILE: 'Перейти к профилю',
+
+	DELETE_USER: 'Удалить пользователя',
+	DELETE_CONFIRM: 'Вы уверены?',
+	DELETE_TOOLTIP: 'Удалить пользователя',
+
+	BLOCK_USER: 'Заблокировать',
+	UNBLOCK_USER: 'Разблокировать',
+
+	BLOCK_CONFIRM: 'Заблокировать пользователя?',
+	UNBLOCK_CONFIRM: 'Разблокировать пользователя?',
+
+	EDIT_ROLES: 'Изменить роли',
+	USER_ROLES_MODAL: 'Роли пользователя',
+
+	SAVE: 'Сохранить',
+	CANCEL: 'Отмена',
+
+	SELECT_ROLES: 'Выберите роли',
+
+	FILTER: 'Фильтр',
+	FILTER_ALL: 'Все',
+	FILTER_BLOCKED: 'Заблокированные',
+	FILTER_UNBLOCKED: 'Незаблокированные',
+
+	SEARCH_PLACEHOLDER: 'Поиск по имени или email',
+
+	YES: 'Да',
+	NO: 'Нет',
+
+	USERS_LOADED: 'Список пользователей загружен',
+	USER_DELETED: 'Пользователь успешно удалён',
+	USER_BLOCKED: 'Пользователь заблокирован',
+	USER_UNBLOCKED: 'Пользователь разблокирован',
+	ROLES_UPDATED: 'Роль(и) пользователя обновлены',
+};
 
 const selectedMenuItemStyle: CSSProperties = {
 	color: '#1777FF',
@@ -44,20 +100,15 @@ const selectedMenuItemStyle: CSSProperties = {
 };
 
 const getHeading = (isBlocked?: boolean) => {
-	if (isBlocked === true) return 'Заблокированные пользователи';
-	if (isBlocked === false) return 'Незаблокированные пользователи';
-	return 'Все пользователи';
+	if (isBlocked === true) return USERS_PAGE_TEXT.HEADING_BLOCKED;
+	if (isBlocked === false) return USERS_PAGE_TEXT.HEADING_UNBLOCKED;
+	return USERS_PAGE_TEXT.HEADING_ALL;
 };
 
 const getRoleColor = (role: Roles) => {
 	if (role === Roles.ADMIN) return 'red';
 	if (role === Roles.MODERATOR) return 'blue';
 	return 'green';
-};
-
-const formatDate = (date: string) => {
-	const dat = new Date(date);
-	return `${dat.getDate()}.${dat.getMonth() + 1}.${dat.getFullYear()}`;
 };
 
 const roleSelectOptions: SelectProps['options'] = Object.values(Roles).map((role) => ({
@@ -68,7 +119,6 @@ const roleSelectOptions: SelectProps['options'] = Object.values(Roles).map((role
 export const Users = () => {
 	const [usersResponse, setUsersResponse] = useState<MetaResponse<User>>();
 	const [usersFilter, setUsersFilter] = useState<UserFilters>({});
-
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -87,6 +137,7 @@ export const Users = () => {
 		setIsLoading(true);
 		try {
 			const { offset, ...rest } = queryParams;
+
 			const response = await getListUsers({
 				...rest,
 				page: offset !== undefined ? offset + 1 : undefined,
@@ -102,7 +153,7 @@ export const Users = () => {
 				data: normalizedData,
 			});
 
-			showAlert('success', 'Список пользователей загружен');
+			showAlert('success', USERS_PAGE_TEXT.USERS_LOADED);
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				showAlert('error', error.message);
@@ -116,7 +167,7 @@ export const Users = () => {
 		try {
 			await deleteUser(id);
 			fetchUsers(usersFilter);
-			showAlert('success', 'Пользователь успешно удалён');
+			showAlert('success', USERS_PAGE_TEXT.USER_DELETED);
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				showAlert('error', error.message);
@@ -128,7 +179,7 @@ export const Users = () => {
 		try {
 			await blockUser(id);
 			fetchUsers(usersFilter);
-			showAlert('success', 'Пользователь заблокирован');
+			showAlert('success', USERS_PAGE_TEXT.USER_BLOCKED);
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				showAlert('error', error.message);
@@ -140,7 +191,7 @@ export const Users = () => {
 		try {
 			await unblockUser(id);
 			fetchUsers(usersFilter);
-			showAlert('success', 'Пользователь разблокирован');
+			showAlert('success', USERS_PAGE_TEXT.USER_UNBLOCKED);
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				showAlert('error', error.message);
@@ -155,7 +206,7 @@ export const Users = () => {
 			await updateUserRoles(selectedUser.id, { roles: currentRoles });
 			setSelectedUser(null);
 			fetchUsers(usersFilter);
-			showAlert('success', 'Роль(и) пользователя обновлены ');
+			showAlert('success', USERS_PAGE_TEXT.ROLES_UPDATED);
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				showAlert('error', error.message);
@@ -182,6 +233,7 @@ export const Users = () => {
 	) => {
 		const sort = sorter as SorterResult<User>;
 		const sortOrder = sort.order?.slice(0, -3);
+
 		if (sortOrder === 'asc' || sortOrder === 'desc') {
 			setUsersFilter((prev) => ({
 				...prev,
@@ -207,25 +259,25 @@ export const Users = () => {
 
 	const columns: ColumnsType<User> = [
 		{
-			title: 'Имя',
+			title: USERS_PAGE_TEXT.USERNAME,
 			dataIndex: 'username',
 			key: 'username',
 			sorter: true,
 			render: (_, { username }) => <div style={{ width: '200px' }}>{username}</div>,
 		},
 		{
-			title: 'Email',
+			title: USERS_PAGE_TEXT.EMAIL,
 			dataIndex: 'email',
 			key: 'email',
 			sorter: true,
 		},
 		{
-			title: 'Телефон',
+			title: USERS_PAGE_TEXT.PHONE,
 			dataIndex: 'phoneNumber',
 			key: 'phoneNumber',
 		},
 		{
-			title: 'Роли',
+			title: USERS_PAGE_TEXT.ROLES,
 			key: 'roles',
 			dataIndex: 'roles',
 			render: (_, { roles }) => (
@@ -239,25 +291,29 @@ export const Users = () => {
 			),
 		},
 		{
-			title: 'Статус',
+			title: USERS_PAGE_TEXT.STATUS,
 			dataIndex: 'isBlocked',
 			key: 'isBlocked',
 			render: (_, { isBlocked }) =>
-				isBlocked ? <Tag color="red">Заблокирован</Tag> : <Tag color="green">Активен</Tag>,
+				isBlocked ? (
+					<Tag color="red">{USERS_PAGE_TEXT.STATUS_BLOCKED}</Tag>
+				) : (
+					<Tag color="green">{USERS_PAGE_TEXT.STATUS_ACTIVE}</Tag>
+				),
 		},
 		{
-			title: 'Дата регистрации',
+			title: USERS_PAGE_TEXT.REGISTRATION_DATE,
 			dataIndex: 'date',
 			key: 'date',
 			render: (_, { date }) => <p>{formatDate(date)}</p>,
 		},
 		{
-			title: 'Действия',
+			title: USERS_PAGE_TEXT.ACTIONS,
 			key: 'action',
 			width: '170px',
 			render: (_, record) => (
 				<Space size="middle">
-					<Tooltip title="Перейти к профилю">
+					<Tooltip title={USERS_PAGE_TEXT.GO_TO_PROFILE}>
 						<Button
 							variant="outlined"
 							color="default"
@@ -268,12 +324,12 @@ export const Users = () => {
 					</Tooltip>
 
 					<Popconfirm
-						title="Удалить пользователя"
-						description="Вы уверены?"
+						title={USERS_PAGE_TEXT.DELETE_USER}
+						description={USERS_PAGE_TEXT.DELETE_CONFIRM}
 						onConfirm={() => handleDeleteUser(record.id)}
-						okText="Да"
-						cancelText="Нет">
-						<Tooltip title="Удалить пользователя">
+						okText={USERS_PAGE_TEXT.YES}
+						cancelText={USERS_PAGE_TEXT.NO}>
+						<Tooltip title={USERS_PAGE_TEXT.DELETE_TOOLTIP}>
 							<Button danger>
 								<DeleteOutlined />
 							</Button>
@@ -288,19 +344,19 @@ export const Users = () => {
 									key: 'changeBlockStatus',
 									label: !record.isBlocked ? (
 										<Popconfirm
-											okText="Да"
-											cancelText="Нет"
-											title="Заблокировать пользователя?"
+											okText={USERS_PAGE_TEXT.YES}
+											cancelText={USERS_PAGE_TEXT.NO}
+											title={USERS_PAGE_TEXT.BLOCK_CONFIRM}
 											onConfirm={() => handleBlockUser(record.id)}>
-											Заблокировать
+											{USERS_PAGE_TEXT.BLOCK_USER}
 										</Popconfirm>
 									) : (
 										<Popconfirm
-											okText="Да"
-											cancelText="Нет"
-											title="Разблокировать пользователя?"
+											okText={USERS_PAGE_TEXT.YES}
+											cancelText={USERS_PAGE_TEXT.NO}
+											title={USERS_PAGE_TEXT.UNBLOCK_CONFIRM}
 											onConfirm={() => handleUnblockUser(record.id)}>
-											Разблокировать
+											{USERS_PAGE_TEXT.UNBLOCK_USER}
 										</Popconfirm>
 									),
 								},
@@ -312,7 +368,7 @@ export const Users = () => {
 												setSelectedUser(record);
 												setCurrentRoles(record.roles);
 											}}>
-											Изменить роли
+											{USERS_PAGE_TEXT.EDIT_ROLES}
 										</p>
 									),
 								},
@@ -323,16 +379,16 @@ export const Users = () => {
 
 					<Modal
 						destroyOnHidden
-						title="Роли пользователя"
+						title={USERS_PAGE_TEXT.USER_ROLES_MODAL}
 						open={selectedUser?.id === record.id}
 						onOk={handleRolesModalOk}
 						onCancel={handleRolesModalCancel}
-						okText="Сохранить"
-						cancelText="Отмена">
+						okText={USERS_PAGE_TEXT.SAVE}
+						cancelText={USERS_PAGE_TEXT.CANCEL}>
 						<Select
 							mode="multiple"
 							style={{ width: '100%' }}
-							placeholder="Выберите роли"
+							placeholder={USERS_PAGE_TEXT.SELECT_ROLES}
 							options={roleSelectOptions}
 							value={currentRoles}
 							onChange={(values) => setCurrentRoles(values)}
@@ -345,49 +401,47 @@ export const Users = () => {
 
 	const filterMenuItems: MenuProps['items'] = [
 		{
-			label: 'Все',
+			label: USERS_PAGE_TEXT.FILTER_ALL,
 			key: 'all',
 			onClick: () =>
 				setUsersFilter((prev) => ({ ...prev, isBlocked: undefined, offset: undefined })),
 			style: usersFilter.isBlocked === undefined ? selectedMenuItemStyle : undefined,
 		},
 		{
-			label: 'Заблокированные',
+			label: USERS_PAGE_TEXT.FILTER_BLOCKED,
 			key: 'blocked',
-			onClick: () =>
-				setUsersFilter((prev) => ({ ...prev, isBlocked: true, offset: undefined })),
+			onClick: () => setUsersFilter((prev) => ({ ...prev, isBlocked: true, offset: undefined })),
 			style: usersFilter.isBlocked === true ? selectedMenuItemStyle : undefined,
 		},
 		{
-			label: 'Незаблокированные',
+			label: USERS_PAGE_TEXT.FILTER_UNBLOCKED,
 			key: 'unblocked',
-			onClick: () =>
-				setUsersFilter((prev) => ({ ...prev, isBlocked: false, offset: undefined })),
+			onClick: () => setUsersFilter((prev) => ({ ...prev, isBlocked: false, offset: undefined })),
 			style: usersFilter.isBlocked === false ? selectedMenuItemStyle : undefined,
 		},
 	];
 
 	return (
 		<Flex vertical style={{ width: '100%' }}>
-			<Title>Пользователи</Title>
+			<Title>{USERS_PAGE_TEXT.TITLE}</Title>
 
-			<Flex
-				vertical
-				style={{ border: '1px solid #E4E4E4', borderRadius: 10, padding: '1.5rem' }}>
+			<Flex vertical style={{ border: '1px solid #E4E4E4', borderRadius: 10, padding: '1.5rem' }}>
 				<Row style={{ paddingBottom: '1rem' }}>
 					<Col span={10}>
 						<Title level={3}>{getHeading(usersFilter.isBlocked)}</Title>
 					</Col>
+
 					<Col span={14}>
 						<Flex gap="1rem">
 							<Input
 								prefix={<SearchOutlined />}
 								size="large"
-								placeholder="Поиск по имени или email"
+								placeholder={USERS_PAGE_TEXT.SEARCH_PLACEHOLDER}
 								defaultValue={usersFilter.search}
 								onChange={(e) => handleSearchDebounced(e.currentTarget.value)}
 								allowClear
 							/>
+
 							<Dropdown menu={{ items: filterMenuItems }}>
 								<Button
 									style={{
@@ -397,13 +451,14 @@ export const Users = () => {
 									}}>
 									<Space>
 										<FilterOutlined />
-										Фильтр
+										{USERS_PAGE_TEXT.FILTER}
 									</Space>
 								</Button>
 							</Dropdown>
 						</Flex>
 					</Col>
 				</Row>
+
 				{alert && (
 					<Alert
 						message={alert.message}
@@ -414,6 +469,7 @@ export const Users = () => {
 						style={{ marginBottom: 16 }}
 					/>
 				)}
+
 				{usersResponse ? (
 					<Table
 						rowKey="id"

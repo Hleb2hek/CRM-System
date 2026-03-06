@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-
 import { addUserTodo } from '../../api/todoApi';
-
 import { Flex, Form, Input, Button, message } from 'antd';
 import { AxiosError } from 'axios';
+import { AddTodoProps } from '../../types/todo';
 
-interface Props {
-	refreshTasks: () => void;
-}
+const ADD_TODO_TEXT = {
+	EMPTY_FIELD: 'Поле пустое, введите значение',
+	WHITESPACE: 'Уберите пробелы',
+	TOO_LONG: 'Название слишком длинное. Допустимая максимальная длина 64 символа',
+	TOO_SHORT: 'Название слишком короткое. Допустимая минимальная длина 2 символа',
+	PLACEHOLDER: 'Введите название',
+	ADD_BUTTON: 'Добавить',
+	REQUEST_ERROR: 'Ошибка запроса',
+	MIN_TITLE_LENGTH: 2,
+	MAX_TITLE_LENGTH: 64,
+};
 
-const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
+const AddTodo: React.FC<AddTodoProps> = ({ refreshTasks }) => {
 	const [, setErrorTasks] = useState<Error | null>(null);
 	const [messageApi, contextHolder] = message.useMessage();
 
@@ -19,8 +26,6 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 			content: error,
 		});
 	};
-	const MAX_TITLE_LENGTH = 64;
-	const MIN_TITLE_LENGTH = 2;
 
 	const handleAddTodo = async (value: { task: string }): Promise<void> => {
 		try {
@@ -29,7 +34,7 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 			setErrorTasks(null);
 		} catch (error: unknown) {
 			if (error instanceof AxiosError) {
-				showError(error.response?.data?.message ?? error.message ?? 'Ошибка запроса');
+				showError(error.response?.data?.message ?? error.message ?? ADD_TODO_TEXT.REQUEST_ERROR);
 				return;
 			}
 
@@ -47,23 +52,21 @@ const AddTodo: React.FC<Props> = ({ refreshTasks }) => {
 						name="task"
 						validateTrigger="onSubmit"
 						rules={[
-							{ required: true, message: 'Поле пустое, введите значение' },
-							{ whitespace: true, message: 'Уберите пробелы' },
+							{ required: true, message: ADD_TODO_TEXT.EMPTY_FIELD },
+							{ whitespace: true, message: ADD_TODO_TEXT.WHITESPACE },
 							{
-								max: MAX_TITLE_LENGTH,
-								message:
-									'Название слишком длинное. Допустимая максимальная длина 64 символа',
+								max: ADD_TODO_TEXT.MAX_TITLE_LENGTH,
+								message: ADD_TODO_TEXT.TOO_LONG,
 							},
 							{
-								min: MIN_TITLE_LENGTH,
-								message:
-									'Название слишком короткое. Допустимая минимальная длина 2 символа',
+								min: ADD_TODO_TEXT.MIN_TITLE_LENGTH,
+								message: ADD_TODO_TEXT.TOO_SHORT,
 							},
 						]}>
-						<Input placeholder="Введите название" />
+						<Input placeholder={ADD_TODO_TEXT.PLACEHOLDER} />
 					</Form.Item>
 					<Form.Item>
-						<Button htmlType="submit">Добавить</Button>
+						<Button htmlType="submit">{ADD_TODO_TEXT.ADD_BUTTON}</Button>
 					</Form.Item>
 				</Flex>
 				{contextHolder}

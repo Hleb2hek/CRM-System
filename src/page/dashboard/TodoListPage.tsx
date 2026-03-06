@@ -9,6 +9,11 @@ import { Filter, Todo, TodoInfo } from '../../types/todo';
 
 import { Flex } from 'antd';
 
+const TODO_LIST_PAGE_TEXT = {
+	LOADING: 'Загрузка...',
+	NO_TASKS: 'Задач пока нет',
+};
+
 export default function TodoListPage() {
 	const [tasks, setTasks] = useState<Todo[]>([]);
 	const [tabs, setTabs] = useState<TodoInfo>({
@@ -54,8 +59,8 @@ export default function TodoListPage() {
 
 			<Flex justify="center">
 				{error && <p>{error.message}</p>}
-				{isLoading && <p>Загрузка...</p>}
-				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
+				{isLoading && <p>{TODO_LIST_PAGE_TEXT.LOADING}</p>}
+				{!isLoading && tasks.length === 0 && !error && <p>{TODO_LIST_PAGE_TEXT.NO_TASKS}</p>}
 			</Flex>
 
 			<TodoList filter={filter} tasks={tasks} refreshTasks={refreshTasks} setError={setError} />
