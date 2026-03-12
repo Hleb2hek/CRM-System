@@ -32,6 +32,30 @@ const USER_EDIT_TEXT = {
 	EDIT: 'Редактировать',
 };
 
+// Generic функия
+const getChangedFields = <UserGeneric extends object>(
+	// принимает оригинальную форму
+	original: UserGeneric,
+	// Значения, которые хотим изменить, делаем необязательными
+	values: Partial<UserGeneric>,
+) => {
+	// Создаём переменную с необязательными полями
+	const changed: Partial<UserGeneric> = {};
+
+	// Получаем ключи и переводим в массив строк
+	const key = Object.keys(values) as (keyof UserGeneric)[];
+
+	// Проходимся по нему
+	key.forEach((key) => {
+		if (values[key] !== original[key]) {
+			// Вносим изменённые поля в переменную
+			changed[key] = values[key];
+		}
+	});
+	// возвращаем переменную
+	return changed;
+};
+
 export const UserEdit = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
@@ -78,19 +102,7 @@ export const UserEdit = () => {
 		setIsSaving(true);
 
 		try {
-			const changedFields: Partial<UserRequest> = {};
-
-			if (values.username !== user.username) {
-				changedFields.username = values.username;
-			}
-
-			if (values.email !== user.email) {
-				changedFields.email = values.email;
-			}
-
-			if (values.phoneNumber !== user.phoneNumber) {
-				changedFields.phoneNumber = values.phoneNumber || undefined;
-			}
+			const changedFields = getChangedFields(user, values);
 
 			if (!Object.keys(changedFields).length) {
 				showAlert('success', USER_EDIT_TEXT.NO_CHANGES_TO_SAVE);

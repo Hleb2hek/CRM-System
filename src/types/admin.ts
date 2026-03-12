@@ -41,5 +41,3 @@ export enum Roles {
 	MODERATOR = 'MODERATOR',
 	USER = 'USER',
 }
-
-export type ContextType = { hasAccess: boolean };

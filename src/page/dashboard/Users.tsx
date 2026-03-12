@@ -35,7 +35,7 @@ import {
 	unblockUser,
 	updateUserRoles,
 } from '../../api/adminApi';
-import { formatDate } from '../../utils/formatDate';
+import { format } from 'date-fns';
 
 const { Title } = Typography;
 
@@ -305,7 +305,7 @@ export const Users = () => {
 			title: USERS_PAGE_TEXT.REGISTRATION_DATE,
 			dataIndex: 'date',
 			key: 'date',
-			render: (_, { date }) => <p>{formatDate(date)}</p>,
+			render: (_, { date }) => <p>{format(date, 'MM/dd/yyyy')}</p>,
 		},
 		{
 			title: USERS_PAGE_TEXT.ACTIONS,
