@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import tokenManager from '../utils/tokenManager';
+import tokenManager from './tokenManager';
 import { refreshTokenSession } from './usersApi';
 
 export const apiBaseUrl = 'https://easydev.club/api/v1';

@@ -147,7 +147,9 @@ export const UserEdit = () => {
 
 	if (!user) {
 		return (
-			<div style={{ textAlign: 'center', marginTop: 40 }}>{USER_EDIT_TEXT.USER_WAS_NOT_FOUND}</div>
+			<div style={{ textAlign: 'center', marginTop: 40 }}>
+				{USER_EDIT_TEXT.USER_WAS_NOT_FOUND}
+			</div>
 		);
 	}
 
@@ -191,7 +193,11 @@ export const UserEdit = () => {
 						</Form.Item>
 
 						<Space>
-							<Button type="primary" htmlType="submit" loading={isSaving} disabled={isSaving}>
+							<Button
+								type="primary"
+								htmlType="submit"
+								loading={isSaving}
+								disabled={isSaving}>
 								{USER_EDIT_TEXT.SAVE}
 							</Button>
 							<Button onClick={handleCancel} disabled={isSaving}>

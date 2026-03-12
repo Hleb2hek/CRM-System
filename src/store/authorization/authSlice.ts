@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthState } from '../../types/users';
-import tokenManager from '../../utils/tokenManager';
+import tokenManager from '../../api/tokenManager';
 
 const initialState: AuthState = {
 	isAuthorization: false,

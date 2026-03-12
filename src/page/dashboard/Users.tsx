@@ -27,7 +27,8 @@ import type { ColumnsType, SorterResult } from 'antd/es/table/interface';
 
 import { debounce } from 'lodash';
 
-import { MetaResponse, Roles, User, UserFilters } from '../../types/admin';
+import { Roles, User, UserFilters } from '../../types/admin';
+
 import {
 	blockUser,
 	deleteUser,
@@ -36,6 +37,7 @@ import {
 	updateUserRoles,
 } from '../../api/adminApi';
 import { format } from 'date-fns';
+import { MetaResponse } from '../../types/todo';
 
 const { Title } = Typography;
 
@@ -143,7 +145,7 @@ export const Users = () => {
 				page: offset !== undefined ? offset + 1 : undefined,
 			});
 
-			const normalizedData = response.data.map((user) => ({
+			const normalizedData = response.data.map((user: User) => ({
 				...user,
 				roles: user.roles?.length ? user.roles : [Roles.USER],
 			}));
@@ -410,13 +412,15 @@ export const Users = () => {
 		{
 			label: USERS_PAGE_TEXT.FILTER_BLOCKED,
 			key: 'blocked',
-			onClick: () => setUsersFilter((prev) => ({ ...prev, isBlocked: true, offset: undefined })),
+			onClick: () =>
+				setUsersFilter((prev) => ({ ...prev, isBlocked: true, offset: undefined })),
 			style: usersFilter.isBlocked === true ? selectedMenuItemStyle : undefined,
 		},
 		{
 			label: USERS_PAGE_TEXT.FILTER_UNBLOCKED,
 			key: 'unblocked',
-			onClick: () => setUsersFilter((prev) => ({ ...prev, isBlocked: false, offset: undefined })),
+			onClick: () =>
+				setUsersFilter((prev) => ({ ...prev, isBlocked: false, offset: undefined })),
 			style: usersFilter.isBlocked === false ? selectedMenuItemStyle : undefined,
 		},
 	];
@@ -425,7 +429,9 @@ export const Users = () => {
 		<Flex vertical style={{ width: '100%' }}>
 			<Title>{USERS_PAGE_TEXT.TITLE}</Title>
 
-			<Flex vertical style={{ border: '1px solid #E4E4E4', borderRadius: 10, padding: '1.5rem' }}>
+			<Flex
+				vertical
+				style={{ border: '1px solid #E4E4E4', borderRadius: 10, padding: '1.5rem' }}>
 				<Row style={{ paddingBottom: '1rem' }}>
 					<Col span={10}>
 						<Title level={3}>{getHeading(usersFilter.isBlocked)}</Title>

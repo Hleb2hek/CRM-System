@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { Spin, Layout } from 'antd';
 import { useEffect, useState } from 'react';
-import tokenManager from '../../utils/tokenManager';
+import tokenManager from '../../api/tokenManager';
 import { refreshTokenSession } from '../../api/usersApi';
 import { login, logout } from '../../store/authorization/authSlice';
 import { AxiosError } from 'axios';
@@ -36,8 +36,6 @@ export const ProtectedRoute = () => {
 							}
 						}
 					}
-				} else {
-					dispatch(login());
 				}
 			} else {
 				dispatch(logout());
@@ -50,7 +48,8 @@ export const ProtectedRoute = () => {
 	if (isLoading) {
 		return (
 			<Layout style={{ height: '100dvh' }}>
-				<Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+				<Content
+					style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 					<Spin size="large" />
 				</Content>
 			</Layout>

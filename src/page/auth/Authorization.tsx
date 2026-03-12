@@ -4,7 +4,7 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router';
 import { useAppDispatch } from '../../store/store';
 import { AuthData } from '../../types/users';
-import tokenManager from '../../utils/tokenManager';
+import tokenManager from '../../api/tokenManager';
 import { loginUser } from '../../api/usersApi';
 import { login } from '../../store/authorization/authSlice';
 import { useState } from 'react';
@@ -73,7 +73,9 @@ export default function Authorization() {
 						<Typography.Title level={2} style={{ margin: 0 }}>
 							{AUTHORIZATION_TEXT.TITLE}
 						</Typography.Title>
-						<Typography.Text type="secondary">{AUTHORIZATION_TEXT.SUBTITLE}</Typography.Text>
+						<Typography.Text type="secondary">
+							{AUTHORIZATION_TEXT.SUBTITLE}
+						</Typography.Text>
 					</Flex>
 
 					{alert && (
@@ -91,14 +93,21 @@ export default function Authorization() {
 						<Form.Item
 							label={AUTHORIZATION_TEXT.LOGIN_LABEL}
 							name="login"
-							rules={[{ required: true, message: AUTHORIZATION_TEXT.LOGIN_REQUIRED }]}>
-							<Input prefix={<MailOutlined />} placeholder={AUTHORIZATION_TEXT.LOGIN_PLACEHOLDER} />
+							rules={[
+								{ required: true, message: AUTHORIZATION_TEXT.LOGIN_REQUIRED },
+							]}>
+							<Input
+								prefix={<MailOutlined />}
+								placeholder={AUTHORIZATION_TEXT.LOGIN_PLACEHOLDER}
+							/>
 						</Form.Item>
 
 						<Form.Item
 							label={AUTHORIZATION_TEXT.PASSWORD_LABEL}
 							name="password"
-							rules={[{ required: true, message: AUTHORIZATION_TEXT.PASSWORD_REQUIRED }]}>
+							rules={[
+								{ required: true, message: AUTHORIZATION_TEXT.PASSWORD_REQUIRED },
+							]}>
 							<Input.Password
 								prefix={<LockOutlined />}
 								placeholder={AUTHORIZATION_TEXT.PASSWORD_PLACEHOLDER}
@@ -106,7 +115,12 @@ export default function Authorization() {
 						</Form.Item>
 
 						<Form.Item>
-							<Button type="primary" htmlType="submit" block size="large" loading={isLoading}>
+							<Button
+								type="primary"
+								htmlType="submit"
+								block
+								size="large"
+								loading={isLoading}>
 								{AUTHORIZATION_TEXT.LOGIN_BUTTON}
 							</Button>
 						</Form.Item>

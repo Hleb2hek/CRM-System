@@ -18,18 +18,8 @@ export interface User {
 	phoneNumber: string;
 }
 
-export interface MetaResponse<T> {
-	data: T[];
-	meta: {
-		totalAmount: number;
-		sortBy: string;
-		sortOrder: 'asc' | 'desc';
-	};
-}
+export type UserRolesRequest = Pick<User, 'roles'>;
 
-export interface UserRolesRequest {
-	roles: Roles[];
-}
 export interface UserRequest {
 	username?: string;
 	email?: string;

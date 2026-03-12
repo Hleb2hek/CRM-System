@@ -15,11 +15,13 @@ export interface TodoInfo {
 	inWork: number;
 }
 
-export interface MetaResponse<T, N> {
+export interface MetaResponse<T, N = {}> {
 	data: T[];
 	info?: N;
 	meta: {
 		totalAmount: number;
+		sortBy?: string;
+		sortOrder?: 'asc' | 'desc';
 	};
 }
 

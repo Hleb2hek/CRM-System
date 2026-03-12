@@ -4,7 +4,7 @@ import { logout } from '../../store/authorization/authSlice';
 import { Card, Typography, Button, Spin, Space, Row, Col, Alert, Skeleton } from 'antd';
 import { getProfileUser } from '../../api/usersApi';
 import { AxiosError } from 'axios';
-import tokenManager from '../../utils/tokenManager';
+import tokenManager from '../../api/tokenManager';
 import { useNavigate } from 'react-router-dom';
 import type { Profile } from '../../types/users';
 
@@ -12,9 +12,9 @@ const { Title, Text } = Typography;
 
 const PROFILE_TEXT = {
 	PROFILE: 'Профиль пользователя',
-	LOGIN: 'Логин',
-	EMAIL: 'Email',
-	PHONE: 'Телефон',
+	LOGIN: 'Логин: ',
+	EMAIL: 'Email: ',
+	PHONE: 'Телефон: ',
 	PHONE_EMPTY: 'Отсутствует',
 	PROFILE_LOADED: 'Профиль загружен',
 	LOADING: 'Загрузка...',
@@ -56,7 +56,7 @@ export default function Profile() {
 		try {
 			setIsLoggout(true);
 
-			tokenManager.clearAccessToken();
+			tokenManager.clearTokens();
 			dispatch(logout());
 
 			navigate('/auth');
