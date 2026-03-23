@@ -1,6 +1,6 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 
-import Navigation from '../components/Navigation/Navigation';
+import Navigation from '../../components/Navigation/Navigation';
 import { Layout } from 'antd';
 
 const { Sider } = Layout;

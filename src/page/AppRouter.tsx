@@ -1,10 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Authorization from './Authorization';
-import Registration from './Registration';
-import Root from './Root';
-import TodoListPage from './TodoListPage';
-import Profile from './Profile';
-import ProtectedRoute from './ProtectedRoute';
+import Authorization from './auth/Authorization';
+import Registration from './auth/Registration';
+import Root from './dashboard/Root';
+import TodoListPage from './dashboard/TodoListPage';
+import Profile from './dashboard/Profile';
+import { ProtectedRoute } from './auth/ProtectedRoute';
+import { Users } from './dashboard/Users';
+import { UserEdit } from './dashboard/UserEdit';
 
 export const root = createBrowserRouter([
 	{ path: '/', element: <Authorization /> },
@@ -18,6 +20,8 @@ export const root = createBrowserRouter([
 				children: [
 					{ index: true, element: <TodoListPage /> },
 					{ path: 'profile', element: <Profile /> },
+					{ path: 'users', element: <Users /> },
+					{ path: 'users/:id', element: <UserEdit /> },
 				],
 			},
 		],

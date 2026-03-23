@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
 
-import AddTodo from '../components/AddTodo/AddTodo';
-import TabsList from '../components/TabsList/TabsList';
-import TodoList from '../components/Tasks/TodoList';
+import AddTodo from '../../components/AddTodo/AddTodo';
+import TabsList from '../../components/TabsList/TabsList';
+import TodoList from '../../components/Tasks/TodoList';
 
-import { getTodosByFilter } from '../api/todoApi';
-import { Filter, Todo, TodoInfo } from '../types/todo';
+import { getTodosByFilter } from '../../api/todoApi';
+import { Filter, Todo, TodoInfo } from '../../types/todo';
 
 import { Flex } from 'antd';
+
+const TODO_LIST_PAGE_TEXT = {
+	LOADING: 'Загрузка...',
+	NO_TASKS: 'Задач пока нет',
+};
 
 export default function TodoListPage() {
 	const [tasks, setTasks] = useState<Todo[]>([]);
@@ -54,16 +59,11 @@ export default function TodoListPage() {
 
 			<Flex justify="center">
 				{error && <p>{error.message}</p>}
-				{isLoading && <p>Загрузка...</p>}
-				{!isLoading && tasks.length === 0 && !error && <p>Задач пока нет</p>}
+				{isLoading && <p>{TODO_LIST_PAGE_TEXT.LOADING}</p>}
+				{!isLoading && tasks.length === 0 && !error && <p>{TODO_LIST_PAGE_TEXT.NO_TASKS}</p>}
 			</Flex>
 
-			<TodoList
-				filter={filter}
-				tasks={tasks}
-				refreshTasks={refreshTasks}
-				setError={setError}
-			/>
+			<TodoList filter={filter} tasks={tasks} refreshTasks={refreshTasks} setError={setError} />
 		</>
 	);
 }

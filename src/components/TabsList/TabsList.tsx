@@ -1,34 +1,26 @@
 import React from 'react';
 
-import { message, Tabs } from 'antd';
+import { Tabs } from 'antd';
 
-import { Filter, TodoInfo } from '../../types/todo';
+import { TabListProps } from '../../types/todo';
+import { isFilter } from '../../utils/filters';
 
-interface Props {
-	setFilter: (filter: Filter) => void;
-	tabs: TodoInfo;
-	filter: Filter;
-}
+const TABS_TEXT = {
+	TOTAL: 'Всего задач',
+	COMPLETED: 'Выполнено',
+	IN_PROGRESS: 'В работе',
+};
 
-const TabsList: React.FC<Props> = ({ setFilter, tabs: { all, completed, inWork }, filter }) => {
-	const [messageApi, contextHolder] = message.useMessage();
-
+const TabsList: React.FC<TabListProps> = ({
+	setFilter,
+	tabs: { all, completed, inWork },
+	filter,
+}) => {
 	const tabItems = [
-		{ key: 'all', label: `Всего задач: ${all}` },
-		{ key: 'completed', label: `Выполнено: ${completed}` },
-		{ key: 'inWork', label: `В работе: ${inWork}` },
+		{ key: 'all', label: `${TABS_TEXT.TOTAL}: ${all}` },
+		{ key: 'completed', label: `${TABS_TEXT.COMPLETED}: ${completed}` },
+		{ key: 'inWork', label: `${TABS_TEXT.IN_PROGRESS}: ${inWork}` },
 	];
-
-	const isFilter = (key: string): key is Filter => {
-		return ['all', 'completed', 'inWork'].includes(key);
-	};
-
-	const errorAntd = () => {
-		messageApi.open({
-			type: 'error',
-			content: 'This is an error message',
-		});
-	};
 
 	const handleFilterChange = (key: string) => {
 		if (isFilter(key)) {
