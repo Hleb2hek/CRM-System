@@ -9,7 +9,7 @@ import { AxiosError } from 'axios';
 
 const { Content } = Layout;
 
-export const ProtectedRoute = () => {
+export default ProtectedRoute = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	const dispatch = useAppDispatch();
@@ -48,8 +48,7 @@ export const ProtectedRoute = () => {
 	if (isLoading) {
 		return (
 			<Layout style={{ height: '100dvh' }}>
-				<Content
-					style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+				<Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 					<Spin size="large" />
 				</Content>
 			</Layout>

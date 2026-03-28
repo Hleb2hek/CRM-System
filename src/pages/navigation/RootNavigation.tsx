@@ -1,4 +1,4 @@
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import Navigation from '../../components/Navigation/Navigation';
 import { Layout } from 'antd';
@@ -15,7 +15,7 @@ const siderStyle: React.CSSProperties = {
 	scrollbarWidth: 'thin',
 	scrollbarGutter: 'stable',
 };
-export default function Root() {
+export const RootNavigation = () => {
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Sider theme="light" style={siderStyle}>
@@ -27,4 +27,4 @@ export default function Root() {
 			</Layout>
 		</Layout>
 	);
-}
+};

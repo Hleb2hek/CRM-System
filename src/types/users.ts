@@ -15,7 +15,7 @@ export interface AuthState {
 }
 
 export interface ProfileState {
-	data: Profile | null;
+	data: ProfileUser | null;
 	loading: boolean;
 	error: string | null;
 }
@@ -23,7 +23,7 @@ export interface ProfileState {
 export interface RefreshToken {
 	refreshToken: string;
 }
-export interface Profile {
+export interface ProfileUser {
 	id: number;
 	username: string;
 	email: string;

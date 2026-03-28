@@ -6,7 +6,7 @@ import { getProfileUser } from '../../api/usersApi';
 import { AxiosError } from 'axios';
 import tokenManager from '../../api/tokenManager';
 import { useNavigate } from 'react-router-dom';
-import type { Profile } from '../../types/users';
+import type { ProfileUser } from '../../types/users';
 
 const { Title, Text } = Typography;
 
@@ -20,11 +20,11 @@ const PROFILE_TEXT = {
 	LOADING: 'Загрузка...',
 };
 
-export default function Profile() {
+export const ProfileUser = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const [profile, setProfile] = useState<Profile | null>(null);
+	const [profile, setProfile] = useState<ProfileUser | null>(null);
 	const [isloading, setIsLoading] = useState<boolean>(false);
 	const [isLoggout, setIsLoggout] = useState<boolean>(false);
 
@@ -118,4 +118,4 @@ export default function Profile() {
 			</Col>
 		</Row>
 	);
-}
+};
